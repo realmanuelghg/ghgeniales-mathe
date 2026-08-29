@@ -1,0 +1,2823 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GHGeniales Mathe</title>
+
+<link rel="manifest" href="./manifest.json">
+<meta name="theme-color" content="#16233F">
+<link rel="icon" href="./icon-192-v4.png" type="image/png">
+<link rel="apple-touch-icon" href="./icon-192-v4.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="GHGeniales Mathe">
+<meta name="mobile-web-app-capable" content="yes">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
+<style>
+  :root{
+    --ink:#16233F;
+    --ink-soft:#5B6786;
+    --paper:#FAF9F5;
+    --card:#FFFFFF;
+    --grid:#E1E5EE;
+    --blue:#2C5AA0;
+    --blue-soft:#EAF0FA;
+    --amber:#C7891F;
+    --amber-soft:#FBF1DF;
+    --rust:#C1443C;
+    --rust-soft:#FBEAE8;
+    --green:#3E7D5C;
+    --green-soft:#E9F3EC;
+    --brand:#16233F;
+    --shadow-c: 22,35,63;
+    --radius:14px;
+    --shadow: 0 1px 2px rgba(var(--shadow-c),0.06), 0 6px 20px rgba(var(--shadow-c),0.06);
+  }
+  html[data-theme="dark"]{
+    --ink:#E8EAF2;
+    --ink-soft:#9AA1BC;
+    --paper:#10141F;
+    --card:#1A2033;
+    --grid:#2A3350;
+    --blue:#6D9BDB;
+    --blue-soft:#1C2A44;
+    --amber:#E0A83D;
+    --amber-soft:#332712;
+    --rust:#E2726A;
+    --rust-soft:#3B1F1E;
+    --green:#6BC496;
+    --green-soft:#17281F;
+    --shadow-c: 0,0,0;
+  }
+  html{ color-scheme: light; }
+  html[data-theme="dark"]{ color-scheme: dark; }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0;
+    font-family:'IBM Plex Sans', system-ui, sans-serif;
+    color:var(--ink);
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px),
+      var(--paper);
+    background-size:26px 26px;
+    line-height:1.5;
+    transition: background-color .25s ease, color .25s ease;
+  }
+  .card, .pill, .chip, .tab, .opt, .qformula, .qtree, .qtable td, .qtable th,
+  canvas.plot, .statcard, .modal, .bartrack, input, button.ghost{
+    transition: background-color .2s ease, border-color .2s ease, color .2s ease;
+  }
+  h1,h2,h3{font-family:'Fraunces', Georgia, serif; margin:0; letter-spacing:-0.01em;}
+  .mono{font-family:'IBM Plex Mono', monospace;}
+  a{color:var(--blue);}
+
+  /* ---------- HERO ---------- */
+  header.hero{
+    position:relative;
+    padding:38px 20px 28px;
+    max-width:920px; margin:0 auto;
+    display:flex; align-items:center; gap:24px; flex-wrap:wrap;
+  }
+  .hero-text{flex:1 1 280px; min-width:240px;}
+  .brandrow{display:flex; align-items:center; gap:14px; margin-bottom:2px;}
+  .logo-badge{width:64px; height:64px; border-radius:16px; box-shadow:var(--shadow); flex-shrink:0; display:block;}
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace; font-size:12.5px; letter-spacing:0.08em;
+    text-transform:uppercase; color:var(--blue); font-weight:600; margin-bottom:8px;
+  }
+  header.hero h1{font-size:clamp(32px,6vw,46px); font-weight:700; color:var(--ink);}
+  header.hero p{color:var(--ink-soft); font-size:15.5px; max-width:46ch; margin-top:10px;}
+  #heroCanvas{
+    flex:0 0 auto; width:190px; height:145px; background:var(--card);
+    border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid var(--grid);
+  }
+
+  /* ---------- TOP STATS BAR ---------- */
+  .statbar{
+    max-width:920px; margin:0 auto; padding:0 20px 6px;
+    display:flex; gap:8px; flex-wrap:wrap; align-items:center;
+  }
+  .pill{
+    background:var(--card); border:1px solid var(--grid); border-radius:999px;
+    padding:6px 12px; font-size:12.5px; color:var(--ink-soft); display:flex; align-items:center; gap:6px;
+    box-shadow:var(--shadow);
+  }
+  .pill b{color:var(--ink); font-weight:600;}
+  .pill.mistakes{cursor:pointer; border-color:var(--rust); color:var(--rust);}
+  .pill.mistakes b{color:var(--rust);}
+
+  /* ---------- NAV ---------- */
+  nav.tabs{
+    max-width:920px; margin:18px auto 0; padding:0 20px;
+    display:flex; gap:8px; overflow-x:auto; scrollbar-width:none;
+  }
+  nav.tabs::-webkit-scrollbar{display:none;}
+  .tab{
+    flex:0 0 auto; padding:10px 16px; border-radius:999px; border:1px solid var(--grid);
+    background:var(--card); font-weight:600; font-size:14px; color:var(--ink-soft);
+    cursor:pointer; transition:all .15s ease; white-space:nowrap;
+  }
+  .tab:hover{border-color:var(--blue);}
+  .tab.active{background:var(--brand); color:#fff; border-color:var(--brand);}
+
+  main{max-width:920px; margin:0 auto; padding:20px;}
+
+  /* ---------- SUBTYPE CHIPS ---------- */
+  .chiprow{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .chip{
+    padding:7px 13px; border-radius:8px; border:1px solid var(--grid); background:var(--card);
+    font-size:13px; font-weight:500; color:var(--ink-soft); cursor:pointer; transition:all .12s ease;
+  }
+  .chip.active{background:var(--catcolor,var(--blue)); border-color:var(--catcolor,var(--blue)); color:#fff;}
+  .difficulty-row{display:flex;gap:8px;flex-wrap:wrap;margin:-6px 0 18px;}
+  .difficulty-row .chip{font-size:12px;padding:6px 10px;}
+  .difficulty-row .chip.active{background:var(--ink);border-color:var(--ink);}
+
+  /* ---------- QUESTION CARD ---------- */
+  .card{
+    background:var(--card); border:1px solid var(--grid); border-radius:var(--radius);
+    box-shadow:var(--shadow); padding:26px; position:relative; overflow:hidden;
+  }
+  .card::before{
+    content:""; position:absolute; left:0; top:0; bottom:0; width:5px; background:var(--catcolor,var(--blue));
+  }
+  .qlabel{font-family:'IBM Plex Mono',monospace; font-size:12px; text-transform:uppercase; letter-spacing:.06em; color:var(--catcolor,var(--blue)); font-weight:600; margin-bottom:10px;}
+  .qprompt{font-size:18px; font-weight:500; line-height:1.6; white-space:pre-line;}
+  .qformula{font-family:inherit; font-size:20px; line-height:1.9; background:var(--paper); border:1px dashed var(--grid); border-radius:10px; padding:12px 16px; margin-top:12px; display:inline-block;}
+  .qtree{font-family:'IBM Plex Mono',monospace; font-size:14.5px; line-height:1.8; background:var(--paper); border:1px dashed var(--grid); border-radius:10px; padding:14px 16px; margin-top:12px; white-space:pre; overflow-x:auto;}
+  .qtable{border-collapse:collapse; margin-top:14px; font-family:'IBM Plex Sans',sans-serif; font-size:15px;}
+  .qtable .katex{font-size:1.05em;}
+  .math-block{display:block; margin:10px 0; font-size:1.08em;}
+  .katex-display{margin:.6em 0; overflow-x:auto; overflow-y:hidden; padding:2px 0;}
+  .answer-zone .katex{font-size:1.02em;}
+  .qtable td, .qtable th{border:1px solid var(--grid); padding:7px 14px; text-align:center;}
+  .qtable th{background:var(--paper); font-weight:600;}
+
+  .answer-zone{margin-top:20px;}
+  .options{display:grid; gap:10px;}
+  .opt{
+    text-align:left; padding:13px 16px; border-radius:10px; border:1.5px solid var(--grid);
+    background:var(--paper); font-family:'IBM Plex Mono',monospace; font-size:15px; cursor:pointer;
+    transition:all .12s ease; color:var(--ink);
+  }
+  .opt:hover:not(:disabled){border-color:var(--catcolor,var(--blue));}
+  .opt:focus-visible{outline:3px solid var(--blue); outline-offset:1px;}
+  .opt.correct{background:var(--green-soft); border-color:var(--green); color:var(--green); font-weight:600;}
+  .opt.wrong{background:var(--rust-soft); border-color:var(--rust); color:var(--rust); font-weight:600;}
+  .opt:disabled{cursor:default;}
+
+  .numrow{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+  .numrow input{
+    font-family:'IBM Plex Mono',monospace; font-size:16px; padding:11px 14px; border-radius:10px;
+    border:1.5px solid var(--grid); width:220px; max-width:100%;
+  }
+  .numrow input:focus-visible{outline:3px solid var(--blue); outline-offset:1px; border-color:var(--blue);}
+  .hint-toggle{margin-top:12px; font-size:13px; color:var(--ink-soft); background:transparent; border:0; padding:5px 0; cursor:pointer; font-family:'IBM Plex Sans',sans-serif; font-weight:600;}
+  .hint-toggle:hover{color:var(--ink);}
+  .hint{font-size:13.5px; color:var(--ink); margin-top:8px; padding:10px 12px; border-left:3px solid var(--amber); background:var(--amber-soft); border-radius:8px; display:none;}
+  .hint.show{display:block;}
+  .feedback-answer{margin-top:10px; padding-top:10px; border-top:1px solid currentColor; opacity:.9;}
+  .feedback-answer b{font-family:'IBM Plex Mono',monospace;}
+  .feedback .katex{font-size:1.05em;}
+  .feedback.ok .feedback-answer{border-color:rgba(62,125,92,.25);}
+  .feedback.bad .feedback-answer{border-color:rgba(194,68,60,.25);}
+
+  button.primary{
+    font-family:'IBM Plex Sans',sans-serif; font-weight:600; font-size:14.5px; color:#fff;
+    background:var(--brand); border:none; border-radius:10px; padding:11px 20px; cursor:pointer;
+  }
+  button.primary:hover{background:var(--blue);}
+  button.ghost{
+    font-family:'IBM Plex Sans',sans-serif; font-weight:600; font-size:13.5px; color:var(--ink-soft);
+    background:transparent; border:1.5px solid var(--grid); border-radius:10px; padding:9px 16px; cursor:pointer;
+  }
+  button.ghost:hover{border-color:var(--ink); color:var(--ink);}
+  button:focus-visible{outline:3px solid var(--blue); outline-offset:1px;}
+
+  .feedback{margin-top:18px; padding:16px 18px; border-radius:12px; font-size:14.5px; display:none; border:1px solid transparent; box-shadow:var(--shadow);}
+  .feedback.show{display:block;}
+  .feedback.ok{background:var(--green-soft); color:var(--green); border-color:var(--green);}
+  .feedback.bad{background:var(--rust-soft); color:var(--rust); border-color:var(--rust);}
+  .feedback .explain{color:var(--ink); font-weight:400; margin-top:6px; display:block;}
+  .feedback strong{font-family:'Fraunces',serif; font-size:18px;}
+
+  .plotwrap{margin-top:14px; display:none;}
+  .plotwrap.show{display:block;}
+  canvas.plot{width:100%; max-width:420px; height:220px; background:var(--card); border:1px solid var(--grid); border-radius:10px;}
+
+  .nextrow{margin-top:20px; display:flex; gap:10px; align-items:center; flex-wrap:wrap;}
+
+  /* ---------- STATS TAB ---------- */
+  .statcard{background:var(--card); border:1px solid var(--grid); border-radius:var(--radius); box-shadow:var(--shadow); padding:24px; margin-bottom:16px;}
+
+  /* Focus session banner */
+  .sessionbar{
+    max-width:100%; margin-bottom:10px; padding:10px 16px; border-radius:10px;
+    background:var(--amber-soft); color:var(--amber); font-size:13.5px; font-weight:600;
+  }
+  .sessiontrack{background:var(--card); border-radius:6px; height:6px; margin-top:6px; overflow:hidden;}
+  .sessionfill{height:100%; background:var(--amber); border-radius:6px; transition:width .3s ease;}
+
+  /* Weaknesses tab */
+  .weakness-hero{border-left:5px solid var(--rust);}
+  .weakness-hero .primary{margin-top:14px;}
+  .weakness-hero .sub{color:var(--ink-soft); font-size:13.5px; margin-top:4px;}
+  .weakness-name{font-family:'Fraunces',serif; font-size:26px; font-weight:700; margin-top:10px;}
+  .weakness-acc{color:var(--ink-soft); font-size:14px; margin-top:2px; margin-bottom:16px;}
+  .weakrow:hover .name{text-decoration:underline;}
+
+  /* Mistake bank groups */
+  .mistake-group{border-bottom:1px solid var(--grid); padding:14px 0; font-size:14px;}
+  .mistake-group:last-child{border-bottom:none;}
+  .mistake-group-head{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:6px;}
+  .mistake-status{font-size:12.5px; color:var(--ink-soft); font-weight:500;}
+  .mistake-retry{margin-top:8px;}
+  .session-complete{margin-top:10px; font-weight:600; color:var(--green);}
+  .xp-gain{margin-top:8px; font-weight:600; color:var(--amber);}
+  .level-badge{font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--blue); font-weight:700;}
+  .exambar{margin-bottom:12px; padding:12px 16px; border-radius:10px; background:var(--blue-soft); color:var(--blue); font-weight:600;}
+  .exambar-top{display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap;}
+  .exam-timer{font-family:'IBM Plex Mono',monospace;}
+  .exam-result{border-left:5px solid var(--green);}
+  .metric-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:14px;}
+  .metric{background:var(--paper);border:1px solid var(--grid);border-radius:10px;padding:12px;text-align:center;}
+  .metric b{display:block;font-family:'Fraunces',serif;font-size:24px;}
+  .metric span{font-size:12px;color:var(--ink-soft);}
+  .achievement-list{display:grid;gap:8px;margin-top:14px;}
+  .achievement{display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--grid);border-radius:10px;background:var(--paper);}
+  .achievement.locked{opacity:.48;}
+  .achievement .icon{font-size:20px;}
+  .weak-detail{font-size:12.5px;color:var(--ink-soft);margin-top:4px;}
+  .offline-note{font-size:12px;color:var(--ink-soft);margin-top:8px;}
+  @media (max-width:700px){.metric-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
+  .statcard h2{font-size:20px; margin-bottom:4px;}
+  .statcard p.sub{color:var(--ink-soft); font-size:13.5px; margin-top:2px;}
+  canvas#curveChart{width:100%; height:260px; margin-top:10px;}
+  .barlist{margin-top:16px; display:grid; gap:10px;}
+  .barrow{display:grid; grid-template-columns:150px 1fr 46px; gap:10px; align-items:center; font-size:13px;}
+  .barrow .name{color:var(--ink-soft); font-weight:500;}
+  .bartrack{background:var(--paper); border:1px solid var(--grid); border-radius:6px; height:10px; overflow:hidden;}
+  .barfill{height:100%; border-radius:6px;}
+  .barrow .pct{text-align:right; font-family:'IBM Plex Mono',monospace; color:var(--ink-soft);}
+
+  /* ---------- MODAL (mistake bank) ---------- */
+  .modal-backdrop{position:fixed; inset:0; background:rgba(22,35,63,0.45); display:none; align-items:center; justify-content:center; padding:20px; z-index:50;}
+  .modal-backdrop.show{display:flex;}
+  .modal{background:var(--card); border-radius:var(--radius); max-width:560px; width:100%; max-height:80vh; overflow-y:auto; padding:24px; box-shadow:var(--shadow);}
+  .modal h2{font-size:20px; margin-bottom:14px;}
+  .mistake-item{border-bottom:1px solid var(--grid); padding:12px 0; font-size:14px;}
+  .mistake-item:last-child{border-bottom:none;}
+  .mistake-item .mp{font-family:'IBM Plex Mono',monospace; color:var(--ink); font-size:13.5px;}
+  .mistake-item .me{color:var(--ink-soft); margin-top:4px; font-size:13px;}
+  .empty{color:var(--ink-soft); font-size:14px; padding:10px 0;}
+
+  footer{max-width:920px; margin:30px auto 60px; padding:0 20px; color:var(--ink-soft); font-size:12.5px; text-align:center;}
+
+  .install-modal{max-width:520px;}
+  .install-guide-lead{font-size:14px;color:var(--ink-soft);margin:0 0 12px;}
+  .install-steps{display:grid;gap:8px;margin-top:10px;}
+  .install-step{display:flex;gap:10px;align-items:flex-start;padding:11px 12px;background:var(--paper);border:1px solid var(--grid);border-radius:10px;font-size:13.5px;}
+  .install-step b{font-family:'IBM Plex Mono',monospace;color:var(--blue);min-width:22px;}
+  .install-note{margin-top:12px;padding:10px 12px;background:var(--blue-soft);border-radius:8px;color:var(--ink);font-size:12.5px;}
+
+  @media (prefers-reduced-motion: reduce){ * { animation:none !important; transition:none !important; } }
+
+  /* ---------- SMARTPHONE LAYOUT ----------
+     The tablet/desktop layout stays untouched. These rules only kick in
+     at 600px and below so the current iPad/desktop look is preserved. */
+  @media (max-width:600px){
+    body{background-size:28px 28px;}
+
+    header.hero{
+      padding:18px 16px 10px;
+      flex-direction:column;
+      align-items:stretch;
+      gap:10px;
+    }
+    .brandrow{gap:10px; align-items:center; margin-bottom:0;}
+    .logo-badge{width:56px; height:56px; border-radius:14px;}
+    .eyebrow{font-size:10.5px; letter-spacing:.065em; margin-bottom:2px; white-space:nowrap;}
+    header.hero h1{font-size:30px; line-height:1.08;}
+    header.hero p{font-size:14px; line-height:1.48; margin:7px 0 0; max-width:none;}
+    .offline-note{font-size:11.5px; line-height:1.35; margin-top:6px;}
+
+    /* Decorative graph: still visible, but no longer consumes a huge
+       vertical block on phones. */
+    #heroCanvas{
+      width:100%;
+      height:96px;
+      max-height:96px;
+      border-radius:11px;
+      display:block;
+    }
+
+    /* Compact status area: let pills form natural rows instead of
+       pushing the content far down the page. */
+    .statbar{
+      padding:2px 16px 2px;
+      gap:6px;
+      align-items:stretch;
+    }
+    .pill{
+      padding:6px 9px;
+      font-size:11.5px;
+      line-height:1.15;
+      min-height:32px;
+    }
+    #installPill{order:20;}
+    #themeToggle{order:21;}
+
+    /* Six main sections become a compact 2-column grid. No clipped
+       horizontal navigation on phones. */
+    nav.tabs{
+      margin-top:8px;
+      padding:0 16px;
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:7px;
+      overflow:visible;
+    }
+    nav.tabs .tab{
+      width:100%;
+      min-width:0;
+      padding:9px 8px;
+      font-size:13px;
+      text-align:center;
+      white-space:normal;
+      line-height:1.15;
+      min-height:40px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+    }
+
+    main{padding:12px 16px;}
+    .chiprow{gap:6px; margin-bottom:10px;}
+    .chip{font-size:12.5px; padding:7px 11px;}
+    .difficulty-row{gap:6px; margin:-4px 0 14px;}
+    .difficulty-row .chip{font-size:11.5px; padding:6px 9px;}
+
+    .card{padding:19px 17px;}
+    .qprompt{font-size:17px; line-height:1.52;}
+    .qformula{font-size:18px; padding:9px 11px; max-width:100%; overflow-x:auto;}
+    .qtable{font-size:13.5px; width:100%;}
+    .qtable td,.qtable th{padding:6px 7px;}
+    .katex-display{margin:.45em 0; max-width:100%;}
+
+    .numrow{align-items:stretch;}
+    .numrow input{width:100%; flex:1 1 150px; min-width:0;}
+    .numrow button{flex:1 1 auto;}
+
+    .feedback{padding:13px 14px; font-size:14px;}
+    .nextrow{margin-top:15px;}
+    .nextrow button{flex:1 1 140px;}
+
+    .barrow{grid-template-columns:92px 1fr 38px; gap:7px;}
+    .metric-grid{gap:7px;}
+    .statcard{padding:17px;}
+  }
+
+  @media (max-width:380px){
+    header.hero h1{font-size:27px;}
+    .eyebrow{font-size:9.5px;}
+    header.hero p{font-size:13px;}
+    .offline-note{font-size:11px;}
+    #heroCanvas{height:84px; max-height:84px;}
+    .pill{font-size:10.8px; padding:5px 8px;}
+    nav.tabs .tab{font-size:12px; min-height:38px;}
+    .chip{font-size:12px; padding:6px 9px;}
+    .card{padding:17px 15px;}
+    .qprompt{font-size:16px;}
+    .qtable{font-size:12.5px;}
+    .qtable td,.qtable th{padding:5px 5px;}
+  }
+
+/* Taschenrechner direkt bei jeder Aufgabe */
+.v2-calculator{width:100%;max-width:none;margin:18px 0 0;box-sizing:border-box}
+@media(max-width:700px){.v2-calculator{margin:16px 0 0;padding:12px}}
+</style>
+<style>
+
+/* GHGeniales Mathe V2.0 – Mobile-first UI foundation */
+:root{--v2-max:1100px;--v2-radius:18px}
+.v2-shell{width:min(100%,var(--v2-max));margin:0 auto}
+.v2-mobile-nav{display:none}
+.v2-class-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.v2-class-card{border:1px solid rgba(127,127,127,.22);border-radius:var(--v2-radius);padding:20px;background:rgba(127,127,127,.06);min-height:150px;cursor:pointer;transition:transform .15s ease}
+.v2-class-card:active{transform:scale(.985)}
+.v2-class-card h3{margin:.2rem 0 .5rem}
+.v2-class-card p{margin:0;opacity:.75;line-height:1.45}
+.v2-topic-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.v2-topic{border:1px solid rgba(127,127,127,.18);border-radius:14px;padding:14px;min-height:54px;display:flex;align-items:center;justify-content:space-between}
+@media(max-width:700px){
+ body{overflow-x:hidden}
+ .v2-shell{padding:0 14px}
+ .v2-class-grid,.v2-topic-list{grid-template-columns:1fr;gap:10px}
+ .v2-class-card{padding:17px;min-height:0}
+ .v2-mobile-nav{display:flex;position:sticky;bottom:0;z-index:1000;margin:18px -14px 0;padding:8px 6px calc(8px + env(safe-area-inset-bottom));gap:2px;justify-content:space-around;border-top:1px solid rgba(127,127,127,.18);background:rgba(255,255,255,.92);backdrop-filter:blur(14px)}
+ .v2-mobile-nav button{border:0;background:transparent;padding:9px 7px;border-radius:12px;min-width:58px;font:inherit;font-size:.76rem;cursor:pointer}
+}
+
+</style>
+<style>
+
+.v2-calculator{width:min(100%,520px);margin:28px auto;padding:16px;border:1px solid rgba(127,127,127,.22);border-radius:20px;background:rgba(127,127,127,.05)}
+.v2-calc-display{width:100%;box-sizing:border-box;border:1px solid rgba(127,127,127,.25);border-radius:14px;padding:14px 16px;font:inherit;font-size:1.25rem;text-align:right;background:transparent;min-height:54px}
+.v2-calc-result{text-align:right;min-height:28px;padding:7px 4px;font-size:1.05rem;opacity:.75;overflow-wrap:anywhere}
+.v2-calc-mode{display:flex;gap:8px;margin:8px 0 12px}
+.v2-calc-mode button,.v2-calc-key{border:1px solid rgba(127,127,127,.18);border-radius:12px;background:rgba(127,127,127,.07);font:inherit;cursor:pointer;min-height:48px}
+.v2-calc-mode button{padding:8px 14px}.v2-calc-mode button.active{font-weight:700}
+.v2-calc-grid,.v2-calc-science{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.v2-calc-science{display:none;margin-bottom:8px}.v2-calc-science.show{display:grid}
+.v2-calc-key{font-size:1rem;padding:8px}.v2-calc-hint{font-size:.8rem;opacity:.65;margin-top:10px;line-height:1.4}
+@media(max-width:700px){.v2-calculator{margin:20px 0;padding:12px}.v2-calc-key,.v2-calc-mode button{min-height:50px}}
+
+</style>
+
+<style>
+
+/* GHGeniales V2 – Prüfungsreview */
+.v2-exam-review{width:min(100%,900px);margin:28px auto;padding:18px;border:1px solid rgba(127,127,127,.22);border-radius:20px;background:rgba(127,127,127,.04)}
+.v2-exam-head{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
+.v2-exam-score{font-size:1.5rem;font-weight:800}
+.v2-exam-list{display:grid;gap:10px;margin-top:16px}
+.v2-exam-item{border:1px solid rgba(127,127,127,.18);border-radius:15px;overflow:hidden}
+.v2-exam-summary{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:14px;cursor:pointer;list-style:none}
+.v2-exam-summary::-webkit-details-marker{display:none}
+.v2-exam-status{font-weight:700}
+.v2-exam-status.ok{color:inherit}
+.v2-exam-status.bad{font-weight:800}
+.v2-exam-detail{padding:0 14px 15px;border-top:1px solid rgba(127,127,127,.13);line-height:1.5}
+.v2-exam-question{margin-top:11px;padding:12px;border-radius:12px;background:var(--paper);border:1px solid var(--grid)}
+.v2-review-question-content{margin-top:8px;line-height:1.6}
+.v2-review-prompt{font-size:1.02rem}
+.v2-review-options{margin-top:10px}.v2-review-options ol{margin:6px 0 0 22px;padding:0}.v2-review-options li{margin:3px 0}
+.v2-exam-answer,.v2-exam-solution,.v2-exam-error{margin-top:11px;padding:11px;border-radius:12px;background:rgba(127,127,127,.07)}
+.v2-exam-error{border-left:4px solid currentColor}
+.v2-exam-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
+.v2-exam-actions button{border:1px solid rgba(127,127,127,.2);border-radius:12px;padding:10px 14px;background:transparent;font:inherit;cursor:pointer}
+
+</style>
+
+<style>
+/* ---------- V2 entry screen ---------- */
+.v2-start-screen{
+  width:min(100%, 900px);
+  margin:0 auto;
+  padding:clamp(34px,7vw,72px) 20px clamp(26px,5vw,52px);
+  min-height:100svh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+.v2-start-kicker{
+  color:var(--blue);
+  font-size:.82rem;
+  font-weight:700;
+  letter-spacing:.08em;
+  text-transform:uppercase;
+  margin-bottom:8px;
+}
+.v2-start-screen h2{font-size:clamp(2rem,7vw,3rem)}
+.v2-start-intro{margin:8px 0 24px;color:var(--ink-soft);font-size:1rem}
+.v2-class-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.v2-class-card{
+  appearance:none;
+  width:100%;
+  border:1px solid var(--grid);
+  border-radius:20px;
+  padding:22px;
+  background:var(--card);
+  color:var(--ink);
+  text-align:left;
+  display:flex;
+  align-items:flex-start;
+  gap:16px;
+  min-height:170px;
+  box-shadow:var(--shadow);
+  cursor:pointer;
+  font:inherit;
+  transition:transform .15s ease,border-color .2s ease,background-color .2s ease,box-shadow .2s ease;
+}
+.v2-class-card:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(var(--shadow-c),.11)}
+.v2-class-card:active{transform:scale(.985)}
+.v2-class-icon{font-size:2.2rem;line-height:1}
+.v2-class-content{display:flex;flex-direction:column;gap:8px}
+.v2-class-content strong{font:600 1.35rem 'Fraunces',Georgia,serif}
+.v2-class-content span{color:var(--ink-soft);line-height:1.45}
+.v2-class-content em{font-style:normal;font-weight:700;color:var(--green);margin-top:auto}
+.v2-class-card-building{background:var(--paper);box-shadow:none}
+.v2-class-card-building .v2-class-content em{color:var(--ink-soft)}
+.v2-class-notice{
+  margin-top:18px;
+  padding:18px;
+  border:1px solid var(--grid);
+  border-radius:18px;
+  background:var(--card);
+  box-shadow:var(--shadow);
+}
+.v2-class-notice p{margin:5px 0 14px;color:var(--ink-soft)}
+.v2-class-grid.is-hidden{display:none}
+.v2-start-closed{display:none!important}
+
+/* Don't expose the actual app before a year has been selected. */
+body:not(.v2-app-open) > header,
+body:not(.v2-app-open) > .statbar,
+body:not(.v2-app-open) > nav.tabs,
+body:not(.v2-app-open) > main,
+body:not(.v2-app-open) > footer,
+body:not(.v2-app-open) > .v2-mobile-nav,
+body:not(.v2-app-open) > #calculator,
+body:not(.v2-app-open) > #exam-review{display:none!important}
+/* The review belongs exclusively to the exam section and only appears after an exam is completed. */
+body.v2-app-open:not(.v2-exam-active) > #exam-review,
+body.v2-app-open.v2-exam-active:not(.v2-exam-review-visible) > #exam-review{display:none!important}
+
+/* ---------- Stronger theme contrast ---------- */
+html[data-theme="dark"] .v2-calculator,
+html[data-theme="dark"] .v2-exam-review{
+  background:var(--card);
+  border-color:var(--grid);
+}
+.v2-calculator h2{margin-bottom:12px}
+.v2-calc-display{
+  color:var(--ink);
+  border-color:var(--grid);
+  background:var(--paper);
+  caret-color:var(--blue);
+}
+.v2-calc-display::placeholder{color:var(--ink-soft);opacity:.8}
+.v2-calc-result{color:var(--ink);opacity:1;font-weight:600;min-height:30px}
+.v2-calc-mode button,.v2-calc-key{
+  color:var(--ink);
+  border-color:var(--grid);
+  background:var(--paper);
+  box-shadow:0 1px 1px rgba(var(--shadow-c),.08);
+}
+.v2-calc-mode button:hover,.v2-calc-key:hover{border-color:var(--blue);background:var(--blue-soft)}
+.v2-calc-mode button.active{color:var(--blue);border-color:var(--blue);background:var(--blue-soft)}
+.v2-calc-key:focus-visible,.v2-calc-mode button:focus-visible,
+.v2-class-card:focus-visible,.v2-class-notice button:focus-visible{
+  outline:3px solid var(--blue);outline-offset:2px;
+}
+.v2-tr-option label{
+  color:var(--ink);
+  border-color:var(--grid);
+  background:var(--paper);
+}
+.v2-tr-option input:checked+label{color:var(--blue);background:var(--blue-soft)}
+.v2-exam-item{border-color:var(--grid)}
+.v2-exam-answer,.v2-exam-solution,.v2-exam-error{background:var(--paper)}
+.v2-exam-actions button{color:var(--ink);border-color:var(--grid);background:var(--card)}
+.v2-exam-actions button:hover{border-color:var(--blue);background:var(--blue-soft)}
+
+/* ---------- Mobile: app-like, not desktop squeezed into a phone ---------- */
+@media(max-width:700px){
+  .v2-start-screen{padding:28px 16px 34px;justify-content:center}
+  .v2-class-grid{grid-template-columns:1fr;gap:12px}
+  .v2-class-card{min-height:0;padding:19px;border-radius:18px}
+  .v2-class-icon{font-size:2rem}
+  .v2-class-content strong{font-size:1.25rem}
+  .v2-calculator{width:100%;margin:18px 0;padding:14px;border-radius:18px}
+  .v2-calc-display{font-size:1.18rem;min-height:56px;padding:14px}
+  .v2-calc-grid,.v2-calc-science{gap:7px}
+  .v2-calc-key{min-height:52px;border-radius:13px}
+  .v2-calc-mode{display:grid;grid-template-columns:1fr 1fr}
+  .v2-calc-mode button{min-height:48px}
+  .v2-exam-review{padding:14px;border-radius:18px}
+  .v2-exam-summary{padding:13px}
+}
+</style>
+
+<style>
+/* ---------- Mobile navigation + theme hotfix ---------- */
+.difficulty-row .chip.active{
+  background:var(--blue-soft);
+  border-color:var(--blue);
+  color:var(--blue);
+}
+@media(max-width:700px){
+  .v2-mobile-nav{
+    position:fixed;
+    left:0;
+    right:0;
+    bottom:0;
+    margin:0;
+    z-index:1000;
+    padding:8px 6px;
+    padding-bottom:8px;
+    background:var(--card);
+    border-top:1px solid var(--grid);
+    box-shadow:0 -6px 20px rgba(var(--shadow-c),.12);
+  }
+  .v2-mobile-nav button{
+    color:var(--ink);
+    background:transparent;
+  }
+  .v2-mobile-nav button:active,
+  .v2-mobile-nav button:focus-visible{
+    background:var(--blue-soft);
+    color:var(--blue);
+  }
+  body.v2-app-open{
+    padding-bottom:118px;
+  }
+}
+</style>
+
+<style>
+/* ---------- V2.5 mobile navigation polish ---------- */
+@media(max-width:700px){
+  .v2-mobile-nav{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    align-items:stretch;
+    gap:4px;
+    min-height:64px;
+    padding:7px 8px calc(7px + env(safe-area-inset-bottom));
+    background:color-mix(in srgb, var(--card) 94%, transparent);
+    backdrop-filter:blur(18px) saturate(1.1);
+    -webkit-backdrop-filter:blur(18px) saturate(1.1);
+  }
+  .v2-mobile-nav button{
+    min-width:0;
+    min-height:50px;
+    padding:5px 3px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    gap:2px;
+    color:var(--ink-soft);
+    border:1px solid transparent;
+    border-radius:12px;
+    line-height:1.05;
+    -webkit-tap-highlight-color:transparent;
+  }
+  .v2-mobile-nav button span:first-child{font-size:18px;line-height:1}
+  .v2-mobile-nav button span:last-child{font-size:10.5px;font-weight:650;white-space:nowrap}
+  .v2-mobile-nav button.active{
+    color:var(--blue);
+    background:var(--blue-soft);
+    border-color:var(--blue);
+  }
+  .v2-mobile-nav button:active{transform:scale(.97)}
+  body.v2-app-open{padding-bottom:calc(92px + env(safe-area-inset-bottom))}
+}
+@media(max-width:380px){
+  .v2-mobile-nav button span:first-child{font-size:17px}
+  .v2-mobile-nav button span:last-child{font-size:10px}
+}
+</style>
+
+
+<style>
+@media(max-width:700px){
+  main{padding-left:12px;padding-right:12px}
+  .card{border-radius:16px}
+  .numrow{display:grid;grid-template-columns:1fr;gap:9px}
+  .numrow input,.numrow button{width:100%;min-height:48px}
+  .nextrow{display:grid;grid-template-columns:1fr;gap:8px}
+  .v2-calculator{border-radius:16px}
+  .v2-calc-display{font-size:1.15rem}
+}
+</style>
+
+<style>
+/* ---------- V2.7.1 learning system ---------- */
+.v26-daily{max-width:920px;margin:14px auto 0;padding:0 20px}
+.v26-daily-card{background:var(--card);border:1px solid var(--grid);border-radius:16px;box-shadow:var(--shadow);padding:18px 20px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}
+.v26-kicker{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);font-weight:700;margin-bottom:5px}
+.v26-daily-card h2{font-size:24px;margin:0 0 4px}
+.v26-daily-card p{margin:4px 0;color:var(--ink-soft);font-size:14px}
+.v26-daily-meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.v26-mini-pill{display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border:1px solid var(--grid);border-radius:999px;background:var(--paper);font-size:12px;color:var(--ink-soft)}
+.v26-roadmap{display:grid;gap:14px}
+.v26-roadmap-head{display:grid;gap:10px}
+.v26-roadmap-summary{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.v26-roadmap-summary .metric{min-height:72px}
+.v26-roadmap-section{background:var(--card);border:1px solid var(--grid);border-radius:16px;box-shadow:var(--shadow);padding:18px}
+.v26-roadmap-section h3{font-size:20px;margin-bottom:5px}
+.v26-roadmap-section p{margin:0 0 12px;color:var(--ink-soft);font-size:13.5px}
+.v26-competency-list{display:grid;gap:8px}
+.v26-competency{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:11px 12px;border:1px solid var(--grid);border-radius:12px;background:var(--paper)}
+.v26-competency .status{font-size:16px}
+.v26-competency .title{font-weight:600}
+.v26-competency .detail{font-size:12px;color:var(--ink-soft);margin-top:2px}
+.v26-competency button{border:1px solid var(--grid);background:var(--card);color:var(--ink);border-radius:9px;padding:7px 10px;font:inherit;font-size:12px;font-weight:600;cursor:pointer}
+.v26-competency button:hover{border-color:var(--blue);background:var(--blue-soft)}
+.v26-roadmap-note{padding:13px 14px;border-left:4px solid var(--amber);border-radius:10px;background:var(--amber-soft);font-size:13.5px}
+.v26-grade11{border-left:5px solid var(--blue)}
+.v26-grade12{border-left:5px solid var(--green)}
+.v26-data-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.v26-data-actions button{border:1px solid var(--grid);background:var(--card);color:var(--ink);border-radius:10px;padding:9px 12px;font:inherit;font-size:13px;font-weight:600;cursor:pointer}
+.v26-data-actions button:hover{border-color:var(--blue);background:var(--blue-soft)}
+.v26-recommend-badge{display:inline-flex;padding:4px 8px;border-radius:999px;background:var(--blue-soft);color:var(--blue);font-size:11px;font-weight:700}
+@media(max-width:700px){
+  .v26-daily{padding:0 12px}
+  .v26-daily-card{grid-template-columns:1fr;padding:16px}
+  .v26-daily-card .primary{width:100%;min-height:48px}
+  .v26-roadmap-summary{grid-template-columns:repeat(2,1fr)}
+  .v26-competency{grid-template-columns:auto 1fr}
+  .v26-competency button{grid-column:2;justify-self:start}
+}
+</style>
+
+
+<style>
+/* ---------- GHGeniales V2.7.1 – core quality pass ---------- */
+.v27-next-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.v27-next-actions button{min-width:0}
+.v27-similar{border:1px solid var(--grid);background:var(--card);color:var(--ink);border-radius:11px;padding:10px 14px;font:inherit;font-weight:650;cursor:pointer}
+.v27-similar:hover{border-color:var(--blue);background:var(--blue-soft)}
+.v27-review-note{margin-top:8px;padding:9px 11px;border-left:3px solid var(--amber);background:var(--amber-soft);border-radius:8px;font-size:12.5px;color:var(--ink-soft)}
+.v27-days{display:grid;grid-template-columns:repeat(14,1fr);gap:5px;margin-top:12px}
+.v27-day{aspect-ratio:1;border:1px solid var(--grid);border-radius:5px;background:var(--paper);position:relative}
+.v27-day.active{background:var(--blue-soft);border-color:var(--blue)}
+.v27-day span{position:absolute;inset:auto 0 2px;text-align:center;font:9px 'IBM Plex Mono',monospace;color:var(--ink-soft)}
+.v27-cat-grid{display:grid;gap:10px;margin-top:10px}
+.v27-cat-row{display:grid;grid-template-columns:minmax(130px,1fr) minmax(160px,2.5fr) auto;gap:10px;align-items:center}
+.v27-cat-name{font-weight:650}
+.v27-cat-meta{font-size:12px;color:var(--ink-soft);text-align:right;white-space:nowrap}
+.v27-confidence{font-size:11px;color:var(--ink-soft);margin-top:3px}
+.v27-due{color:var(--rust);font-weight:700}
+.v27-status{display:inline-flex;align-items:center;gap:4px}
+.v27-competency-progress{margin-top:5px;height:6px;border-radius:99px;background:var(--grid);overflow:hidden}
+.v27-competency-progress>span{display:block;height:100%;border-radius:99px;background:var(--blue);}
+.v27-hint-stack{margin-top:10px}
+.v27-hint-actions{display:flex;gap:8px;flex-wrap:wrap}
+.v27-hint-box{margin-top:8px;padding:10px 12px;border-left:3px solid var(--blue);background:var(--blue-soft);border-radius:9px;font-size:13px}
+@media(max-width:700px){
+  .v27-cat-row{grid-template-columns:1fr auto}
+  .v27-cat-row .bartrack{grid-column:1/-1;grid-row:2}
+  .v27-cat-meta{grid-column:2;grid-row:1}
+  .v27-days{gap:4px}
+  .v27-next-actions{display:grid;grid-template-columns:1fr}
+  .v27-next-actions button{width:100%}
+}
+</style>
+</head>
+<body>
+
+<section class="v2-shell v2-start-screen" id="v2-learning-structure" aria-label="Jahrgangsstufe auswählen">
+  <div class="v2-start-kicker">GHGeniales Mathe · FOS Hof</div>
+  <h2>Welche Jahrgangsstufe?</h2>
+  <p class="v2-start-intro">Wähle deinen Mathe-Bereich. Du kannst später jederzeit zurück zur Auswahl.</p>
+
+  <div class="v2-class-grid">
+    <button class="v2-class-card v2-class-card-ready" type="button" onclick="v2EnterClass('11')">
+      <span class="v2-class-icon">📘</span>
+      <span class="v2-class-content">
+        <strong>11. Klasse</strong>
+        <span>Grundlagen, Algebra, Funktionen, Differentialrechnung und Stochastik.</span>
+        <em>Jetzt verfügbar <b>→</b></em>
+      </span>
+    </button>
+
+    <button class="v2-class-card v2-class-card-building" type="button" onclick="v2EnterClass('12')">
+      <span class="v2-class-icon">📗</span>
+      <span class="v2-class-content">
+        <strong>12. Klasse</strong>
+        <span>Die Struktur ist vorbereitet – Inhalte werden passend zu eurem Unterricht Schritt für Schritt freigeschaltet.</span>
+        <em>🚧 Im Aufbau</em>
+      </span>
+    </button>
+  </div>
+
+  <div id="v2-12-notice" class="v2-class-notice" hidden>
+    <strong>📗 12. Klasse: Lernpfad vorbereitet</strong>
+    <p>Die Struktur ist bereits vorbereitet. Die Aufgaben kommen passend zum Unterricht dazu.</p>
+    <button type="button" class="ghost" onclick="v2ShowClassChoice()">← Jahrgangsstufe wechseln</button>
+  </div>
+</section>
+
+<script>
+function v2EnterClass(year){
+  const start=document.getElementById('v2-learning-structure');
+  if(!start) return;
+
+  if(year==='12'){
+    start.querySelector('.v2-class-grid')?.classList.add('is-hidden');
+    start.querySelector('.v2-start-intro')?.setAttribute('hidden','');
+    document.getElementById('v2-12-notice')?.removeAttribute('hidden');
+    return;
+  }
+
+  document.body.classList.add('v2-app-open');
+  start.classList.add('v2-start-closed');
+  start.setAttribute('aria-hidden','true');
+
+  // The existing 11th-grade exercise system is the source of truth.
+  // Start with Algebra and let the normal navigation select the other available areas.
+  activeCategory='algebra';
+  activeSubtypeId=null;
+  activeDifficulty='all';
+  if(typeof render==='function') render();
+
+  const app=document.querySelector('header.hero');
+  app?.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function v2ShowClassChoice(){
+  const start=document.getElementById('v2-learning-structure');
+  if(!start) return;
+  start.querySelector('.v2-class-grid')?.classList.remove('is-hidden');
+  start.querySelector('.v2-start-intro')?.removeAttribute('hidden');
+  document.getElementById('v2-12-notice')?.setAttribute('hidden','');
+}
+</script>
+
+
+<header class="hero">
+  <div class="hero-text">
+    <div class="brandrow">
+      <img src="./icon-192-v4.png" class="logo-badge" alt="GHG² Logo">
+      <div>
+        <div class="eyebrow">FOS Hof · Sozialwesen · Mathematik 11 · V2.7.1</div>
+        <h1>GHGeniales Mathe</h1>
+      </div>
+    </div>
+    <p>Ein Lernpfad für die FOS: Grundlagen sichern, gezielt üben und Schritt für Schritt sicherer werden — vom 11.-Klasse-Fundament bis zum Fachabitur.</p>
+    <div class="offline-note">⚡ Offline nutzbar · Fortschritt bleibt auf diesem Gerät gespeichert</div>
+  </div>
+  <canvas id="heroCanvas" width="440" height="340"></canvas>
+</header>
+
+<div class="statbar">
+  <div class="pill">🔥 Richtig in Folge: <b id="streakVal">0</b></div>
+  <div class="pill">🏆 Best: <b id="bestVal">0</b></div>
+  <div class="pill">⭐ Level <b id="levelVal">1</b> · XP <b id="xpVal">0</b></div>
+  <div class="pill">✅ Heute richtig: <b id="todayVal">0</b></div>
+  <div class="pill mistakes" id="mistakePill">📌 Fehlerspeicher: <b id="mistakeCount">0</b></div>
+  <button class="pill" id="installPill" style="display:none; cursor:pointer; border-color:var(--green); color:var(--green);">📲 <b id="installLabel" style="color:var(--green);">Zum Startbildschirm hinzufügen</b></button>
+  <button class="pill" id="themeToggle" style="cursor:pointer;">🌙 <b id="themeLabel">Dark Mode</b></button>
+</div>
+
+<section class="v26-daily" id="dailyPanel" aria-label="Heute lernen"></section>
+
+<nav class="tabs" id="tabs"></nav>
+
+<main>
+  <div class="chiprow" id="chiprow"></div>
+  <div id="questionArea"></div>
+  <div id="weakArea" style="display:none;"></div>
+  <div id="statsArea" style="display:none;"></div>
+  <div id="examArea" style="display:none;"></div>
+  <div id="roadmapArea" style="display:none;"></div>
+</main>
+
+<footer>V2.7.1 · Aufgaben werden zufällig generiert. Fortschritt, XP und Lernstatistik werden lokal gespeichert — ein Backup kannst du im Fortschritt exportieren.</footer>
+
+<div class="modal-backdrop" id="modalBackdrop">
+  <div class="modal">
+    <h2>📌 Fehlerspeicher</h2>
+    <div id="mistakeList"></div>
+    <div style="margin-top:14px; display:flex; gap:10px;">
+      <button class="ghost" id="closeModal">Schließen</button>
+      <button class="ghost" id="clearMistakes">Speicher leeren</button>
+    </div>
+  </div>
+</div>
+
+<input type="file" id="backupFileInput" accept="application/json,.json" hidden>
+
+<div class="modal-backdrop" id="installModal">
+  <div class="modal install-modal">
+    <h2>📲 GHGeniales Mathe auf den Startbildschirm</h2>
+    <div id="installGuide"></div>
+    <div class="install-steps" id="installSteps"></div>
+    <div style="margin-top:16px; display:flex; gap:10px; flex-wrap:wrap;">
+      <button class="ghost" id="closeInstallModal">Schließen</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============================================================
+   UTILITIES
+   ============================================================ */
+function randInt(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+function nonZero(min,max){ let v; do{ v=randInt(min,max); }while(v===0); return v; }
+function choice(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function round2(n){ return Math.round(n*100)/100; }
+function cssVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+/* ============================================================
+   MATH TYPESETTING (KaTeX)
+   ============================================================ */
+function tex(s){ return `\\(${s}\\)`; } // wrap a LaTeX string for inline rendering
+function typesetMath(el){
+  if(!el || typeof window.renderMathInElement !== 'function') return;
+  try{
+    renderMathInElement(el, {
+      delimiters: [
+        {left:'\\(', right:'\\)', display:false},
+        {left:'\\[', right:'\\]', display:true}
+      ],
+      throwOnError:false
+    });
+  }catch(e){ /* fail silently — raw LaTeX text is still readable as a fallback */ }
+}
+
+/* ============================================================
+   DARK MODE (applied early, before any canvas is drawn)
+   ============================================================ */
+let heroRedraw = null;
+const LS_THEME = 'kk_theme_v1';
+
+function applyTheme(theme){
+  document.documentElement.setAttribute('data-theme', theme);
+  const label = document.getElementById('themeLabel');
+  const btn = document.getElementById('themeToggle');
+  if(label) label.textContent = theme==='dark' ? 'Light Mode' : 'Dark Mode';
+  if(btn && btn.firstChild) btn.firstChild.textContent = theme==='dark' ? '☀️ ' : '🌙 ';
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.setAttribute('content', theme==='dark' ? '#10141F' : '#16233F');
+}
+
+(function initTheme(){
+  const saved = localStorage.getItem(LS_THEME);
+  const theme = saved || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  applyTheme(theme);
+})();
+
+// Formats a polynomial from [coef, exponent] pairs (descending exponent) as LaTeX, e.g. "2x^{3} - 5x + 4"
+function latexPoly(terms){
+  const t = terms.filter(([c]) => c !== 0);
+  if(t.length===0) return '0';
+  let out='';
+  t.forEach(([c,e],i)=>{
+    const abs = Math.abs(c);
+    const coefPart = (abs===1 && e!==0) ? '' : String(abs);
+    const varPart = e===0 ? '' : (e===1 ? 'x' : 'x^{'+e+'}');
+    const term = coefPart+varPart;
+    if(i===0){
+      out += (c<0 ? '-' : '') + term;
+    } else {
+      out += (c<0 ? ' - ' : ' + ') + term;
+    }
+  });
+  return out;
+}
+
+function fnFromCoeffs(coeffs){ // coeffs: [[coef,exp],...]
+  return function(x){
+    return coeffs.reduce((s,[c,e])=>s+c*Math.pow(x,e),0);
+  };
+}
+
+/* ============================================================
+   MC OPTION BUILDER
+   ============================================================ */
+function buildMC(correctText, distractorTexts, numOptions, fallbackFactory){
+  numOptions = numOptions || 4;
+  const need = Math.max(1, numOptions - 1);
+  const seen = new Set([String(correctText)]);
+  const pool = [];
+  const add = d => {
+    if(d===undefined || d===null) return;
+    const key = String(d);
+    if(!seen.has(key)){ seen.add(key); pool.push(d); }
+  };
+  for(const d of (distractorTexts||[])) add(d);
+  let guard=0;
+  while(pool.length < need && typeof fallbackFactory === 'function' && guard < 30){
+    add(fallbackFactory(pool.length, guard));
+    guard++;
+  }
+  const chosen = shuffle(pool).slice(0, need);
+  const options = shuffle([correctText, ...chosen]);
+  return { options, correctIndex: options.indexOf(correctText) };
+}
+
+/* ============================================================
+   ALGEBRA GENERATORS
+   ============================================================ */
+function genBinomExpand(){
+  const m = randInt(1,3);
+  const a = nonZero(2,9);
+  const type = choice(['plus','minus','diff']);
+  const mTerm = m===1 ? 'x' : m+'x';
+  let prompt, correctTerms, distractorTermSets, formulaLabel;
+  if(type==='plus'){
+    prompt = `Multipliziere aus:`;
+    formulaLabel = '(a+b)^2 = a^2 + 2ab + b^2';
+    correctTerms = [[m*m,2],[2*m*a,1],[a*a,0]];
+    distractorTermSets = [
+      [[m*m,2],[a*a,0]],
+      [[m*m,2],[-2*m*a,1],[a*a,0]],
+      [[m*m,2],[2*m*a,1],[a,0]],
+      [[m,2],[2*m*a,1],[a*a,0]],
+    ];
+    var formula = `(${mTerm} + ${a})^{2}`;
+  } else if(type==='minus'){
+    prompt = `Multipliziere aus:`;
+    formulaLabel = '(a-b)^2 = a^2 - 2ab + b^2';
+    correctTerms = [[m*m,2],[-2*m*a,1],[a*a,0]];
+    distractorTermSets = [
+      [[m*m,2],[a*a,0]],
+      [[m*m,2],[2*m*a,1],[a*a,0]],
+      [[m*m,2],[-2*m*a,1],[a,0]],
+      [[m,2],[-2*m*a,1],[a*a,0]],
+    ];
+    var formula = `(${mTerm} - ${a})^{2}`;
+  } else {
+    prompt = `Multipliziere aus:`;
+    formulaLabel = '(a+b)(a-b) = a^2-b^2';
+    correctTerms = [[m*m,2],[-a*a,0]];
+    distractorTermSets = [
+      [[m*m,2],[a*a,0]],
+      [[m*m,2],[2*m*a,1],[-a*a,0]],
+      [[m*m,2],[-2*m*a,1],[-a*a,0]],
+      [[m*m,2],[-a,0]],
+    ];
+    var formula = `(${mTerm} + ${a})(${mTerm} - ${a})`;
+  }
+  const correctLatex = latexPoly(correctTerms);
+  const distractorLatex = distractorTermSets.map(latexPoly);
+  const {options, correctIndex} = buildMC(tex(correctLatex), distractorLatex.map(tex));
+  return {
+    prompt, formula: tex(formula), type:'mc', options, correctIndex,
+    explain: `Binomische Formel: ${tex(formulaLabel)}. Ergebnis: ${tex(correctLatex)}`
+  };
+}
+
+function genBinomFactor(){
+  const m = randInt(1,3);
+  const a = nonZero(2,9);
+  const type = choice(['plus','minus','diff']);
+  const mTerm = m===1 ? 'x' : m+'x';
+  let correctTerms;
+  if(type==='plus') correctTerms=[[m*m,2],[2*m*a,1],[a*a,0]];
+  else if(type==='minus') correctTerms=[[m*m,2],[-2*m*a,1],[a*a,0]];
+  else correctTerms=[[m*m,2],[-a*a,0]];
+  const termLatex = latexPoly(correctTerms);
+  const optPlus = `(${mTerm} + ${a})^{2}`;
+  const optMinus = `(${mTerm} - ${a})^{2}`;
+  const optDiff = `(${mTerm} + ${a})(${mTerm} - ${a})`;
+  const optWrongA = type==='diff' ? `(${mTerm} + ${a+1})(${mTerm} - ${a+1})` : `(${mTerm} ${type==='plus'?'+':'-'} ${a+1})^{2}`;
+  const correctLatex = type==='plus' ? optPlus : type==='minus' ? optMinus : optDiff;
+  const {options, correctIndex} = buildMC(tex(correctLatex), [optPlus, optMinus, optDiff, optWrongA].map(tex));
+  return {
+    prompt: `Faktorisiere den Term:`,
+    formula: tex(termLatex),
+    type:'mc', options, correctIndex,
+    explain: `Term und Faktorisierung passen zusammen, wenn du die binomische Formel rückwärts anwendest: ${tex(correctLatex + ' = ' + termLatex)}`
+  };
+}
+
+function genLinGleichung(){
+  const x0 = randInt(-8,8);
+  const a = nonZero(-6,6);
+  let c = nonZero(-6,6);
+  while(c===a) c = nonZero(-6,6);
+  const b = randInt(-10,10);
+  const d = (a-c)*x0 + b;
+  const left = latexPoly([[a,1],[b,0]]);
+  const right = latexPoly([[c,1],[d,0]]);
+  return {
+    prompt: `Löse die Gleichung nach x auf:`,
+    formula: tex(`${left} = ${right}`),
+    type:'numeric', correct:x0, tol:0.01,
+    explain: `Bringe x auf eine Seite: ${tex(`(${a}-${c})x = ${d}-${b}`)} ${tex(`\\Rightarrow`)} ${tex(`${a-c}x = ${d-b}`)} ${tex(`\\Rightarrow`)} ${tex(`x = \\frac{${d-b}}{${a-c}} = ${x0}`)}`
+  };
+}
+
+function genQuadGleichung(){
+  const x1 = randInt(-6,6);
+  let x2 = randInt(-6,6);
+  while(x2===x1) x2 = randInt(-6,6);
+  const p = -(x1+x2), q = x1*x2;
+  const eq = latexPoly([[1,2],[p,1],[q,0]]);
+  return {
+    prompt: `Bestimme beide Lösungen der Gleichung (Reihenfolge egal):`,
+    formula: tex(`${eq} = 0`),
+    type:'set', correct:[x1,x2].sort((a,b)=>a-b), tol:0.01,
+    hint: `Tipp: pq-Formel — ${tex('x_{1,2} = -\\frac{p}{2} \\pm \\sqrt{\\left(\\frac{p}{2}\\right)^2 - q}')}`,
+    explain: `${tex(`p = ${p},\\ q = ${q}`)}. ${tex(`x_{1,2} = ${-p/2} \\pm \\sqrt{${round2((p/2)**2-q)}}`)} ${tex('\\Rightarrow')} ${tex(`x_1 = ${x1},\\ x_2 = ${x2}`)}`
+  };
+}
+
+function genBruchKuerzen(){
+  const a = randInt(2,9);
+  const correctLatex = `x + ${a}`;
+  const distractors = [`x - ${a}`, `x^{2} - ${a}`, `${a*a}`];
+  const {options, correctIndex} = buildMC(tex(correctLatex), distractors.map(tex));
+  return {
+    prompt: `Kürze den Bruch so weit wie möglich:`,
+    formula: tex(`\\dfrac{x^{2} - ${a*a}}{x - ${a}}`),
+    type:'mc', options, correctIndex,
+    explain: `${tex(`x^{2} - ${a*a} = (x - ${a})(x + ${a})`)} — dritte binomische Formel. Nach dem Kürzen bleibt: ${tex(correctLatex)}. Wichtig: ursprünglicher Term nur für ${tex(`x\\neq${a}`)} definiert.`
+  };
+}
+
+/* ============================================================
+   KURVENDISKUSSION GENERATORS
+   ============================================================ */
+function genAbleiten(){
+  const deg = randInt(2,4);
+  const terms = [];
+  terms.push([nonZero(-6,6), deg]);
+  const usedExp = new Set([deg]);
+  const extraCount = randInt(1,2);
+  for(let i=0;i<extraCount;i++){
+    let e;
+    do{ e = randInt(0,deg-1); }while(usedExp.has(e));
+    usedExp.add(e);
+    terms.push([nonZero(-6,6), e]);
+  }
+  terms.sort((a,b)=>b[1]-a[1]);
+  const fLatex = latexPoly(terms);
+
+  const deriv = terms.filter(([c,e])=>e!==0).map(([c,e])=>[c*e, e-1]);
+  const correctLatex = latexPoly(deriv);
+
+  const wrong1 = terms.filter(([c,e])=>e!==0).map(([c,e])=>[c, e-1]); // forgot to multiply by exponent
+  const wrong2 = terms.filter(([c,e])=>e!==0).map(([c,e])=>[c*e, e]); // forgot to lower exponent
+  const wrong3 = deriv.map((t,i)=> i===0 ? [-t[0], t[1]] : t); // sign error on first term
+  const distractorLatex = [wrong1, wrong2, wrong3].map(latexPoly);
+
+  const {options, correctIndex} = buildMC(tex(correctLatex), distractorLatex.map(tex));
+  return {
+    prompt: `Bilde die erste Ableitung f'(x):`,
+    formula: tex(`f(x) = ${fLatex}`),
+    type:'mc', options, correctIndex,
+    explain: `Potenzregel: aus ${tex('a\\cdot x^n')} wird ${tex('a\\cdot n\\cdot x^{n-1}')}, jeweils für jeden Summanden. ${tex(`f'(x) = ${correctLatex}`)}`
+  };
+}
+
+function genNullstellen(){
+  let roots = [];
+  while(roots.length<3){
+    const r = randInt(-4,4);
+    if(!roots.includes(r)) roots.push(r);
+  }
+  roots.sort((a,b)=>a-b);
+  const aLead = choice([1,1,1,-1]);
+  // expand a*(x-r1)(x-r2)(x-r3)
+  const [r1,r2,r3] = roots;
+  const c2 = -(r1+r2+r3);
+  const c1 = r1*r2 + r1*r3 + r2*r3;
+  const c0 = -(r1*r2*r3);
+  const terms = [[aLead,3],[aLead*c2,2],[aLead*c1,1],[aLead*c0,0]];
+  const fLatex = latexPoly(terms);
+  return {
+    prompt: `Bestimme alle Nullstellen von f (drei Zahlen, durch Komma getrennt):`,
+    formula: tex(`f(x) = ${fLatex}`),
+    type:'set', correct:roots, tol:0.01,
+    hint: `Tipp: ${tex(`x = ${roots[randInt(0,2)]}`)} ist eine Nullstelle. Nutze Polynomdivision für die restlichen.`,
+    hints: [`Teste eine einfache Nullstelle und teile danach durch den passenden Linearfaktor.`, `Nutze die verbleibende quadratische Gleichung für die letzten Nullstellen.`],
+    explain: `Nullstellen: ${tex(`x_1 = ${roots[0]},\\ x_2 = ${roots[1]},\\ x_3 = ${roots[2]}`)}`,
+    plot: {fn: fnFromCoeffs(terms), xmin:Math.min(...roots)-2, xmax:Math.max(...roots)+2, points: roots.map(r=>({x:r,y:0,c:'var(--rust)'}))}
+  };
+}
+
+function genExtrempunkte(){
+  const e1 = randInt(-4,3), e2raw = randInt(e1+1,4);
+  const e2 = e2raw;
+  const kp = choice([1,-1]);
+  const k = 6*kp;
+  // f(x) = 2kp x^3 - 3kp(e1+e2) x^2 + 6kp e1 e2 x + d0
+  const d0 = randInt(-5,5);
+  const terms = [[2*kp,3],[-3*kp*(e1+e2),2],[6*kp*e1*e2,1],[d0,0]];
+  const fLatex = latexPoly(terms);
+  const xHoch = kp>0 ? e1 : e2;
+  const xTief = kp>0 ? e2 : e1;
+  const mkOpt = (h,t) => `Hochpunkt bei ${tex(`x=${h}`)}, Tiefpunkt bei ${tex(`x=${t}`)}`;
+  const correctText = mkOpt(xHoch, xTief);
+  const distractors = [
+    mkOpt(xTief, xHoch),
+    mkOpt(xHoch+1, xTief-1),
+    mkOpt(xTief, xHoch+1),
+  ];
+  const {options, correctIndex} = buildMC(correctText, distractors, 4, (used,guard)=>{
+    const d=guard+2;
+    return mkOpt(xHoch+d, xTief+d);
+  });
+  return {
+    prompt: `Bestimme Art und Lage der Extrempunkte von f:`,
+    formula: tex(`f(x) = ${fLatex}`),
+    type:'mc', options, correctIndex,
+    explain: `${tex(`f'(x) = 0`)} bei ${tex(`x = ${e1}`)} und ${tex(`x = ${e2}`)}. Vorzeichenwechsel von ${tex(`f''`)} entscheidet über Hoch-/Tiefpunkt: ${correctText}`,
+    plot: {fn: fnFromCoeffs(terms), xmin:Math.min(e1,e2)-2, xmax:Math.max(e1,e2)+2, points:[{x:xHoch,y:fnFromCoeffs(terms)(xHoch),c:'var(--green)'},{x:xTief,y:fnFromCoeffs(terms)(xTief),c:'var(--rust)'}]}
+  };
+}
+
+function genWendepunkt(){
+  const w = randInt(-5,5);
+  const c = randInt(-6,6);
+  const d = randInt(-6,6);
+  const terms = [[1,3],[-3*w,2],[c,1],[d,0]];
+  const fLatex = latexPoly(terms);
+  return {
+    prompt: `Bestimme die x-Koordinate des Wendepunkts von f:`,
+    formula: tex(`f(x) = ${fLatex}`),
+    type:'numeric', correct:w, tol:0.01,
+    hint: `Tipp: ${tex(`f''(x) = 0`)} setzen und nach x auflösen.`,
+    hints: [`Bestimme zuerst ${tex("f''(x)")} und setze sie gleich null.`, `Prüfe anschließend den Vorzeichenwechsel von ${tex("f''")} oder die entsprechende Krümmung.`],
+    explain: `${tex(`f''(x) = 6x - ${6*w} = 6(x - ${w})`)} ${tex('\\Rightarrow')} ${tex(`f''(x)=0`)} bei ${tex(`x=${w}`)}. Vorzeichenwechsel von ${tex(`f''`)} bestätigt den Wendepunkt.`,
+    plot: {fn: fnFromCoeffs(terms), xmin:w-3, xmax:w+3, points:[{x:w,y:fnFromCoeffs(terms)(w),c:'var(--amber)'}]}
+  };
+}
+
+function genSymmetrie(){
+  const kind = choice(['achse','punkt','keine']);
+  let terms;
+  if(kind==='achse'){
+    const exps = shuffle([0,2,4]).slice(0,2);
+    terms = exps.map(e=>[nonZero(-6,6), e]);
+  } else if(kind==='punkt'){
+    const exps = shuffle([1,3,5]).slice(0,2);
+    terms = exps.map(e=>[nonZero(-6,6), e]);
+  } else {
+    const evenExp = choice([2,4]);
+    const oddExp = choice([1,3]);
+    terms = [[nonZero(-6,6), evenExp],[nonZero(-6,6), oddExp]];
+    if(Math.random()<0.5) terms.push([nonZero(-5,5),0]);
+  }
+  terms.sort((a,b)=>b[1]-a[1]);
+  const fLatex = latexPoly(terms);
+  const correctText = kind==='achse' ? 'achsensymmetrisch zur y-Achse' : kind==='punkt' ? 'punktsymmetrisch zum Ursprung' : 'keine Symmetrie';
+  const allOpts = ['achsensymmetrisch zur y-Achse','punktsymmetrisch zum Ursprung','keine Symmetrie'];
+  const {options, correctIndex} = buildMC(correctText, allOpts.filter(o=>o!==correctText), 3);
+  return {
+    prompt: `Welche Symmetrie besitzt der Graph von f?`,
+    formula: tex(`f(x) = ${fLatex}`),
+    type:'mc', options, correctIndex,
+    explain: kind==='achse' ? 'Nur gerade Exponenten (0,2,4,...) → achsensymmetrisch zur y-Achse.' : kind==='punkt' ? 'Nur ungerade Exponenten (1,3,5,...) → punktsymmetrisch zum Ursprung.' : 'Gemischte gerade und ungerade Exponenten → keine Symmetrie.'
+  };
+}
+
+/* ============================================================
+   STOCHASTIK GENERATORS
+   ============================================================ */
+function genKombinatorik(){
+  if(Math.random()<0.5){
+    const n = randInt(3,7);
+    let f=1; for(let i=2;i<=n;i++) f*=i;
+    return {
+      prompt: `Berechne:`,
+      formula: tex(`${n}!`),
+      type:'numeric', correct:f, tol:0.01,
+      explain: tex(`${n}! = ${Array.from({length:n},(_,i)=>i+1).join(' \\cdot ')} = ${f}`)
+    };
+  } else {
+    const n = randInt(4,10);
+    const k = randInt(1,n-1);
+    function choose(n,k){ k=Math.min(k,n-k); let r=1; for(let i=0;i<k;i++){ r = r*(n-i)/(i+1); } return Math.round(r); }
+    const c = choose(n,k);
+    return {
+      prompt: `Berechne den Binomialkoeffizienten:`,
+      formula: tex(`\\binom{${n}}{${k}}`),
+      type:'numeric', correct:c, tol:0.01,
+      hint: `Tipp: ${tex('\\binom{n}{k} = \\dfrac{n!}{k!\\,(n-k)!}')}`,
+      explain: tex(`\\binom{${n}}{${k}} = \\dfrac{${n}!}{${k}!\\cdot ${n-k}!} = ${c}`)
+    };
+  }
+}
+
+function genPfadregel(){
+  const S = [0.2,0.3,0.4,0.5,0.6,0.7,0.8];
+  const p1 = choice(S), p2 = choice(S), p3 = choice(S);
+  const tree =
+`Start
+ ├─ A  (P=${p1})
+ │    ├─ C  (P=${p2})
+ │    └─ D  (P=${round2(1-p2)})
+ └─ \\(\\overline{A}\\) (P=${round2(1-p1)})
+      ├─ C  (P=${p3})
+      └─ D  (P=${round2(1-p3)})`;
+  if(Math.random()<0.5){
+    const correct = round2(p1*p2);
+    return {
+      prompt: `Wie groß ist die Wahrscheinlichkeit für den Pfad A → C?`,
+      tree, type:'numeric', correct, tol:0.011,
+      hint: 'Tipp: Pfadregel — entlang des Pfades multiplizieren.',
+      explain: tex(`P(A \\text{ und } C) = P(A)\\cdot P(C|A) = ${p1}\\cdot ${p2} = ${correct}`)
+    };
+  } else {
+    const correct = round2(p1*p2 + (1-p1)*p3);
+    return {
+      prompt: `Wie groß ist die Gesamtwahrscheinlichkeit für Ereignis C?`,
+      tree, type:'numeric', correct, tol:0.011,
+      hint: 'Tipp: Für jeden Pfad zu C multiplizieren, dann alle Pfade addieren.',
+      hints:['Berechne zuerst jeden einzelnen Pfad, der bei C endet.','Addiere danach die Wahrscheinlichkeiten dieser Pfade.'],
+      explain: tex(`P(C) = P(A)P(C|A) + P(\\overline{A})P(C|\\overline{A}) = ${p1}\\cdot${p2} + ${round2(1-p1)}\\cdot${p3} = ${correct}`)
+    };
+  }
+}
+
+function genBedingteWk(){
+  const a = randInt(10,30), c = randInt(10,30);
+  const bTotal = 100 - a - c;
+  const b = randInt(10, bTotal-10);
+  const d = bTotal - b;
+  const rowA = a+b, rowNotA = c+d;
+  const correct = round2(a/(a+c));
+  const table = {a,b,c,d,rowA,rowNotA};
+  return {
+    prompt: `Bestimme die bedingte Wahrscheinlichkeit ${tex('P(A|B)')} — auf zwei Nachkommastellen runden:`,
+    table, type:'numeric', correct, tol:0.011,
+    hint: `Tipp: ${tex('P(A|B) = \\dfrac{P(A\\cap B)}{P(B)} = \\dfrac{a}{a+c}')}`,
+    explain: tex(`P(A|B) = \\dfrac{${a}}{${a}+${c}} = \\dfrac{${a}}{${a+c}} \\approx ${correct}`)
+  };
+}
+
+
+/* ============================================================
+   V2.7.1 FOS FOUNDATION GENERATORS
+   ============================================================ */
+function genLineareEigenschaften(){
+  const a = nonZero(-6,6), x0 = randInt(-5,5), b = -a*x0;
+  const f = latexPoly([[a,1],[b,0]]);
+  const mode = choice(['slope','intercept','zero']);
+  let prompt, correct, distractors;
+  if(mode==='slope'){
+    prompt='Welche Steigung besitzt die Gerade?'; correct=String(a); distractors=[String(-a),String(Math.abs(a)+1),String(a+1)];
+  } else if(mode==='intercept'){
+    prompt='Wie lautet der y-Achsenabschnitt?'; correct=String(b); distractors=[String(-b),String(b+a),String(b-a)];
+  } else {
+    prompt='Wo liegt die Nullstelle?'; correct=tex(`x=${x0}`); distractors=[tex(`x=${-x0}`),tex(`x=${x0+1}`),tex(`x=${x0-1}`)];
+  }
+  const {options,correctIndex}=buildMC(correct,distractors,4,(used,guard)=>{
+    const d=guard+1;
+    if(mode==='slope') return String(a + (a>0?d+2:-(d+2)));
+    if(mode==='intercept') return String(b + (b>=0?d+2:-(d+2)));
+    return tex(`x=${x0 + (x0>=0?d+2:-(d+2))}`);
+  });
+  return {prompt,formula:tex(`f(x)=${f}`),type:'mc',options,correctIndex,
+    explain:`Bei ${tex(`f(x)=ax+b`)} ist die Steigung ${tex(`a=${a}`)} und der y-Achsenabschnitt ${tex(`b=${b}`)}. Die Nullstelle erfüllt ${tex(`f(x)=0`)} und liegt bei ${tex(`x=${x0}`)}.`};
+}
+
+function genScheitelpunkt(){
+  const a=choice([-2,-1,1,2]), h=randInt(-4,4), k=randInt(-6,6);
+  const form=`${a===1?'':a===-1?'-':a}(x${h<0?`+${-h}`:h>0?`-${h}`:''})^{2}${k===0?'':k>0?`+${k}`:`-${Math.abs(k)}`}`;
+  const correct=tex(`S(${h}\\mid${k})`);
+  const distractors=[tex(`S(${k}\\mid${h})`),tex(`S(${-h}\\mid${k})`),tex(`S(${h}\\mid${-k})`)];
+  const {options,correctIndex}=buildMC(correct,distractors,4,(used,guard)=>{
+    const d=guard+1;
+    return tex(`S(${h+d}\\mid${k+d+1})`);
+  });
+  return {prompt:'Bestimme den Scheitelpunkt der Parabel:',formula:tex(`f(x)=${form}`),type:'mc',options,correctIndex,
+    explain:`In der Scheitelpunktform ${tex('f(x)=a(x-h)^2+k')} liegt der Scheitelpunkt bei ${tex('S(h\\mid k)')}. Hier also ${correct}.`};
+}
+
+function genLinearTermAufstellen(){
+  const x1=randInt(-4,2), x2=x1+randInt(1,5), m=nonZero(-5,5), b=randInt(-6,6);
+  const y1=m*x1+b, y2=m*x2+b;
+  const correct=tex(latexPoly([[m,1],[b,0]]));
+  const distractors=[tex(latexPoly([[-m,1],[b,0]])),tex(latexPoly([[m,1],[-b,0]])),tex(latexPoly([[y2-y1,1],[b,0]]))];
+  const {options,correctIndex}=buildMC(correct,distractors,4,(used,guard)=>{
+    const d=guard+1;
+    return tex(latexPoly([[m + (m>0?d+1:-(d+1)),1],[b+d+1,0]]));
+  });
+  return {prompt:`Bestimme den Funktionsterm der Geraden durch die Punkte ${tex(`A(${x1}\\mid${y1})`)} und ${tex(`B(${x2}\\mid${y2})`)}:`,type:'mc',options,correctIndex,
+    explain:`Mit ${tex(`m=\\frac{${y2}-${y1}}{${x2}-${x1}}=${m}`)} und ${tex(`b=${y1}-(${m})\\cdot${x1}=${b}`)} ergibt sich ${correct}.`};
+}
+
+function genSchnittpunktGeraden(){
+  const x0=randInt(-4,4), y0=randInt(-5,5), m1=nonZero(-5,5); let m2=nonZero(-5,5); while(m2===m1)m2=nonZero(-5,5);
+  const b1=y0-m1*x0, b2=y0-m2*x0;
+  const f1=latexPoly([[m1,1],[b1,0]]), f2=latexPoly([[m2,1],[b2,0]]);
+  const correct=tex(`S(${x0}\\mid${y0})`);
+  const distractors=[tex(`S(${y0}\\mid${x0})`),tex(`S(${-x0}\\mid${y0})`),tex(`S(${x0+1}\\mid${y0-1})`)];
+  const {options,correctIndex}=buildMC(correct,distractors,4,(used,guard)=>{
+    const d=guard+1;
+    return tex(`S(${x0+d+1}\\mid${y0+d+2})`);
+  });
+  return {prompt:'Bestimme den Schnittpunkt der beiden Geraden:',formula:tex(`f(x)=${f1}\\qquad g(x)=${f2}`),type:'mc',options,correctIndex,
+    explain:`Am Schnittpunkt gilt ${tex(`f(x)=g(x)`)}. Die Gleichung liefert ${tex(`x=${x0}`)} und damit ${tex(`y=${y0}`)}.`};
+}
+
+function genDifferenzenquotient(){
+  const x1=randInt(-5,3), x2=x1+randInt(1,4), c=randInt(-5,5);
+  const f=tex(`f(x)=x^2+${c}`);
+  const correct=x1+x2;
+  return {prompt:`Berechne den Differenzenquotienten zwischen ${tex(`x_1=${x1}`)} und ${tex(`x_2=${x2}`)}:`,formula:f,type:'numeric',correct,tol:0.01,
+    hint:`Tipp: ${tex(`\\frac{f(x_2)-f(x_1)}{x_2-x_1}`)}`,
+    explain:tex(`\\frac{(${x2})^2+${c}-(( ${x1})^2+${c})}{${x2}-${x1}}=${correct}`)};
+}
+
+function genTangentensteigung(){
+  const a=choice([-2,-1,1,2]), b=randInt(-4,4), x0=randInt(-4,4);
+  const f=latexPoly([[a,2],[b,1]]);
+  const correct=2*a*x0+b;
+  return {prompt:`Wie groß ist die Tangentensteigung an der Stelle ${tex(`x_0=${x0}`)}?`,formula:tex(`f(x)=${f}`),type:'numeric',correct,tol:0.01,
+    hint:`Tipp: Erst ${tex(`f'(x)`)} bilden, dann ${tex(`x=${x0}`)} einsetzen.`,
+    hints:[`Leite ${tex('f(x)')} zuerst mit der Potenzregel ab.`, `Setze danach ${tex(`x_0=${x0}`)} in ${tex("f'(x)")} ein.`],
+    explain:tex(`f'(x)=${2*a}x+${b}\\Rightarrow f'(${x0})=${correct}`)};
+}
+
+function genMonotonie(){
+  const h=randInt(-4,4);
+  const form=tex(`f(x)=(x${h<0?`+${-h}`:h>0?`-${h}`:''})^2`);
+  const correct=`fallend für x < ${h} und steigend für x > ${h}`;
+  const distractors=[`steigend für x < ${h} und fallend für x > ${h}`,`steigend für alle x`,`fallend für alle x`];
+  const {options,correctIndex}=buildMC(correct,distractors,4);
+  return {prompt:'Bestimme das Monotonieverhalten:',formula:form, type:'mc',options,correctIndex,
+    explain:`Der Scheitel liegt bei ${tex(`x=${h}`)}. Links davon fällt die Parabel, rechts davon steigt sie.`};
+}
+
+function genZufallsexperiment(){
+  const scenarios=[
+    ['Ein fairer Würfel wird einmal geworfen.','Ja'],
+    ['Du berechnest 7 + 5.','Nein'],
+    ['Eine Münze wird zehnmal geworfen.','Ja'],
+    ['Ein Dreieck hat drei Seiten.','Nein'],
+    ['Aus einer gut gemischten Kartenhand wird eine Karte gezogen, ohne dass vorher bekannt ist, welche Karte es ist.','Ja']
+  ];
+  const [text,yes]=choice(scenarios);
+  const correct=yes==='Ja'?'Ja, es ist ein Zufallsexperiment.':'Nein, es ist kein Zufallsexperiment.';
+  const distractors=yes==='Ja'?['Nein, der Ausgang ist vorher eindeutig festgelegt.','Nur bei genau zwei möglichen Ergebnissen.','Nur wenn alle Ergebnisse gleich wahrscheinlich sind.']
+    :['Ja, weil immer irgendein Ergebnis eintritt.','Ja, jedes Ereignis mit Zahlen ist zufällig.','Nur bei einem Würfel wäre es kein Zufallsexperiment.'];
+  const {options,correctIndex}=buildMC(correct,distractors,4);
+  return {prompt:`Handelt es sich um ein Zufallsexperiment?\n\n${text}`,type:'mc',options,correctIndex,
+    explain: yes==='Ja'?'Der konkrete Ausgang ist nicht sicher vorhersagbar, die möglichen Ergebnisse lassen sich aber beschreiben.':'Der Ablauf hat unter den gegebenen Bedingungen einen feststehenden bzw. eindeutig bestimmbaren Ausgang.'};
+}
+
+function genLaplace(){
+  const n=choice([6,8,10,12]), k=randInt(1,n-1); const g = (a,b)=>{let x=a,y=b;while(y){[x,y]=[y,x%y]}return Math.abs(x)};
+  const d=g(k,n), num=k/d, den=n/d, correct=round2(k/n);
+  return {prompt:`Bei einem Laplace-Experiment gibt es ${n} gleich wahrscheinliche Ergebnisse. ${k} davon sind günstig. Wie groß ist P(A)?`,type:'numeric',correct,tol:0.011,
+    hint:`Tipp: ${tex(`P(A)=\\frac{\\text{günstige Ergebnisse}}{\\text{alle Ergebnisse}}`)}`,
+    explain:tex(`P(A)=\\frac{${k}}{${n}}${den===1?`=${num}`:`=\\frac{${num}}{${den}}\\approx ${correct}`}`)};
+}
+
+function genUnabhaengigkeit(){
+  const pA=choice([0.2,0.25,0.4,0.5,0.6]), pB=choice([0.2,0.25,0.4,0.5,0.75]);
+  const independent=Math.random()<0.5;
+  const product=pA*pB;
+  let pAB;
+  if(independent){
+    pAB=round2(product);
+  } else {
+    // Für zwei Ereignisse muss gelten: max(0, P(A)+P(B)-1) ≤ P(A∩B) ≤ min(P(A),P(B)).
+    // Wir wählen bewusst einen gültigen Wert abseits des Unabhängigkeitsprodukts.
+    const lower=Math.max(0,pA+pB-1);
+    const upper=Math.min(pA,pB);
+    const towardUpper=Math.random()<0.5;
+    const raw=towardUpper ? lower+0.75*(upper-lower) : lower+0.25*(upper-lower);
+    pAB=round2(raw);
+    if(Math.abs(pAB-round2(product))<0.005){
+      pAB=round2(towardUpper ? lower+0.9*(upper-lower) : lower+0.1*(upper-lower));
+    }
+  }
+  const correct=independent?'Ja, die Ereignisse sind stochastisch unabhängig.':'Nein, die Ereignisse sind stochastisch abhängig.';
+  const distractors=[independent?'Nein, weil P(A∩B) immer kleiner sein muss.':'Ja, weil beide Einzelwahrscheinlichkeiten bekannt sind.','Nur wenn P(A)=P(B) gilt.'];
+  const {options,correctIndex}=buildMC(correct,distractors,3);
+  return {prompt:`Sind A und B unabhängig? Gegeben sind ${tex(`P(A)=${pA}`)}, ${tex(`P(B)=${pB}`)} und ${tex(`P(A\\cap B)=${pAB}`)}.`,type:'mc',options,correctIndex,
+    explain:independent?`Prüfe ${tex(`P(A\\cap B)=P(A)\\cdot P(B)`)}. Hier gilt ${tex(`${pAB}=${pA}\\cdot${pB}`)}.`:`Bei Unabhängigkeit müsste ${tex(`P(A\\cap B)=P(A)\\cdot P(B)`)} gelten; hier ist ${tex(`${pAB}\\neq ${round2(pA*pB)}`)}.`};
+}
+
+function genKombiTyp(){
+  const mode=choice(['perm','variation','combination']);
+  let prompt, correct, distractors;
+  if(mode==='perm'){
+    const n=randInt(4,7); prompt=`Auf wie viele Arten lassen sich ${n} verschiedene Bücher vollständig in einer Reihe anordnen?`; correct=tex(`${n}!`); distractors=[tex(`\\binom{${n}}{2}`),tex(`${n}^{2}`),tex(`${n}\\cdot(${n}-1)`)];
+  } else if(mode==='variation'){
+    const n=randInt(5,9), k=randInt(2,4); prompt=`Aus ${n} Personen werden ${k} Personen für feste Plätze ausgewählt. Die Reihenfolge ist wichtig, niemand darf doppelt vorkommen. Welche Formel passt?`; correct=tex(`\\frac{${n}!}{(${n}-${k})!}`); distractors=[tex(`\\binom{${n}}{${k}}`),tex(`${n}!`),tex(`${n}^{${k}}`)];
+  } else {
+    const n=randInt(6,10), k=randInt(2,4); prompt=`Aus ${n} Personen werden ${k} für ein Team ausgewählt. Die Reihenfolge ist egal. Welche Formel passt?`; correct=tex(`\\binom{${n}}{${k}}`); distractors=[tex(`${n}^{${k}}`),tex(`\\frac{${n}!}{(${n}-${k})!}`),tex(`${n}!`)];
+  }
+  const {options,correctIndex}=buildMC(correct,distractors,4);
+  return {prompt,type:'mc',options,correctIndex,explain: mode==='perm'?'Alle Elemente werden angeordnet → Permutation.':mode==='variation'?'Die Auswahl hat feste Plätze → Reihenfolge wichtig → Variation ohne Wiederholung.':'Die Reihenfolge spielt keine Rolle → Kombination ohne Wiederholung.'};
+}
+
+/* ============================================================
+   TOPIC CONFIG
+   ============================================================ */
+const TOPICS = {
+  algebra: {
+    name:'Algebra-Basics', color:'var(--blue)',
+    subtypes:[
+      {id:'binomExpand', name:'Binomische Formeln', gen:genBinomExpand},
+      {id:'binomFactor', name:'Faktorisieren', gen:genBinomFactor},
+      {id:'linGleichung', name:'Lineare Gleichung', gen:genLinGleichung},
+      {id:'quadGleichung', name:'Quadratische Gleichung', gen:genQuadGleichung},
+      {id:'bruchKuerzen', name:'Bruchterme kürzen', gen:genBruchKuerzen},
+      {id:'lineareEigenschaften', name:'Lineare Funktionen', gen:genLineareEigenschaften},
+      {id:'scheitelpunkt', name:'Scheitelpunkt', gen:genScheitelpunkt},
+      {id:'lineareTerm', name:'Geradenterm aufstellen', gen:genLinearTermAufstellen},
+      {id:'schnittpunktGeraden', name:'Schnittpunkt', gen:genSchnittpunktGeraden},
+    ]
+  },
+  kurven: {
+    name:'Kurvendiskussion', color:'var(--amber)',
+    subtypes:[
+      {id:'ableiten', name:'Ableiten', gen:genAbleiten},
+      {id:'nullstellen', name:'Nullstellen', gen:genNullstellen},
+      {id:'extrempunkte', name:'Extrempunkte', gen:genExtrempunkte},
+      {id:'wendepunkt', name:'Wendepunkt', gen:genWendepunkt},
+      {id:'symmetrie', name:'Symmetrie', gen:genSymmetrie},
+      {id:'monotonie', name:'Monotonie', gen:genMonotonie},
+      {id:'differenzenquotient', name:'Differenzenquotient', gen:genDifferenzenquotient},
+      {id:'tangentensteigung', name:'Tangentensteigung', gen:genTangentensteigung},
+    ]
+  },
+  stochastik: {
+    name:'Stochastik', color:'var(--rust)',
+    subtypes:[
+      {id:'kombinatorik', name:'Kombinatorik', gen:genKombinatorik},
+      {id:'pfadregel', name:'Pfadregel', gen:genPfadregel},
+      {id:'bedingteWk', name:'Bedingte Wk.', gen:genBedingteWk},
+      {id:'zufallsexperiment', name:'Zufallsexperiment', gen:genZufallsexperiment},
+      {id:'laplace', name:'Laplace-Wahrscheinlichkeit', gen:genLaplace},
+      {id:'unabhaengigkeit', name:'Unabhängigkeit', gen:genUnabhaengigkeit},
+      {id:'kombiTyp', name:'Kombinatorische Problemtypen', gen:genKombiTyp},
+    ]
+  }
+};
+
+const DIFFICULTY_BY_ID={
+  binomExpand:'easy', binomFactor:'easy', linGleichung:'easy', bruchKuerzen:'medium', quadGleichung:'medium',
+  lineareEigenschaften:'easy', scheitelpunkt:'easy', lineareTerm:'medium', schnittpunktGeraden:'medium',
+  ableiten:'easy', nullstellen:'hard', extrempunkte:'hard', wendepunkt:'medium', symmetrie:'medium',
+  monotonie:'medium', differenzenquotient:'medium', tangentensteigung:'medium',
+  kombinatorik:'easy', pfadregel:'medium', bedingteWk:'medium', zufallsexperiment:'easy', laplace:'easy', unabhaengigkeit:'medium', kombiTyp:'medium'
+};
+Object.values(TOPICS).forEach(cat=>cat.subtypes.forEach(st=>st.difficulty=DIFFICULTY_BY_ID[st.id]||'medium'));
+
+/* ============================================================
+   STATE & PERSISTENCE
+   ============================================================ */
+const LS_STATS = 'kk_stats_v2';
+const LS_MISTAKEBANK = 'kk_mistakebank_v2';
+const LS_STREAK = 'kk_streak_v2';
+const LS_PROGRESS = 'kk_progress_v1';
+const LS_ACHIEVEMENTS = 'kk_achievements_v1';
+const LS_EXAMS = 'kk_exams_v1';
+
+const LS_APP_VERSION = 'ghgeniales_mathe_app_version';
+const APP_VERSION = '2.7.1';
+localStorage.setItem(LS_APP_VERSION, APP_VERSION);
+
+const ROADMAP_11 = [
+  {area:'1. Lineare & quadratische Funktionen',desc:'Funktionen lesen, darstellen, aufstellen und anwenden.',items:[
+    ['Funktionen und Fachbegriffe','Grundidee von Funktion, Variable, Funktionsterm, Definitions-/Wertemenge.',null],
+    ['Eigenschaften linearer Funktionen','Steigung, y-Achsenabschnitt und Nullstelle sicher erkennen.', 'lineareEigenschaften'],
+    ['Eigenschaften quadratischer Funktionen','Scheitelpunkt, Öffnungsrichtung und Darstellungsformen.', 'scheitelpunkt'],
+    ['Funktionsterm aus Informationen aufstellen','Eine Gerade aus Punkten bzw. Steigung und Punkt bestimmen.', 'lineareTerm'],
+    ['Lineare / quadratische Gleichungen lösen','Äquivalenzumformungen, Faktorisieren und Lösungsformeln.', 'linGleichung'],
+    ['Schnittpunkte berechnen','Gemeinsame Punkte von Geraden bzw. Graphen bestimmen.', 'schnittpunktGeraden'],
+    ['Parameteraufgaben','Parameter so bestimmen, dass eine Eigenschaft oder Lagebeziehung entsteht.', null],
+    ['Ungleichungen','Lösungsmengen graphisch und über Vorzeichen bestimmen.', null],
+    ['Sachkontexte modellieren','Lineare und quadratische Situationen mathematisch beschreiben.', null]
+  ]},
+  {area:'2. Ganzrationale Funktionen',desc:'Polynome, Nullstellen, Symmetrie und Globalverlauf.',items:[
+    ['Nullstellen und Vielfachheiten','Geeignete Verfahren auswählen und Nullstellen vollständig bestimmen.', 'nullstellen'],
+    ['Faktorisieren und Darstellungsformen','Zwischen allgemeiner und faktorisierter Form wechseln.', 'binomFactor'],
+    ['Polynomdivision / Substitution','Geeignete Verfahren für höhere Polynomgleichungen erkennen.', null],
+    ['Symmetrie','Achsen- und Punktsymmetrie rechnerisch begründen.', 'symmetrie'],
+    ['Globalverlauf verstehen','Grad und Leitkoeffizient mit dem Verhalten im Unendlichen verbinden.', null],
+    ['Polynom-Ungleichungen','Vorzeichenverlauf und Lösungsmenge verbinden.', null],
+    ['Schnitt- und Berührpunkte','Gemeinsame Punkte zweier ganzrationaler Funktionen bestimmen.', null]
+  ]},
+  {area:'3. Differentialrechnung',desc:'Vom Differenzenquotienten bis zu vollständigen Funktionsuntersuchungen.',items:[
+    ['Differenzenquotient','Sekantensteigung und mittlere Änderungsrate berechnen und deuten.', 'differenzenquotient'],
+    ['Differenzialquotient und Tangentensteigung','Lokale Änderungsrate und Tangente verstehen.', 'tangentensteigung'],
+    ['Ableitungsregeln','Polynomfunktionen mit Konstanten-, Potenz-, Faktor- und Summenregel ableiten.', 'ableiten'],
+    ['Monotonieverhalten','Aus der ersten Ableitung auf fallend/steigend schließen.', 'monotonie'],
+    ['Extrempunkte','Art und Koordinaten über Ableitungen bestimmen.', 'extrempunkte'],
+    ['Wendepunkte und Krümmung','Wendestellen begründen und koordinatenmäßig bestimmen.', 'wendepunkt'],
+    ['Vorzeichentabelle / Skizze','Eigenschaften der Funktion in einer verständlichen Skizze zusammenführen.', null],
+    ['Anwendungsaufgaben','Änderungsraten und Funktionsuntersuchungen im Sachkontext interpretieren.', null]
+  ]},
+  {area:'4. Grundlagen der Wahrscheinlichkeitsrechnung',desc:'Zufallsexperimente, Ereignisse, Häufigkeiten und Baumdiagramme.',items:[
+    ['Zufallsexperiment und Ergebnisraum','Zufällige Abläufe erkennen und mathematisch beschreiben.', 'zufallsexperiment'],
+    ['Absolute und relative Häufigkeiten','Daten als Grundlage für Wahrscheinlichkeiten interpretieren.', null],
+    ['Laplace-Experimente','Gleich wahrscheinliche Ergebnisse erkennen und berechnen.', 'laplace'],
+    ['Ereignisse und Gegenereignisse','Schnitt, Vereinigung, Gegenereignis und Venn-Diagramme verstehen.', null],
+    ['Baumdiagramme und Pfadregeln','Mehrstufige Experimente modellieren und Wahrscheinlichkeiten berechnen.', 'pfadregel'],
+    ['Vierfeldertafel','Häufigkeiten und Wahrscheinlichkeiten zweier Ereignisse verknüpfen.', null]
+  ]},
+  {area:'5. Bedingte Wahrscheinlichkeit & Unabhängigkeit',desc:'Ereignisse richtig interpretieren und Abhängigkeiten begründen.',items:[
+    ['Bedingte Wahrscheinlichkeit','P(A|B) korrekt lesen, berechnen und interpretieren.', 'bedingteWk'],
+    ['Stochastische Unabhängigkeit','Unabhängigkeit rechnerisch prüfen und begründen.', 'unabhaengigkeit'],
+    ['Statistische Fehlinterpretationen','Ereignis und Bedingung nicht verwechseln; Ergebnisse kritisch beurteilen.', null]
+  ]},
+  {area:'6. Kombinatorik',desc:'Kombinatorische Problemtypen erkennen und passend einsetzen.',items:[
+    ['Problemtyp erkennen','Permutation, Variation, Kombination und Zählprinzip unterscheiden.', 'kombiTyp'],
+    ['Kombinatorische Formeln anwenden','Anzahl von Möglichkeiten berechnen und in Wahrscheinlichkeiten nutzen.', 'kombinatorik'],
+    ['Anwendungen','z. B. Passwortsicherheit oder Glücksspiele mathematisch beurteilen.', null]
+  ]}
+];
+
+const ROADMAP_12 = [
+  ['Kurvendiskussion vertiefen','Strukturierte vollständige Untersuchung von Funktionen.'],
+  ['Funktionsterme aufstellen','Terme aus Bedingungen und Anwendungen bestimmen.'],
+  ['Anwendungs- und Extremwertaufgaben','Mathematik in Sachkontexten modellieren.'],
+  ['Integralrechnung','Stammfunktionen, Flächen und Anwendungen.'],
+  ['Exponentialfunktionen','Wachstums- und Zerfallsmodelle.'],
+  ['Bernoulli-Ketten','Mehrfache gleichartige Versuche modellieren.'],
+  ['Zufallsgrößen','Erwartungswert und Verteilungen.'],
+  ['Hypothesentests','Statistische Entscheidungen und Testverfahren.']
+];
+
+
+function loadJSON(key, fallback){
+  try{ const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; }
+  catch(e){ return fallback; }
+}
+function saveJSON(key, val){
+  try{ localStorage.setItem(key, JSON.stringify(val)); }catch(e){}
+}
+
+function getSubtypeMeta(subtypeId){
+  for(const cat of Object.values(TOPICS)){
+    const st = cat.subtypes.find(s=>s.id===subtypeId);
+    if(st) return {catKey: Object.keys(TOPICS).find(k=>TOPICS[k]===cat), catName:cat.name, color:cat.color, name:st.name};
+  }
+  return null;
+}
+
+let stats = loadJSON(LS_STATS, {});
+let mistakeBank = loadJSON(LS_MISTAKEBANK, {}); // keyed by subtypeId
+let streakData = loadJSON(LS_STREAK, {current:0, best:0, todayCount:0, todayDate:''});
+let progressData = loadJSON(LS_PROGRESS, {xp:0, totalAttempts:0, totalCorrect:0, dailyBest:0});
+let achievements = loadJSON(LS_ACHIEVEMENTS, {});
+let examHistory = loadJSON(LS_EXAMS, []);
+let focusSession = null; // {subtypeId, target, progress}
+let sessionJustCompleted = null;
+let examSession = null;
+let examTimer = null;
+
+function localDateKey(d=new Date()){
+  const y=d.getFullYear(), m=String(d.getMonth()+1).padStart(2,'0'), day=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
+const today = localDateKey();
+if(streakData.todayDate !== today){ streakData.todayDate = today; streakData.todayCount = 0; saveJSON(LS_STREAK, streakData); }
+
+function activeWeaknessCount(){
+  return Object.values(mistakeBank).filter(m=>!m.resolved && m.misses>0).length;
+}
+
+function getLevel(){ return Math.floor(progressData.xp/100)+1; }
+
+function awardXP(correct, subtypeId){
+  const base = correct ? 10 : 2;
+  const streakBonus = correct ? Math.min(20, Math.max(0, streakData.current-1)*2) : 0;
+  const mistakeBonus = correct && mistakeBank[subtypeId] && !mistakeBank[subtypeId].resolved ? 8 : 0;
+  progressData.xp += base + streakBonus + mistakeBonus;
+  progressData.totalAttempts++;
+  if(correct) progressData.totalCorrect++;
+  saveJSON(LS_PROGRESS, progressData);
+}
+
+function unlockAchievements(){
+  const total=progressData.totalAttempts, correct=progressData.totalCorrect;
+  const candidates={
+    first:{label:'Erste Schritte',desc:'Erste Aufgabe gelöst',icon:'🏆',ok:total>=1},
+    streak10:{label:'Aufwärmphase',desc:'10 richtige hintereinander',icon:'🔥',ok:streakData.best>=10},
+    perfect20:{label:'Perfekt',desc:'20 richtige hintereinander',icon:'💯',ok:streakData.best>=20},
+    examReady:{label:'Prüfungsbereit',desc:'Mindestens 90 % in einer Prüfung',icon:'💀',ok:examHistory.some(e=>e.percent>=90)},
+    stoch100:{label:'Stochastiker',desc:'100 Stochastik-Aufgaben',icon:'🧠',ok:['kombinatorik','kombiTyp','pfadregel','bedingteWk','zufallsexperiment','laplace','unabhaengigkeit'].some(id=>stats[id]?.attempts>=100) || ['kombinatorik','kombiTyp','pfadregel','bedingteWk','zufallsexperiment','laplace','unabhaengigkeit'].reduce((n,id)=>n+(stats[id]?.attempts||0),0)>=100},
+    diligent7:{label:'Fleißig',desc:'7 Lerntage mit mindestens einer Aufgabe',icon:'📚',ok:getLearningDayCount()>=7}
+  };
+  Object.entries(candidates).forEach(([id,a])=>{ if(a.ok) achievements[id]=true; });
+  saveJSON(LS_ACHIEVEMENTS, achievements);
+  return candidates;
+}
+
+function getLearningDayCount(){
+  const days=new Set();
+  Object.values(stats).forEach(s=>(s.days||[]).forEach(d=>days.add(d)));
+  return days.size;
+}
+
+function recordAttempt(subtypeId, correct, detail){
+  if(!stats[subtypeId]) stats[subtypeId] = {attempts:0, correct:0, days:[], recent:[]};
+  const s=stats[subtypeId];
+  s.attempts++;
+  if(correct) s.correct++;
+  s.lastAttemptAt=Date.now();
+  s.lastOutcome=!!correct;
+  s.recent=Array.isArray(s.recent)?s.recent:[];
+  s.recent.unshift({correct:!!correct,ts:Date.now()});
+  if(s.recent.length>12) s.recent.length=12;
+  s.days=s.days||[];
+  if(!s.days.includes(today)) s.days.push(today);
+  if(s.days.length>90) s.days=s.days.slice(-90);
+  saveJSON(LS_STATS, stats);
+
+  if(!mistakeBank[subtypeId]) mistakeBank[subtypeId] = {misses:0, lastMissAt:0, resolved:true, streakSinceMiss:0, recent:[]};
+  const mb = mistakeBank[subtypeId];
+
+  if(correct){
+    if(!mb.resolved){
+      mb.streakSinceMiss = (mb.streakSinceMiss||0) + 1;
+      mb.reviewStage = Math.min(4,(mb.reviewStage||0)+1);
+      const intervals=[1,3,7,14];
+      if(mb.reviewStage>=4){ mb.resolved=true; mb.nextReviewAt=0; }
+      else { mb.nextReviewAt=Date.now()+intervals[mb.reviewStage-1]*86400000; }
+    }
+    streakData.current++;
+    if(streakData.current > streakData.best) streakData.best = streakData.current;
+    streakData.todayCount++;
+  } else {
+    mb.misses++;
+    mb.lastMissAt = Date.now();
+    mb.resolved = false;
+    mb.reviewStage = 0;
+    mb.nextReviewAt = Date.now() + 6*60*60*1000;
+    mb.streakSinceMiss = 0;
+    if(detail){
+      mb.recent.unshift({...detail, ts:Date.now()});
+      if(mb.recent.length>8) mb.recent.length = 8;
+    }
+    streakData.current = 0;
+  }
+  awardXP(correct, subtypeId);
+  unlockAchievements();
+  saveJSON(LS_MISTAKEBANK, mistakeBank);
+  saveJSON(LS_STREAK, streakData);
+
+  if(focusSession && focusSession.subtypeId===subtypeId){
+    focusSession.progress++;
+    if(focusSession.progress >= focusSession.target){
+      const meta = getSubtypeMeta(subtypeId);
+      sessionJustCompleted = meta ? meta.name : 'Fokus-Session';
+      focusSession = null;
+    }
+  }
+  updateStatbar();
+}
+
+function updateStatbar(){
+  document.getElementById('streakVal').textContent = streakData.current;
+  document.getElementById('bestVal').textContent = streakData.best;
+  document.getElementById('todayVal').textContent = streakData.todayCount;
+  document.getElementById('mistakeCount').textContent = activeWeaknessCount();
+  const xp=document.getElementById('xpVal'); if(xp) xp.textContent = progressData.xp;
+  const level=document.getElementById('levelVal'); if(level) level.textContent = getLevel();
+  renderDailyPanel();
+}
+
+/* ============================================================
+   NAV / CHIPS
+   ============================================================ */
+let activeCategory = 'algebra';
+let mobileView = 'home';
+const dailyPanel = document.getElementById('dailyPanel');
+const roadmapArea = document.getElementById('roadmapArea');
+let activeSubtypeId = null; // null = mix
+let activeDifficulty = 'all';
+
+const tabsEl = document.getElementById('tabs');
+const catKeys = Object.keys(TOPICS);
+function renderTabs(){
+  tabsEl.innerHTML = '';
+  [...catKeys, 'roadmap', 'weak', 'stats', 'exam'].forEach(key=>{
+    const btn = document.createElement('button');
+    btn.className = 'tab' + (activeCategory===key ? ' active' : '');
+    btn.textContent = key==='roadmap' ? '🧭 Lernplan' : key==='stats' ? '📊 Fortschritt' : key==='weak' ? '🎯 Schwächen' : key==='exam' ? '💀 Prüfungsmodus' : TOPICS[key].name;
+    btn.onclick = () => { activeCategory = key; activeSubtypeId = null; mobileView = key==='roadmap'?'learn':key==='stats'?'stats':(['weak','exam'].includes(key)?'practice':(catKeys.includes(key)?'practice':mobileView)); render(); };
+    tabsEl.appendChild(btn);
+  });
+  updateMobileNav();
+}
+
+function updateMobileNav(){
+  document.querySelectorAll('#mobileNav [data-mobile-nav]').forEach(btn=>btn.classList.toggle('active',btn.dataset.mobileNav===mobileView));
+}
+
+window.v2MobileGo=function(where){
+  mobileView=where;
+  if(where==='home'){
+    activeCategory='algebra'; activeSubtypeId=null; render();
+    setTimeout(()=>document.querySelector('header.hero')?.scrollIntoView({behavior:'smooth',block:'start'}),30);
+    return;
+  }
+  if(where==='learn'){
+    activeCategory='roadmap'; activeSubtypeId=null; render();
+    setTimeout(()=>document.getElementById('roadmapArea')?.scrollIntoView({behavior:'smooth',block:'start'}),30);
+    return;
+  }
+  if(where==='stats'){
+    activeCategory='stats'; activeSubtypeId=null; render();
+    setTimeout(()=>document.getElementById('statsArea')?.scrollIntoView({behavior:'smooth',block:'start'}),30);
+    return;
+  }
+  if(where==='practice'){
+    if(['stats','exam','weak','roadmap'].includes(activeCategory)) activeCategory='algebra';
+    activeSubtypeId=null; render();
+    setTimeout(()=>document.getElementById('questionArea')?.scrollIntoView({behavior:'smooth',block:'start'}),30);
+  }
+};
+
+const chiprowEl = document.getElementById('chiprow');
+function renderChips(){
+  if(activeCategory==='stats' || activeCategory==='weak' || activeCategory==='exam' || activeCategory==='roadmap'){ chiprowEl.innerHTML=''; return; }
+  const cat = TOPICS[activeCategory];
+  chiprowEl.innerHTML = '';
+  chiprowEl.style.setProperty('--catcolor', cat.color);
+  const mixChip = document.createElement('button');
+  mixChip.className = 'chip' + (activeSubtypeId===null ? ' active' : '');
+  mixChip.style.setProperty('--catcolor', cat.color);
+  mixChip.textContent = '🔀 Zufallsmix';
+  mixChip.onclick = () => { activeSubtypeId=null; newQuestion(); renderChips(); };
+  chiprowEl.appendChild(mixChip);
+  cat.subtypes.filter(st=>activeDifficulty==='all'||st.difficulty===activeDifficulty).forEach(st=>{
+    const chip = document.createElement('button');
+    chip.className = 'chip' + (activeSubtypeId===st.id ? ' active' : '');
+    chip.style.setProperty('--catcolor', cat.color);
+    chip.textContent = st.name;
+    chip.onclick = () => { activeSubtypeId=st.id; newQuestion(); renderChips(); };
+    chiprowEl.appendChild(chip);
+  });
+  const difficultyRow=document.createElement('div'); difficultyRow.className='difficulty-row';
+  [['all','Alle'],['easy','🟢 Leicht'],['medium','🟡 Mittel'],['hard','🔴 Schwer']].forEach(([id,label])=>{
+    const b=document.createElement('button'); b.className='chip'+(activeDifficulty===id?' active':''); b.textContent=label;
+    b.onclick=()=>{activeDifficulty=id; activeSubtypeId=null; newQuestion(); renderChips();}; difficultyRow.appendChild(b);
+  });
+  chiprowEl.appendChild(difficultyRow);
+}
+
+/* ============================================================
+   QUESTION RENDERING
+   ============================================================ */
+let currentQuestion = null;
+let currentSubtypeId = null;
+let answered = false;
+let lastPlotCanvasId = null;
+let lastPlotCfg = null;
+
+const examArea = document.getElementById('examArea');
+
+function startExam(){
+  document.body.classList.remove('v2-exam-review-visible');
+  clearInterval(examTimer);
+  examSession={target:10,index:0,correct:0,points:0,totalPoints:30,questions:[],startedAt:Date.now(),durationSec:25*60,finished:false};
+  for(let i=0;i<examSession.target;i++){
+    const catKey=choice(catKeys), st=choice(TOPICS[catKey].subtypes);
+    const q=st.gen(); q._catKey=catKey; q._subtypeId=st.id; q._subtypeName=st.name; q._catName=TOPICS[catKey].name; q._points=3;
+    examSession.questions.push(q);
+  }
+  renderExam();
+  examTimer=setInterval(()=>{
+    if(!examSession || examSession.finished) return;
+    if(Date.now()-examSession.startedAt >= examSession.durationSec*1000){ finishExam(); return; }
+    const el=document.getElementById('examTimer'); if(el) el.textContent=formatTime(Math.max(0,examSession.durationSec-Math.floor((Date.now()-examSession.startedAt)/1000)));
+  },1000);
+}
+function formatTime(sec){ const m=Math.floor(sec/60), s=sec%60; return `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`; }
+function renderExam(){
+  if(!examSession){
+    examArea.innerHTML=`<div class="statcard"><h2>💀 Prüfungsmodus</h2><p class="sub">10 gemischte Aufgaben aus Algebra, Kurvendiskussion und Stochastik. 30 Punkte, 25 Minuten, Auswertung erst am Ende.</p><button class="primary" id="startExamBtn">Prüfung starten</button></div>`;
+    document.getElementById('startExamBtn').onclick=startExam; return;
+  }
+  if(examSession.finished){ renderExamResult(); return; }
+  const q=examSession.questions[examSession.index];
+  let html=`<div class="exambar"><div class="exambar-top"><span>💀 Prüfung · Aufgabe ${examSession.index+1}/${examSession.target}</span><span class="exam-timer" id="examTimer">${formatTime(Math.max(0,examSession.durationSec-Math.floor((Date.now()-examSession.startedAt)/1000)))}</span></div></div>`;
+  html+=`<div class="card" style="--catcolor:${TOPICS[q._catKey].color}"><div class="qlabel">${q._catName} · ${q._subtypeName} · ${q._points} Punkte</div><div class="qprompt">${q.prompt}</div>`;
+  if(q.formula) html+=`<div class="qformula">${q.formula}</div>`;
+  if(q.tree) html+=`<div class="qtree">${q.tree}</div>`;
+  if(q.table){ const t=q.table; html+=`<table class="qtable"><tr><th></th><th>B</th><th>\\(\overline{B}\\)</th><th>\\(\Sigma\\)</th></tr><tr><th>A</th><td>${t.a}</td><td>${t.b}</td><td>${t.rowA}</td></tr><tr><th>\\(\overline{A}\\)</th><td>${t.c}</td><td>${t.d}</td><td>${t.rowNotA}</td></tr><tr><th>\\(\Sigma\\)</th><td>${t.a+t.c}</td><td>${t.b+t.d}</td><td>100</td></tr></table>`; }
+  html+=`<div class="answer-zone">`;
+  if(q.type==='mc'){ html+=`<div class="options" id="examOpts">`; q.options.forEach((o,i)=>html+=`<button class="opt" data-i="${i}">${o}</button>`); html+=`</div>`; }
+  else html+=`<div class="numrow"><input type="text" inputmode="decimal" id="examInput" placeholder="Antwort eingeben…" autocomplete="off"><button class="primary" id="examSubmit">Weiter</button></div>`;
+  html+=`</div></div>`; examArea.innerHTML=html; typesetMath(examArea);
+  if(q.type==='mc') examArea.querySelectorAll('.opt').forEach(b=>b.onclick=()=>answerExam(parseInt(b.dataset.i)));
+  else { const inp=document.getElementById('examInput'); document.getElementById('examSubmit').onclick=()=>answerExam(parseExamInput(q,inp.value)); inp.addEventListener('keydown',e=>{if(e.key==='Enter') answerExam(parseExamInput(q,inp.value));}); inp.focus(); }
+}
+function parseExamInput(q,raw){
+  raw=(raw||'').trim().replace(/−/g,'-'); if(q.type==='numeric'){ const value=parseNumberInput(raw); return {value,valid:Number.isFinite(value)}; }
+  if(q.type==='set'){
+    const parts=raw.split(/[,;\s]+/).filter(Boolean).map(parseNumberInput);
+    return {value:parts,valid:parts.length>0 && parts.every(Number.isFinite)};
+  }
+  return {value:null,valid:false};
+}
+function parseNumberInput(raw){
+  if(!raw) return NaN;
+  raw = raw.trim().replace(/−/g,'-');
+  const frac = raw.match(/^(-?\d+(?:[.,]\d+)?)\s*\/\s*(\d+(?:[.,]\d+)?)$/);
+  if(frac){
+    const n = Number(frac[1].replace(',','.'));
+    const d = Number(frac[2].replace(',','.'));
+    return Number.isFinite(n) && Number.isFinite(d) && d !== 0 ? n/d : NaN;
+  }
+  if(!/^-?\d+(?:[.,]\d+)?$/.test(raw)) return NaN;
+  const value = Number(raw.replace(',','.'));
+  return Number.isFinite(value) ? value : NaN;
+}
+function checkQuestion(q,answer){
+  if(q.type==='mc') return answer===q.correctIndex;
+  if(!answer || !answer.valid) return false;
+  if(q.type==='numeric') return Number.isFinite(answer.value) && Math.abs(answer.value-q.correct)<=q.tol;
+  if(q.type==='set'){ const vals=answer.value||[]; if(vals.length!==q.correct.length) return false; const rem=q.correct.slice(); return vals.every(v=>{const i=rem.findIndex(c=>Math.abs(c-v)<=q.tol); if(i<0)return false; rem.splice(i,1); return true;}); }
+  return false;
+}
+function answerExam(answer){
+  if(!examSession || examSession.finished) return;
+  const q=examSession.questions[examSession.index];
+  const ok=checkQuestion(q,answer);
+  examSession.results=examSession.results||[];
+  examSession.results.push({subtypeId:q._subtypeId,correct:ok,question:q,answer});
+  if(ok){examSession.correct++; examSession.points+=q._points;}
+  examSession.index++; if(examSession.index>=examSession.target) finishExam(); else renderExam();
+}
+function examAnswerToText(q, answer){
+  if(answer===null || answer===undefined) return 'Keine Antwort';
+  if(q.type==='mc'){
+    return (Number.isInteger(answer) && q.options[answer]!==undefined) ? q.options[answer] : 'Keine Antwort';
+  }
+  if(q.type==='numeric'){
+    return (answer.valid && Number.isFinite(answer.value)) ? String(answer.value) : 'Keine/ungültige Antwort';
+  }
+  if(q.type==='set'){
+    return (answer.valid && Array.isArray(answer.value)) ? answer.value.join(', ') : 'Keine/ungültige Antwort';
+  }
+  return 'Keine Antwort';
+}
+function examSolutionToText(q){
+  if(q.type==='mc') return q.options[q.correctIndex];
+  if(q.type==='numeric') return String(q.correct);
+  if(q.type==='set') return q.correct.join(', ');
+  return '';
+}
+function buildExamReviewTasks(results){
+  return results.map(r=>({
+    title: r.question._subtypeName,
+    topic: r.question._catName,
+    correct: r.correct,
+    points: r.question._points,
+    question: r.question,
+    answer: examAnswerToText(r.question, r.answer),
+    solution: examSolutionToText(r.question),
+    error: r.correct ? '' : `Lösungsweg: ${r.question.explain || 'Keine Erklärung hinterlegt.'}`
+  }));
+}
+function finishExam(){
+  if(!examSession||examSession.finished)return;
+  examSession.finished=true; clearInterval(examTimer);
+  examSession.percent=Math.round(100*examSession.points/examSession.totalPoints);
+  examSession.grade=examGrade(examSession.percent);
+  examSession.results=examSession.results||[];
+  examSession.results.forEach(r=>recordAttempt(r.subtypeId,r.correct,null));
+  examHistory.unshift({date:new Date().toISOString(),percent:examSession.percent,points:examSession.points,grade:examSession.grade,correct:examSession.correct,total:examSession.target});
+  if(examHistory.length>20) examHistory=examHistory.slice(0,20);
+  saveJSON(LS_EXAMS,examHistory); unlockAchievements();
+  document.body.classList.add('v2-exam-review-visible');
+  if(typeof window.GHGenialesShowExamReview==='function'){
+    window.GHGenialesShowExamReview({
+      score: examSession.points,
+      maxScore: examSession.totalPoints,
+      tasks: buildExamReviewTasks(examSession.results)
+    });
+    const reviewList = document.getElementById('v2ExamList');
+    if(reviewList) typesetMath(reviewList);
+  }
+  renderExam();
+}
+function examGrade(p){ if(p>=92)return 1; if(p>=81)return 2; if(p>=67)return 3; if(p>=50)return 4; if(p>=30)return 5; return 6; }
+function renderExamResult(){
+  const e=examSession; examArea.innerHTML=`<div class="statcard exam-result"><h2>📝 Prüfung abgeschlossen</h2><p class="sub">Auswertung</p><div class="metric-grid"><div class="metric"><b>${e.points}/${e.totalPoints}</b><span>Punkte</span></div><div class="metric"><b>${e.percent}%</b><span>Ergebnis</span></div><div class="metric"><b>${e.grade}</b><span>Note</span></div><div class="metric"><b>${e.correct}/${e.target}</b><span>richtig</span></div></div><div class="nextrow"><button class="primary" id="restartExam">Neue Prüfung</button><button class="ghost" id="examReviewBtn">📋 Zur Nachbesprechung</button><button class="ghost" id="examBack">Zurück zu Aufgaben</button></div></div>`;
+  document.getElementById('restartExam').onclick=startExam;
+  document.getElementById('examBack').onclick=()=>{examSession=null;activeCategory='algebra';render();};
+  document.getElementById('examReviewBtn').onclick=()=>{ document.getElementById('exam-review')?.scrollIntoView({behavior:'smooth'}); };
+}
+
+
+function pickSubtype(){
+  const cat = TOPICS[activeCategory];
+  if(activeSubtypeId){ const selected=cat.subtypes.find(s=>s.id===activeSubtypeId); if(selected) return selected; }
+  const pool=cat.subtypes.filter(s=>activeDifficulty==='all'||s.difficulty===activeDifficulty);
+  return choice(pool.length?pool:cat.subtypes);
+}
+
+function newQuestion(){
+  answered = false;
+  lastPlotCanvasId = null;
+  lastPlotCfg = null;
+  const st = pickSubtype();
+  currentSubtypeId = st.id;
+  currentQuestion = st.gen();
+  currentQuestion._subtypeName = st.name;
+  renderQuestion();
+}
+
+const qArea = document.getElementById('questionArea');
+
+function calculatorMarkup(){
+  return `<section class="v2-shell v2-calculator" id="calculator" aria-label="Mathematischer Taschenrechner">
+    <h2>🧮 Taschenrechner</h2>
+    <input id="v2CalcDisplay" class="v2-calc-display" inputmode="decimal" autocomplete="off" placeholder="z. B. 2*x^2+5 oder 5!" onkeydown="v2CalcKey(event)">
+    <div id="v2CalcResult" class="v2-calc-result" aria-live="polite"></div>
+    <div class="v2-calc-mode">
+      <button id="v2CalcBasicBtn" class="active" type="button" onclick="v2CalcMode(false)">Grundlagen</button>
+      <button id="v2CalcSciBtn" type="button" onclick="v2CalcMode(true)">Wissenschaftlich</button>
+    </div>
+    <div id="v2CalcScience" class="v2-calc-science">
+      <button class="v2-calc-key" type="button" onclick="v2CalcInsert('sin(')">sin</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('cos(')">cos</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('tan(')">tan</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('ln(')">ln</button>
+      <button class="v2-calc-key" type="button" onclick="v2CalcInsert('log(')">log</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('sqrt(')">√</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('pi')">π</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('e')">e</button>
+    </div>
+    <div class="v2-calc-grid">
+      <button class="v2-calc-key" type="button" onclick="v2CalcClear()">AC</button><button class="v2-calc-key" type="button" onclick="v2CalcBack()">⌫</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('(')">(</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert(')')">)</button>
+      <button class="v2-calc-key" type="button" onclick="v2CalcInsert('7')">7</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('8')">8</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('9')">9</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('/')">÷</button>
+      <button class="v2-calc-key" type="button" onclick="v2CalcInsert('4')">4</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('5')">5</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('6')">6</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('*')">×</button>
+      <button class="v2-calc-key" type="button" onclick="v2CalcInsert('1')">1</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('2')">2</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('3')">3</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('-')">−</button>
+      <button class="v2-calc-key" type="button" onclick="v2CalcInsert('0')">0</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('.')">.</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('^')">xʸ</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('+')">+</button>
+      <button class="v2-calc-key" type="button" onclick="v2CalcInsert('sqrt(')">√</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('!')">!</button><button class="v2-calc-key" type="button" onclick="v2CalcInsert('pi')">π</button><button class="v2-calc-key" type="button" onclick="v2CalcEvaluate()">=</button>
+    </div>
+    <p class="v2-calc-hint">Der Taschenrechner steht direkt bei jeder Aufgabe zur Verfügung. Unterstützt +, −, ×, ÷, Klammern, Potenzen (^), Fakultät (!), √, π sowie sin/cos/tan/ln/log.</p>
+  </section>`;
+}
+
+function renderQuestion(){
+  const cat = TOPICS[activeCategory];
+  const q = currentQuestion;
+  let html = '';
+  if(focusSession && focusSession.subtypeId===currentSubtypeId){
+    const pct = Math.round(100*focusSession.progress/focusSession.target);
+    html += `<div class="sessionbar">🎯 Fokus-Session: ${focusSession.progress}/${focusSession.target} — ${q._subtypeName}
+      <div class="sessiontrack"><div class="sessionfill" style="width:${pct}%"></div></div></div>`;
+  }
+  html += `<div class="card" style="--catcolor:${cat.color}">`;
+  html += `<div class="qlabel">${cat.name} · ${q._subtypeName}</div>`;
+  html += `<div class="qprompt">${q.prompt}</div>`;
+  if(q.formula) html += `<div class="qformula">${q.formula}</div>`;
+  if(q.tree) html += `<div class="qtree">${q.tree}</div>`;
+  if(q.table){
+    const t = q.table;
+    html += `<table class="qtable"><tr><th></th><th>B</th><th>\\(\\overline{B}\\)</th><th>\\(\\Sigma\\)</th></tr>
+      <tr><th>A</th><td>${t.a}</td><td>${t.b}</td><td>${t.rowA}</td></tr>
+      <tr><th>\\(\\overline{A}\\)</th><td>${t.c}</td><td>${t.d}</td><td>${t.rowNotA}</td></tr>
+      <tr><th>\\(\\Sigma\\)</th><td>${t.a+t.c}</td><td>${t.b+t.d}</td><td>100</td></tr></table>`;
+  }
+  html += `<div class="answer-zone">`;
+  if(q.type==='mc'){
+    html += `<div class="options" id="optWrap">`;
+    q.options.forEach((opt,i)=>{
+      html += `<button class="opt" data-i="${i}">${opt}</button>`;
+    });
+    html += `</div>`;
+  } else if(q.type==='numeric'){
+    html += `<div class="numrow"><input type="text" inputmode="decimal" id="numInput" placeholder="Antwort eingeben…" autocomplete="off">
+      <button class="primary" id="submitBtn">Prüfen</button></div>`;
+  } else if(q.type==='set'){
+    html += `<div class="numrow"><input type="text" inputmode="decimal" id="numInput" placeholder="z.B. −2, 3" autocomplete="off" style="width:280px;">
+      <button class="primary" id="submitBtn">Prüfen</button></div>`;
+  }
+  const hintList=Array.isArray(q.hints)&&q.hints.length?q.hints:(q.hint?[q.hint]:[]);
+  if(hintList.length){
+    html += `<div class="v27-hint-stack" id="hintStack"><div class="v27-hint-actions"><button class="hint-toggle" id="hintToggle" type="button">💡 Hinweis 1 anzeigen</button></div><div class="hint" id="hintText"></div></div>`;
+  }
+  html += `</div>`;
+  html += `<div class="feedback" id="feedback"></div>`;
+  if(q.plot) html += `<div class="plotwrap" id="plotWrap"><canvas class="plot" id="plotCanvas" width="420" height="220"></canvas></div>`;
+  html += `<div class="nextrow" id="nextRow"></div>`;
+  html += `</div>`;
+  html += calculatorMarkup();
+  qArea.innerHTML = html;
+  typesetMath(qArea);
+
+  const hintToggle = document.getElementById('hintToggle');
+  if(hintToggle){
+    const hintBox=document.getElementById('hintText');
+    let shown=0;
+    hintToggle.addEventListener('click',()=>{
+      if(shown < hintList.length){
+        hintBox.innerHTML = `<div class="v27-hint-box"><strong>Hinweis ${shown+1}</strong><div style="margin-top:4px">${hintList[shown]}</div></div>`;
+        hintBox.classList.add('show');
+        shown++;
+        hintToggle.textContent = shown < hintList.length ? `💡 Hinweis ${shown+1} anzeigen` : '💡 Hinweise ausblenden';
+        if(shown===hintList.length) hintToggle.setAttribute('data-complete','1');
+        typesetMath(hintBox);
+      } else {
+        hintBox.classList.toggle('show');
+        hintToggle.textContent = hintBox.classList.contains('show') ? '💡 Hinweise ausblenden' : `💡 Hinweis 1 erneut anzeigen`;
+      }
+    });
+  }
+  if(q.type==='mc'){
+    qArea.querySelectorAll('.opt').forEach(btn=>{
+      btn.addEventListener('click', ()=> submitMC(parseInt(btn.dataset.i)));
+    });
+  } else {
+    const input = document.getElementById('numInput');
+    document.getElementById('submitBtn').addEventListener('click', submitTyped);
+    input.addEventListener('keydown', e=>{ if(e.key==='Enter') submitTyped(); });
+    input.focus();
+  }
+}
+
+function escapeHTML(value){
+  return String(value).replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+}
+function answerDisplay(q){
+  if(q.type==='mc') return q.options[q.correctIndex];
+  if(q.type==='set') return q.correct.map(v=>String(v).replace('.',',')).join(', ');
+  return String(q.correct).replace('.',',');
+}
+function showFeedback(correct, explain, userAnswer){
+  const fb = document.getElementById('feedback');
+  fb.className = 'feedback show ' + (correct ? 'ok' : 'bad');
+  const rightAnswer = answerDisplay(currentQuestion);
+  const answerLine = `<div class="feedback-answer"><div>${correct ? 'Richtige Antwort' : 'Deine Antwort'}: <b>${correct ? rightAnswer : escapeHTML(userAnswer ?? '')}</b></div>${correct ? '' : `<div>Richtige Antwort: <b>${rightAnswer}</b></div>`}</div>`;
+  const xpText = correct ? '⭐ +10 XP' : '🧠 +2 XP · Fehler gespeichert – beim nächsten Mal wieder versuchen';
+  fb.innerHTML = `<strong>${correct ? 'Richtig! ✓' : 'Nicht ganz.'}</strong><span class="explain">${explain}</span>${answerLine}<div class="xp-gain">${xpText}</div>`;
+  typesetMath(fb);
+  const nextRow = document.getElementById('nextRow');
+  nextRow.innerHTML = correct
+    ? `<div class="v27-next-actions"><button class="primary" id="nextBtn">Nächste Aufgabe →</button></div>`
+    : `<div class="v27-next-actions"><button class="primary" id="similarBtn">🔁 Ähnliche Aufgabe</button><button class="v27-similar" id="nextBtn">Nächste Aufgabe</button></div>`;
+  document.getElementById('nextBtn').addEventListener('click', newQuestion);
+  document.getElementById('similarBtn')?.addEventListener('click', ()=>startFocusSession(activeCategory,currentSubtypeId,5));
+  if(currentQuestion.plot){
+    document.getElementById('plotWrap').classList.add('show');
+    lastPlotCanvasId = 'plotCanvas';
+    lastPlotCfg = currentQuestion.plot;
+    drawPlot(document.getElementById('plotCanvas'), currentQuestion.plot);
+  }
+  const detail = correct ? null : {
+    prompt: currentQuestion.prompt + (currentQuestion.formula ? ' ' + currentQuestion.formula : ''),
+    explain,
+    ts: Date.now()
+  };
+  recordAttempt(currentSubtypeId, correct, detail);
+  if(sessionJustCompleted){
+    fb.innerHTML += `<div class="session-complete">🎉 Fokus-Session abgeschlossen — ${sessionJustCompleted}!</div>`;
+    sessionJustCompleted = null;
+  }
+}
+
+function submitMC(i){
+  if(answered) return;
+  answered = true;
+  const q = currentQuestion;
+  qArea.querySelectorAll('.opt').forEach((btn,idx)=>{
+    btn.disabled = true;
+    if(idx===q.correctIndex) btn.classList.add('correct');
+    else if(idx===i) btn.classList.add('wrong');
+  });
+  showFeedback(i===q.correctIndex, q.explain, q.options[i]);
+}
+
+function submitTyped(){
+  if(answered) return;
+  const q = currentQuestion;
+  const raw = document.getElementById('numInput').value.trim().replace(/−/g,'-');
+  if(!raw) return;
+  let correct = false;
+  if(q.type==='numeric'){
+    const val = parseNumberInput(raw);
+    correct = !isNaN(val) && Math.abs(val - q.correct) <= q.tol;
+  } else if(q.type==='set'){
+    const parts = raw.split(/[,;\s]+/).filter(Boolean).map(parseNumberInput);
+    if(parts.length === q.correct.length){
+      const remaining = q.correct.slice();
+      correct = parts.every(p=>{
+        const idx = remaining.findIndex(c=>Math.abs(c-p)<=q.tol);
+        if(idx===-1) return false;
+        remaining.splice(idx,1);
+        return true;
+      });
+    }
+  }
+  answered = true;
+  document.getElementById('numInput').disabled = true;
+  document.getElementById('submitBtn').disabled = true;
+  showFeedback(correct, q.explain, raw);
+}
+
+/* ============================================================
+   PLOTTING (canvas)
+   ============================================================ */
+function drawPlot(canvas, cfg){
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0,0,W,H);
+  const {fn, xmin, xmax, points} = cfg;
+  let ymin=Infinity, ymax=-Infinity;
+  const N=200;
+  const ys=[];
+  for(let i=0;i<=N;i++){
+    const x = xmin + (xmax-xmin)*i/N;
+    const y = fn(x);
+    ys.push(y);
+    if(isFinite(y)){ ymin=Math.min(ymin,y); ymax=Math.max(ymax,y); }
+  }
+  (points||[]).forEach(p=>{ ymin=Math.min(ymin,p.y); ymax=Math.max(ymax,p.y); });
+  const pad = (ymax-ymin)*0.15 || 1;
+  ymin -= pad; ymax += pad;
+  const mLeft=34, mRight=14, mTop=14, mBottom=28;
+  const plotW = W-mLeft-mRight, plotH = H-mTop-mBottom;
+  const sx = x => mLeft + (x-xmin)/(xmax-xmin)*plotW;
+  const sy = y => mTop + (1-(y-ymin)/(ymax-ymin))*plotH;
+
+  const gridColor = cssVar('--grid'), axisColor = cssVar('--ink'), curveColor = cssVar('--blue'), labelColor = cssVar('--ink-soft');
+
+  // grid
+  ctx.strokeStyle = gridColor; ctx.lineWidth=1;
+  for(let gx=Math.ceil(xmin); gx<=Math.floor(xmax); gx++){
+    ctx.beginPath(); ctx.moveTo(sx(gx), mTop); ctx.lineTo(sx(gx), H-mBottom); ctx.stroke();
+  }
+  // axes
+  ctx.strokeStyle = axisColor; ctx.lineWidth=1.4;
+  if(ymin<=0 && ymax>=0){ ctx.beginPath(); ctx.moveTo(mLeft, sy(0)); ctx.lineTo(W-mRight, sy(0)); ctx.stroke(); }
+  if(xmin<=0 && xmax>=0){ ctx.beginPath(); ctx.moveTo(sx(0), mTop); ctx.lineTo(sx(0), H-mBottom); ctx.stroke(); }
+
+  // curve
+  ctx.strokeStyle = curveColor; ctx.lineWidth=2.4; ctx.beginPath();
+  for(let i=0;i<=N;i++){
+    const x = xmin + (xmax-xmin)*i/N;
+    const y = ys[i];
+    const px = sx(x), py = sy(y);
+    if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+  }
+  ctx.stroke();
+
+  // points
+  (points||[]).forEach(p=>{
+    ctx.beginPath();
+    ctx.fillStyle = p.c ? getComputedColor(p.c) : cssVar('--rust');
+    ctx.arc(sx(p.x), sy(p.y), 4.5, 0, Math.PI*2);
+    ctx.fill();
+  });
+
+  // x labels
+  ctx.fillStyle = labelColor; ctx.font = '11px IBM Plex Mono, monospace'; ctx.textAlign='center';
+  for(let gx=Math.ceil(xmin); gx<=Math.floor(xmax); gx++){
+    if(gx===0) continue;
+    ctx.fillText(String(gx), sx(gx), H-mBottom+16);
+  }
+}
+function getComputedColor(varStr){
+  const m = varStr.match(/var\((--[a-z]+)\)/);
+  if(!m) return varStr;
+  return getComputedStyle(document.documentElement).getPropertyValue(m[1]).trim() || '#2C5AA0';
+}
+
+/* ============================================================
+   STATS TAB
+   ============================================================ */
+const statsArea = document.getElementById('statsArea');
+const weakArea = document.getElementById('weakArea');
+function getLastDays(n=14){
+  const out=[]; const base=new Date(); base.setHours(0,0,0,0);
+  for(let i=n-1;i>=0;i--){ const d=new Date(base); d.setDate(base.getDate()-i); out.push({key:localDateKey(d),label:String(d.getDate())}); }
+  return out;
+}
+function renderStats(){
+  const allSub=[];
+  Object.entries(TOPICS).forEach(([key,cat])=>cat.subtypes.forEach(st=>allSub.push({...st,cat:key,color:cat.color,catName:cat.name})));
+  const totalAttempts=progressData.totalAttempts, totalCorrect=progressData.totalCorrect, overall=totalAttempts?Math.round(100*totalCorrect/totalAttempts):0;
+  const categories=catKeys.map(key=>{
+    let attempts=0,correct=0; TOPICS[key].subtypes.forEach(st=>{const q=stats[st.id]||{};attempts+=q.attempts||0;correct+=q.correct||0;});
+    return {key,name:TOPICS[key].name,attempts,correct,pct:attempts?Math.round(100*correct/attempts):0};
+  });
+  const lastDays=getLastDays(14); const daySet=new Set(Object.values(stats).flatMap(s=>s.days||[]));
+  let html=`<div class="statcard"><h2>📊 Dein Fortschritt</h2>
+    <div class="metric-grid"><div class="metric"><b>${totalAttempts}</b><span>Aufgaben</span></div><div class="metric"><b>${overall}%</b><span>Genauigkeit</span></div><div class="metric"><b>${getLearningDayCount()}</b><span>Lerntage</span></div><div class="metric"><b>${streakData.best}</b><span>Beste Streak</span></div><div class="metric"><b>${progressData.xp}</b><span>XP</span></div><div class="metric"><b>${getLevel()}</b><span>Level</span></div></div>
+    ${examHistory.length?`<div class="weak-detail" style="margin-top:12px">Letzte Prüfung: ${examHistory[0].percent}% · Note ${examHistory[0].grade} · ${examHistory[0].points}/30 Punkte</div>`:''}
+  </div>`;
+  html+=`<div class="statcard"><h2>📅 Lernaktivität</h2><p class="sub">An diesen Tagen hast du mindestens eine Aufgabe bearbeitet.</p><div class="v27-days">${lastDays.map(d=>`<div class="v27-day ${daySet.has(d.key)?'active':''}" title="${d.key}"><span>${d.label}</span></div>`).join('')}</div></div>`;
+  html+=`<div class="statcard"><h2>📚 Themenübersicht</h2><p class="sub">Hier siehst du die Genauigkeit pro großem Themenbereich. Die Anzahl der Aufgaben verhindert, dass eine einzelne Aufgabe dein Bild verzerrt.</p><div class="v27-cat-grid">${categories.map(c=>`<div class="v27-cat-row"><div><div class="v27-cat-name">${escapeHTML(c.name)}</div><div class="v27-confidence">${c.attempts?`${c.attempts} Aufgaben`:'Noch keine Daten'}</div></div><div class="bartrack"><div class="barfill" style="width:${c.pct}%;background:${TOPICS[c.key].color}"></div></div><div class="v27-cat-meta">${c.attempts?c.pct+'%':'—'}</div></div>`).join('')}</div></div>`;
+  html+=`<div class="statcard"><h2>Details</h2><div class="barlist">`;
+  allSub.forEach(st=>{const q=stats[st.id]||{attempts:0,correct:0};const pct=q.attempts?Math.round(100*q.correct/q.attempts):0;html+=`<div class="barrow"><div class="name">${escapeHTML(st.name)}</div><div class="bartrack"><div class="barfill" style="width:${pct}%;background:${st.color}"></div></div><div class="pct">${q.attempts?pct+'%':'—'}</div></div>`;});
+  html+=`</div></div>`;
+  const ach=unlockAchievements();
+  html+=`<div class="statcard"><h2>🏆 Achievements</h2><div class="achievement-list">${Object.entries(ach).map(([id,a])=>`<div class="achievement ${achievements[id]?'':'locked'}"><span class="icon">${a.icon}</span><div><b>${a.label}</b><div class="weak-detail">${a.desc}</div></div></div>`).join('')}</div></div>`;
+  html+=`<div class="statcard"><h2>💾 Fortschritt sichern</h2><p class="sub">Deine Daten liegen lokal auf diesem Gerät. Sichere sie als kleine JSON-Datei, bevor du Browserdaten löschst oder das Gerät wechselst.</p><div class="v26-data-actions"><button id="exportDataBtn">⬇️ Backup exportieren</button><button id="importDataBtn">⬆️ Backup importieren</button></div></div>`;
+  statsArea.innerHTML=html;
+  document.getElementById('exportDataBtn')?.addEventListener('click',exportProgress);
+  document.getElementById('importDataBtn')?.addEventListener('click',()=>document.getElementById('backupFileInput')?.click());
+}
+
+/* ============================================================
+   "TRAINIERE MEINE SCHWÄCHEN"
+   ============================================================ */
+function allSubtypesList(){
+  const list = [];
+  Object.entries(TOPICS).forEach(([key,cat])=>{
+    cat.subtypes.forEach(st=> list.push({...st, catKey:key, color:cat.color, catName:cat.name}));
+  });
+  return list;
+}
+
+function startFocusSession(catKey, subtypeId, target){
+  mobileView = 'practice';
+  activeCategory = catKey;
+  activeSubtypeId = subtypeId;
+  focusSession = {subtypeId, target: target||10, progress:0};
+  render();
+}
+
+function renderWeaknesses(){
+  const MIN_ATTEMPTS = 3;
+  const all = allSubtypesList().map(st=>{
+    const s = stats[st.id] || {attempts:0, correct:0};
+    const acc = s.attempts ? 100*s.correct/s.attempts : null;
+    const mb = mistakeBank[st.id];
+    const active = !!(mb && !mb.resolved && mb.misses>0);
+    return {...st, attempts:s.attempts, acc, active};
+  });
+  const withData = all.filter(s=>s.attempts >= MIN_ATTEMPTS).map(s=>({...s,priority:weaknessPriority(s)}));
+
+  let html = '';
+  if(withData.length===0){
+    html = `<div class="statcard">
+      <h2>🎯 Trainiere meine Schwächen</h2>
+      <p class="sub">Noch nicht genug Daten — übe erst ein paar Aufgaben in den Themenbereichen, dann zeige ich dir, wo es hakt.</p>
+    </div>`;
+    weakArea.innerHTML = html;
+    return;
+  }
+
+  withData.sort((a,b)=>b.priority-a.priority);
+  const weakest = withData[0];
+
+  html += `<div class="statcard weakness-hero">
+    <h2>🎯 Trainiere meine Schwächen</h2>
+    <p class="sub">Deine größte Schwäche gerade:</p>
+    <div class="weakness-name" style="color:${weakest.color}">${weakest.name}</div>
+    <div class="weakness-acc">Genauigkeit: ${Math.round(weakest.acc)}% · ${weakest.attempts} Aufgaben</div><div class="weak-detail">${weakest.active ? '🔴 Aktiver Fehler im Fehlerspeicher – gezieltes Wiederholen empfohlen.' : '🟡 Priorität aus Fehlerquote, Datenmenge und Aktualität – nicht nur aus einer Prozentzahl.'}</div>
+    <button class="primary" id="focusBtn">Heute empfohlen: 10 ${weakest.name}-Aufgaben üben</button>
+  </div>`;
+
+  html += `<div class="statcard"><h2>Alle Themen nach Genauigkeit</h2><div class="barlist">`;
+  withData.forEach(st=>{
+    const pct = Math.round(st.acc);
+    const badge = st.active ? '🔴' : (pct<70 ? '🟡' : '🟢');
+    html += `<div class="barrow weakrow" data-cat="${st.catKey}" data-sub="${st.id}">
+      <div class="name">${badge} ${escapeHTML(st.name)}</div>
+      <div class="bartrack"><div class="barfill" style="width:${pct}%; background:${st.color};"></div></div>
+      <div class="pct">${pct}%</div>
+    </div>`;
+  });
+  html += `</div></div>`;
+
+  const untested = all.filter(s=>s.attempts < MIN_ATTEMPTS);
+  if(untested.length){
+    html += `<div class="statcard"><p class="sub">Noch zu wenig Daten für: ${untested.map(s=>s.name).join(', ')}</p></div>`;
+  }
+
+  weakArea.innerHTML = html;
+  document.getElementById('focusBtn').addEventListener('click', ()=> startFocusSession(weakest.catKey, weakest.id, 10));
+  weakArea.querySelectorAll('.weakrow').forEach(row=>{
+    row.style.cursor = 'pointer';
+    row.addEventListener('click', ()=> startFocusSession(row.dataset.cat, row.dataset.sub, 10));
+  });
+}
+
+
+/* ============================================================
+   MISTAKE MODAL (grouped by subtype, spaced-repetition style)
+   ============================================================ */
+const modalBackdrop = document.getElementById('modalBackdrop');
+document.getElementById('mistakePill').addEventListener('click', ()=>{
+  const list = document.getElementById('mistakeList');
+  const entries = Object.entries(mistakeBank)
+    .filter(([id,mb]) => mb.misses>0)
+    .map(([id,mb]) => ({id, mb, meta:getSubtypeMeta(id)}))
+    .filter(e=>e.meta)
+    .sort((a,b) => (a.mb.resolved - b.mb.resolved) || (b.mb.lastMissAt - a.mb.lastMissAt));
+
+  if(entries.length===0){
+    list.innerHTML = `<div class="empty">Noch keine Fehler gesammelt — sauber! 🎯</div>`;
+  } else {
+    list.innerHTML = entries.map(({id,mb,meta})=>{
+      const due = !mb.resolved && mb.nextReviewAt && mb.nextReviewAt<=Date.now();
+      const status = mb.resolved ? '✅ Behoben' : (due ? '🔴 Wiederholung fällig' : (mb.streakSinceMiss>0 ? '🟡 Wird gerade behoben' : '🔴 Aktives Problem'));
+      const recent = mb.recent.slice(0,2).map(r=>`
+        <div class="mistake-item">
+          <div class="mp">${r.prompt}</div>
+          <div class="me">${r.explain}</div>
+        </div>`).join('');
+      return `<div class="mistake-group">
+        <div class="mistake-group-head">
+          <span style="color:${meta.color}; font-weight:600;">${meta.name}</span>
+          <span class="mistake-status">${status} · ${mb.misses}× falsch${!mb.resolved&&mb.nextReviewAt?` · Stufe ${mb.reviewStage||0}/4`:''}</span>
+        </div>
+        ${recent}
+        <button class="ghost mistake-retry" data-cat="${meta.catKey}" data-sub="${id}">Ähnliche Aufgabe üben →</button>
+      </div>`;
+    }).join('');
+    list.querySelectorAll('.mistake-retry').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        modalBackdrop.classList.remove('show');
+        startFocusSession(btn.dataset.cat, btn.dataset.sub, 5);
+      });
+    });
+  }
+  typesetMath(list);
+  modalBackdrop.classList.add('show');
+});
+document.getElementById('closeModal').addEventListener('click', ()=> modalBackdrop.classList.remove('show'));
+document.getElementById('clearMistakes').addEventListener('click', ()=>{
+  mistakeBank = {}; saveJSON(LS_MISTAKEBANK, mistakeBank); updateStatbar();
+  modalBackdrop.classList.remove('show');
+});
+modalBackdrop.addEventListener('click', e=>{ if(e.target===modalBackdrop) modalBackdrop.classList.remove('show'); });
+
+
+
+/* ============================================================
+   V2.7.1 DAILY RECOMMENDATION + CURRICULUM ROADMAP
+   ============================================================ */
+function learningStatsFor(id){
+  const s=stats[id]||{attempts:0,correct:0};
+  return {attempts:s.attempts||0,acc:s.attempts?100*(s.correct||0)/s.attempts:0};
+}
+function weaknessPriority(st){
+  const s=learningStatsFor(st.id);
+  if(!s.attempts) return 0;
+  const confidence=1-Math.exp(-s.attempts/6);
+  const errorRate=1-(s.correct/s.attempts);
+  const mb=mistakeBank[st.id];
+  const active=mb && !mb.resolved && mb.misses>0;
+  const due=active && (!mb.nextReviewAt || mb.nextReviewAt<=Date.now());
+  const stale=s.lastAttemptAt ? Math.min(1,Math.max(0,(Date.now()-s.lastAttemptAt)/(7*86400000))) : 1;
+  return errorRate*confidence*100 + (active?22:0) + (due?18:0) + stale*8;
+}
+function getRecommendation(){
+  const all=allSubtypesList();
+  let best=null;
+  all.forEach((st,idx)=>{
+    const s=learningStatsFor(st.id); const mb=mistakeBank[st.id];
+    const active=!!(mb && !mb.resolved && mb.misses>0);
+    const due=active && (!mb.nextReviewAt || mb.nextReviewAt<=Date.now());
+    const priority=weaknessPriority(st);
+    let score=priority;
+    let reason='';
+    if(due){score+=80; reason='Wiederholung ist fällig';}
+    else if(active){score+=45; reason='aktiver Fehler';}
+    else if(s.attempts===0){score+=32; reason='noch nicht geübt';}
+    else if(s.acc<60){reason='noch unsicher';}
+    else if(s.acc<75){reason='weiter festigen';}
+    else if(s.acc<85){reason='stabilisieren';}
+    else {reason='kurz wiederholen';}
+    if(s.attempts>0 && s.lastAttemptAt && Date.now()-s.lastAttemptAt>7*86400000) score+=10;
+    score += Math.max(0,12-Math.min(12,s.attempts))*0.5;
+    score -= idx*0.0001;
+    if(!best || score>best.score) best={...st,score,reason,acc:s.acc,attempts:s.attempts,due};
+  });
+  return best;
+}
+function renderDailyPanel(){
+  if(!dailyPanel) return;
+  const rec=getRecommendation(); if(!rec){dailyPanel.innerHTML='';return;}
+  const days=getLearningDayCount();
+  dailyPanel.innerHTML=`<div class="v26-daily-card">\n    <div>\n      <div class="v26-kicker">Heute · ${days} Lerntage</div>\n      <h2>🎯 ${escapeHTML(rec.name)}</h2>\n      <p>${rec.attempts?`Deine Trefferquote liegt hier bei ${Math.round(rec.acc)} %.`:'Dieses Thema wurde bisher noch kaum geübt.'} ${escapeHTML(rec.reason)}.</p>\n      <div class="v26-daily-meta"><span class="v26-mini-pill">10 Aufgaben</span><span class="v26-mini-pill">${rec.attempts?`${rec.attempts} Versuche`:'Neu'}</span><span class="v26-recommend-badge">Empfohlen</span></div>\n    </div>\n    <button class="primary" id="dailyStartBtn">Jetzt üben →</button>\n  </div>`;
+  document.getElementById('dailyStartBtn').onclick=()=>startFocusSession(rec.catKey,rec.id,10);
+}
+function competencyStatus(id){
+  if(!id) return {icon:'⚪',label:'Noch nicht angelegt',detail:'Kommt als nächster Ausbau.',pct:0};
+  const s=learningStatsFor(id); const mb=mistakeBank[id];
+  if(s.attempts===0) return {icon:'⚪',label:'Noch nicht geübt',detail:'Starte mit ein paar Aufgaben.',pct:0};
+  const due=mb && !mb.resolved && mb.nextReviewAt && mb.nextReviewAt<=Date.now();
+  if(mb && !mb.resolved && mb.misses>0) return {icon:'🔴',label:due?'Wiederholen':'Unsicher',detail:`${Math.round(s.acc)} % · ${s.attempts} Aufgaben${due?' · fällig':''}`,pct:Math.round(s.acc)};
+  if(s.attempts>=5 && s.acc>=85) return {icon:'✅',label:'Sicher',detail:`${Math.round(s.acc)} % · ${s.attempts} Aufgaben`,pct:Math.round(s.acc)};
+  if(s.acc>=70) return {icon:'🟡',label:'Festigen',detail:`${Math.round(s.acc)} % · ${s.attempts} Aufgaben`,pct:Math.round(s.acc)};
+  return {icon:'🔴',label:'Üben',detail:`${Math.round(s.acc)} % · ${s.attempts} Aufgaben`,pct:Math.round(s.acc)};
+}
+function renderRoadmap(){
+  if(!roadmapArea) return;
+  const items=ROADMAP_11.flatMap(sec=>sec.items);
+  const trainable=items.filter(x=>x[2]).length;
+  const mastered=items.filter(x=>x[2] && competencyStatus(x[2]).label==='Sicher').length;
+  const practice=items.filter(x=>x[2] && ['Festigen','Üben','Unsicher','Wiederholen'].includes(competencyStatus(x[2]).label)).length;
+  let html=`<div class="v26-roadmap">\n    <div class="statcard v26-roadmap-head"><h2>🧭 Dein FOS-Mathe-Lernplan</h2><p class="sub">Dein Lernplan zeigt konkrete Kompetenzen. Grün = sicher, Gelb = festigen, Rot = üben, Weiß = noch nicht geübt oder noch nicht umgesetzt.</p><div class="v26-roadmap-summary"><div class="metric"><b>${mastered}</b><span>sicher</span></div><div class="metric"><b>${practice}</b><span>festigen / üben</span></div><div class="metric"><b>${trainable}/${items.length}</b><span>bereits trainierbar</span></div><div class="metric"><b>12</b><span>Klasse: vorbereitet</span></div></div></div>`;
+  ROADMAP_11.forEach(sec=>{
+    html+=`<section class="v26-roadmap-section"><h3>${escapeHTML(sec.area)}</h3><p>${escapeHTML(sec.desc)}</p><div class="v26-competency-list">`;
+    sec.items.forEach(([title,detail,id])=>{
+      const st=competencyStatus(id);
+      const meta=id?getSubtypeMeta(id):null;
+      html+=`<div class="v26-competency"><span class="status">${st.icon}</span><div><div class="title">${escapeHTML(title)}</div><div class="detail">${escapeHTML(st.label)} · ${escapeHTML(detail)}${meta?` · ${escapeHTML(meta.name)}`:''}</div>${id&&st.pct>0?`<div class="v27-competency-progress"><span style="width:${Math.max(4,Math.min(100,st.pct))}%"></span></div>`:''}</div>${id?`<button data-road-cat="${escapeHTML(meta.catKey)}" data-road-sub="${escapeHTML(id)}">${st.label==='Sicher'?'Wiederholen':'Üben →'}</button>`:''}</div>`;
+    });
+    html+=`</div></section>`;
+  });
+  html+=`<section class="v26-roadmap-section v26-grade12"><h3>📗 12. Klasse · vorbereitet</h3><p>Noch keine fertigen Aufgaben. Die Struktur wächst mit eurem Unterricht.</p><div class="v26-competency-list">${ROADMAP_12.map(([t,d])=>`<div class="v26-competency"><span class="status">⚪</span><div><div class="title">${escapeHTML(t)}</div><div class="detail">${escapeHTML(d)}</div></div></div>`).join('')}</div><div class="v26-roadmap-note" style="margin-top:12px">💡 Ziel: Die 11.-Klasse-Kompetenzen bleiben als Fundament erhalten. Später kann ein 12.-Klasse-Thema gezielt auf diese Grundlagen verweisen.</div></section>`;
+  html+='</div>';
+  roadmapArea.innerHTML=html;
+  roadmapArea.querySelectorAll('[data-road-sub]').forEach(btn=>btn.addEventListener('click',()=>startFocusSession(btn.dataset.roadCat,btn.dataset.roadSub,5)));
+}
+
+function backupPayload(){
+  const keys=[LS_STATS,LS_MISTAKEBANK,LS_STREAK,LS_PROGRESS,LS_ACHIEVEMENTS,LS_EXAMS,LS_THEME];
+  const data={}; keys.forEach(k=>{const v=localStorage.getItem(k); if(v!==null)data[k]=v;});
+  return {app:'GHGeniales Mathe',version:APP_VERSION,exportedAt:new Date().toISOString(),data};
+}
+function exportProgress(){
+  const blob=new Blob([JSON.stringify(backupPayload(),null,2)],{type:'application/json'});
+  const url=URL.createObjectURL(blob); const a=document.createElement('a'); a.href=url; a.download=`ghgeniales-mathe-backup-${localDateKey()}.json`; a.click(); setTimeout(()=>URL.revokeObjectURL(url),500);
+}
+function importProgress(file){
+  const reader=new FileReader();
+  reader.onload=()=>{try{
+    const obj=JSON.parse(reader.result); if(!obj || obj.app!=='GHGeniales Mathe' || !obj.data) throw new Error('Ungültige Sicherungsdatei.');
+    const allowed=[LS_STATS,LS_MISTAKEBANK,LS_STREAK,LS_PROGRESS,LS_ACHIEVEMENTS,LS_EXAMS,LS_THEME];
+    allowed.forEach(k=>{if(typeof obj.data[k]==='string')localStorage.setItem(k,obj.data[k]);});
+    alert('Fortschritt importiert. Die App wird neu geladen.'); location.reload();
+  }catch(e){alert('Import fehlgeschlagen: '+e.message)}};
+  reader.readAsText(file);
+}
+
+/* ============================================================
+   MAIN RENDER / ROUTER
+   ============================================================ */
+function render(){
+  document.body.classList.toggle('v2-exam-active', activeCategory==='exam');
+  document.body.classList.toggle('v2-exam-review-visible', activeCategory==='exam' && !!examSession?.finished);
+  renderTabs();
+  renderChips();
+  renderDailyPanel();
+  dailyPanel.style.display = activeCategory==='exam' ? 'none' : '';
+  qArea.style.display='none';
+  weakArea.style.display='none';
+  statsArea.style.display='none';
+  examArea.style.display='none';
+  roadmapArea.style.display='none';
+  if(activeCategory==='roadmap'){
+    roadmapArea.style.display='block';
+    renderRoadmap();
+  } else if(activeCategory==='stats'){
+    statsArea.style.display='block';
+    renderStats();
+  } else if(activeCategory==='weak'){
+    weakArea.style.display='block';
+    renderWeaknesses();
+  } else if(activeCategory==='exam'){
+    examArea.style.display='block';
+    renderExam();
+  } else {
+    qArea.style.display='block';
+    newQuestion();
+  }
+}
+
+const backupInput=document.getElementById('backupFileInput');
+if(backupInput) backupInput.addEventListener('change',e=>{const file=e.target.files?.[0]; if(file) importProgress(file); e.target.value='';});
+
+updateStatbar();
+render();
+
+/* ============================================================
+   HERO CANVAS ANIMATION
+   ============================================================ */
+(function heroAnim(){
+  const canvas = document.getElementById('heroCanvas');
+  const ctx = canvas.getContext('2d');
+  const W=canvas.width, H=canvas.height;
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const xmin=-3.2, xmax=3.2;
+  function f(x){ return 0.35*x*x*x - 0.9*x; }
+  let ymin=Infinity, ymax=-Infinity;
+  const N=160, pts=[];
+  for(let i=0;i<=N;i++){
+    const x = xmin+(xmax-xmin)*i/N;
+    const y = f(x);
+    pts.push([x,y]);
+    ymin=Math.min(ymin,y); ymax=Math.max(ymax,y);
+  }
+  const pad=(ymax-ymin)*0.2; ymin-=pad; ymax+=pad;
+  const mLeft=20, mRight=20, mTop=20, mBottom=20;
+  const pw=W-mLeft-mRight, ph=H-mTop-mBottom;
+  const sx = x => mLeft+(x-xmin)/(xmax-xmin)*pw;
+  const sy = y => mTop+(1-(y-ymin)/(ymax-ymin))*ph;
+
+  const wendeX = 0;
+  function draw(progress){
+    ctx.clearRect(0,0,W,H);
+    ctx.strokeStyle=cssVar('--grid'); ctx.lineWidth=1;
+    for(let gx=-3; gx<=3; gx++){ ctx.beginPath(); ctx.moveTo(sx(gx),mTop); ctx.lineTo(sx(gx),H-mBottom); ctx.stroke(); }
+    ctx.strokeStyle=cssVar('--ink'); ctx.lineWidth=1.2;
+    ctx.beginPath(); ctx.moveTo(mLeft, sy(0)); ctx.lineTo(W-mRight, sy(0)); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(sx(0), mTop); ctx.lineTo(sx(0), H-mBottom); ctx.stroke();
+
+    const count = Math.floor(pts.length*progress);
+    ctx.strokeStyle=cssVar('--blue'); ctx.lineWidth=2.6; ctx.beginPath();
+    for(let i=0;i<count;i++){
+      const [x,y]=pts[i];
+      const px=sx(x), py=sy(y);
+      if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
+    }
+    ctx.stroke();
+
+    if(progress>0.5){
+      ctx.beginPath();
+      ctx.fillStyle=cssVar('--amber');
+      ctx.arc(sx(wendeX), sy(f(wendeX)), 4, 0, Math.PI*2);
+      ctx.fill();
+    }
+  }
+
+  heroRedraw = () => draw(1);
+
+  if(reduced){ draw(1); return; }
+  let start=null;
+  function step(ts){
+    if(!start) start=ts;
+    const progress = Math.min(1, (ts-start)/1400);
+    draw(progress);
+    if(progress<1) requestAnimationFrame(step);
+  }
+  requestAnimationFrame(step);
+})();
+
+/* ============================================================
+   PWA: SERVICE WORKER + INSTALL PROMPT
+   ============================================================ */
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('./sw.js').catch(()=>{ /* file:// or unsupported host — app still works, just not offline-cached */ });
+  });
+}
+
+let deferredInstallPrompt = null;
+const installPill = document.getElementById('installPill');
+const installLabel = document.getElementById('installLabel');
+const installModal = document.getElementById('installModal');
+const installGuide = document.getElementById('installGuide');
+const installSteps = document.getElementById('installSteps');
+const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) ||
+  (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isStandalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
+
+function showInstallPill(){
+  if(isStandalone) return;
+  installPill.style.display = 'flex';
+}
+
+function renderInstallGuide(){
+  if(isIOS){
+    installLabel.textContent = 'Als App hinzufügen';
+    installGuide.innerHTML = `<p class="install-guide-lead"><b>Empfohlen auf iPad/iPhone:</b> In Safari kannst du GHGeniales Mathe als echte Web-App auf den Home-Bildschirm legen.</p>`;
+    installSteps.innerHTML = `
+      <div class="install-step"><b>1</b><span>GHGeniales Mathe in <strong>Safari</strong> öffnen.</span></div>
+      <div class="install-step"><b>2</b><span>Auf <strong>Teilen</strong> tippen.</span></div>
+      <div class="install-step"><b>3</b><span><strong>„Zum Home-Bildschirm“</strong> auswählen.</span></div>
+      <div class="install-step"><b>4</b><span>Wenn angeboten: <strong>„Als Web-App öffnen“</strong> aktivieren und <strong>Hinzufügen</strong> wählen.</span></div>
+      <div class="install-note">💡 In Chrome auf iPad/iPhone geht es ebenfalls über <strong>Teilen → Zum Home-Bildschirm</strong>. Für die beste App-Ansicht empfehlen wir Safari.</div>`;
+  } else {
+    installLabel.textContent = 'Zum Startbildschirm hinzufügen';
+    installGuide.innerHTML = `<p class="install-guide-lead">Installiere GHGeniales Mathe wie eine App. Danach ist es direkt vom Startbildschirm erreichbar und kann offline genutzt werden.</p>`;
+    installSteps.innerHTML = `
+      <div class="install-step"><b>1</b><span>Auf <strong>„Zum Startbildschirm hinzufügen“</strong> tippen.</span></div>
+      <div class="install-step"><b>2</b><span>Den Installationsdialog bestätigen.</span></div>
+      <div class="install-step"><b>3</b><span>Das <strong>GHG²</strong>-Symbol erscheint auf deinem Startbildschirm.</span></div>`;
+  }
+}
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  showInstallPill();
+});
+
+installPill.addEventListener('click', async () => {
+  if(deferredInstallPrompt){
+    deferredInstallPrompt.prompt();
+    await deferredInstallPrompt.userChoice;
+    deferredInstallPrompt = null;
+    installPill.style.display = 'none';
+    return;
+  }
+  renderInstallGuide();
+  installModal.classList.add('show');
+});
+
+if(isIOS && !isStandalone) showInstallPill();
+
+document.getElementById('closeInstallModal').addEventListener('click', () => installModal.classList.remove('show'));
+installModal.addEventListener('click', e => { if(e.target===installModal) installModal.classList.remove('show'); });
+window.addEventListener('appinstalled', () => {
+  installPill.style.display = 'none';
+});
+
+/* Theme toggle click — the initial theme is already applied above; this only handles switching + redrawing canvases */
+function redrawAllCanvases(){
+  if(heroRedraw) heroRedraw();
+  if(activeCategory==='stats') renderStats();
+  if(lastPlotCanvasId){
+    const el = document.getElementById(lastPlotCanvasId);
+    if(el) drawPlot(el, lastPlotCfg);
+  }
+}
+document.getElementById('themeToggle').addEventListener('click', ()=>{
+  const current = document.documentElement.getAttribute('data-theme');
+  const next = current==='dark' ? 'light' : 'dark';
+  applyTheme(next);
+  localStorage.setItem(LS_THEME, next);
+  redrawAllCanvases();
+});
+</script>
+
+<nav class="v2-mobile-nav" id="mobileNav" aria-label="Hauptnavigation">
+<button type="button" data-mobile-nav="home" onclick="v2MobileGo('home')"><span>🏠</span><span>Home</span></button>
+<button type="button" data-mobile-nav="learn" onclick="v2MobileGo('learn')"><span>🧭</span><span>Lernplan</span></button>
+<button type="button" data-mobile-nav="practice" onclick="v2MobileGo('practice')"><span>📝</span><span>Üben</span></button>
+<button type="button" data-mobile-nav="stats" onclick="v2MobileGo('stats')"><span>📊</span><span>Fortschritt</span></button>
+</nav>
+
+
+
+<script>
+(function(){
+const d=()=>document.getElementById('v2CalcDisplay'), r=()=>document.getElementById('v2CalcResult');
+window.v2CalcInsert=s=>{const e=d(),a=e.selectionStart??e.value.length,b=e.selectionEnd??e.value.length;e.value=e.value.slice(0,a)+s+e.value.slice(b);e.focus();e.setSelectionRange(a+s.length,a+s.length)};
+window.v2CalcClear=()=>{d().value='';r().textContent='';d().focus()};
+window.v2CalcBack=()=>{const e=d(),a=e.selectionStart??e.value.length,b=e.selectionEnd??e.value.length;if(a!==b){e.value=e.value.slice(0,a)+e.value.slice(b);e.setSelectionRange(a,a)}else if(a>0){e.value=e.value.slice(0,a-1)+e.value.slice(a);e.setSelectionRange(a-1,a-1)}e.focus()};
+window.v2CalcMode=s=>{document.getElementById('v2CalcScience').classList.toggle('show',s);document.getElementById('v2CalcBasicBtn').classList.toggle('active',!s);document.getElementById('v2CalcSciBtn').classList.toggle('active',s)};
+window.v2CalcKey=e=>{if(e.key==='Enter'){e.preventDefault();v2CalcEvaluate()}if(e.key==='Escape')v2CalcClear()};
+function fact(n){if(!Number.isFinite(n)||n<0||Math.floor(n)!==n||n>170)throw Error('Fakultät: ganze Zahl von 0 bis 170.');let x=1;for(let i=2;i<=n;i++)x*=i;return x}
+function ev(raw){
+let s=raw.trim().replace(/,/g,'.').replace(/×/g,'*').replace(/÷/g,'/');
+if(!s)throw Error('Bitte eine Rechnung eingeben.');
+if(!/^[0-9+\-*/().^!xπpe\s_a-zA-Z]+$/.test(s))throw Error('Ungültiges Zeichen.');
+if(/\bx\b/i.test(s))throw Error('Für x bitte einen konkreten Wert einsetzen.');
+s=s.replace(/π/g,'Math.PI').replace(/\bpi\b/gi,'Math.PI').replace(/\be\b/g,'Math.E').replace(/\bsqrt\s*\(/gi,'Math.sqrt(').replace(/\bsin\s*\(/gi,'Math.sin(').replace(/\bcos\s*\(/gi,'Math.cos(').replace(/\btan\s*\(/gi,'Math.tan(').replace(/\bln\s*\(/gi,'Math.log(').replace(/\blog\s*\(/gi,'Math.log10(').replace(/\^/g,'**');
+s=s.replace(/(\d+(?:\.\d+)?|\([^()]+\))!/g,'fact($1)');
+if(s.includes('!'))throw Error('Fakultät konnte nicht erkannt werden.');
+if(!/^(?:Math\.(?:PI|E|sqrt|sin|cos|tan|log|log10)|fact|[0-9+\-*/().\s*]+)+$/.test(s))throw Error('Ausdruck nicht erkannt.');
+const v=Function('fact','"use strict";return ('+s+');')(fact);if(!Number.isFinite(v))throw Error('Kein endliches Ergebnis.');return v}
+window.v2CalcEvaluate=()=>{try{const v=ev(d().value);r().textContent='= '+String(Number(v.toPrecision(12)))}catch(e){r().textContent='⚠️ '+e.message}};
+})();
+</script>
+
+
+<section class="v2-shell v2-exam-review" id="exam-review" aria-label="Prüfungsnachbesprechung">
+  <div class="v2-exam-head">
+    <div>
+      <h2 style="margin-bottom:4px">📋 Prüfungsreview</h2>
+      <div style="opacity:.7">Nach der Prüfung kannst du jede Aufgabe vollständig nachbesprechen.</div>
+    </div>
+    <div class="v2-exam-score" id="v2ExamScore">– / –</div>
+  </div>
+
+  <div class="v2-exam-list" id="v2ExamList"></div>
+
+  <div class="v2-exam-actions">
+    <button type="button" onclick="v2ExamOpenAll()">Alle Lösungen öffnen</button>
+    <button type="button" onclick="v2ExamCloseAll()">Alle schließen</button>
+  </div>
+</section>
+
+<script>
+(function(){
+  /*
+   * Review component is intentionally data-driven.
+   * Existing exam logic can call window.GHGenialesShowExamReview({
+   *   score: 17, maxScore: 25,
+   *   tasks: [{title, correct, points, answer, solution, error, topic}]
+   * })
+   */
+  const list=()=>document.getElementById('v2ExamList');
+  window.GHGenialesShowExamReview=function(data){
+    const score=document.getElementById('v2ExamScore');
+    const tasks=Array.isArray(data?.tasks)?data.tasks:[];
+    if(score) score.textContent=`${data?.score ?? 0} / ${data?.maxScore ?? tasks.length}`;
+    if(!list()) return;
+    list().innerHTML=tasks.map((t,i)=>{
+      const ok=!!t.correct;
+      const points=t.points!=null?` · ${t.points} P`:'';
+      return `<details class="v2-exam-item">
+        <summary class="v2-exam-summary">
+          <span><strong>Aufgabe ${i+1}</strong>${t.title?` · ${escapeHtml(t.title)}`:''}<br><small>${escapeHtml(t.topic||'')}${points}</small></span>
+          <span class="v2-exam-status ${ok?'ok':'bad'}">${ok?'✓ Richtig':'✗ Falsch'}</span>
+        </summary>
+        <div class="v2-exam-detail">
+          <div class="v2-exam-question"><strong>📝 Originalaufgabe</strong><div class="v2-review-question-content">${examReviewQuestionHtml(t.question)}</div></div>
+          <div class="v2-exam-answer"><strong>Deine Antwort</strong><br>${escapeHtml(t.answer ?? 'Keine Antwort')}</div>
+          <div class="v2-exam-solution"><strong>Richtige Lösung</strong><br>${escapeHtml(t.solution ?? 'Keine Lösung hinterlegt')}</div>
+          ${ok?'':`<div class="v2-exam-error"><strong>Was war der Fehler?</strong><br>${escapeHtml(t.error ?? 'Für diese Aufgabe ist noch keine individuelle Fehleranalyse hinterlegt.')}</div>`}
+          ${t.topic?`<div style="margin-top:10px"><strong>🎯 Thema:</strong> ${escapeHtml(t.topic)}</div>`:''}
+        </div>
+      </details>`;
+    }).join('');
+  };
+  window.v2ExamOpenAll=()=>document.querySelectorAll('#v2ExamList details').forEach(x=>x.open=true);
+  window.v2ExamCloseAll=()=>document.querySelectorAll('#v2ExamList details').forEach(x=>x.open=false);
+  function examReviewQuestionHtml(q){
+    if(!q) return '<em>Originalaufgabe nicht verfügbar.</em>';
+    let html = `<div class="v2-review-prompt">${escapeHtml(q.prompt || '')}</div>`;
+    if(q.formula) html += `<div class="qformula">${escapeHtml(q.formula)}</div>`;
+    if(q.tree) html += `<div class="qtree">${escapeHtml(q.tree)}</div>`;
+    if(q.table){
+      const t=q.table;
+      html += `<table class="qtable"><tr><th></th><th>\\(B\\)</th><th>\\(\\overline{B}\\)</th><th>\\(\\Sigma\\)</th></tr><tr><th>A</th><td>${t.a}</td><td>${t.b}</td><td>${t.rowA}</td></tr><tr><th>\\(\\overline{A}\\)</th><td>${t.c}</td><td>${t.d}</td><td>${t.rowNotA}</td></tr><tr><th>\\(\\Sigma\\)</th><td>${t.a+t.c}</td><td>${t.b+t.d}</td><td>100</td></tr></table>`;
+    }
+    if(q.type==='mc' && Array.isArray(q.options)){
+      html += `<div class="v2-review-options"><strong>Antwortmöglichkeiten</strong><ol>${q.options.map(o=>`<li>${escapeHtml(o)}</li>`).join('')}</ol></div>`;
+    }
+    return html;
+  }
+
+  function escapeHtml(v){
+    return String(v).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[c]));
+  }
+})();
+</script>
+
+</body>
+</html>
