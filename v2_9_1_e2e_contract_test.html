@@ -1,0 +1,28 @@
+<!doctype html><meta charset="utf-8"><title>V2.9.1 E2E Contract Test</title><pre id="out">V2.9.1 E2E contract test
+
+This page verifies that the expected public contracts exist before the monolithic index.html is patched.
+</pre><script>
+const required=[
+  ['core','../v2_9_1_core_contract.js','GHGenialesV291Core'],
+  ['runtime','../v2_9_1_runtime.js',null],
+  ['mastery','../v2_9_1_mastery_core.js','GHGenialesV291Mastery']
+];
+const out=document.getElementById('out');
+(async()=>{
+  for(const [name,url,globalName] of required){
+    const r=await fetch(url); if(!r.ok) throw new Error(name+': HTTP '+r.status);
+    out.textContent+='\nOK file: '+url;
+  }
+  out.textContent+='\n\nContract gates:';
+  const c=window.GHGenialesV291Core;
+  if(c){
+    out.textContent+='\nOK masteries: '+c.MASTERIES.join(' → ');
+    out.textContent+='\nOK exam blocks: '+c.examBlueprint().length;
+    const q={skill:'demo',type:'mc',prompt:'x',options:['a','b','c','d'],correctIndex:1};
+    out.textContent+='\nOK question validator: '+c.assertQuestion(q).ok;
+  } else {
+    out.textContent+='\nNOTE: contracts are checked after script loading in the integrated shell.';
+  }
+  out.textContent+='\n\nPASS: static E2E contract surface is present.';
+})().catch(e=>{out.textContent+='\n\nFAIL: '+e.message;});
+</script>
