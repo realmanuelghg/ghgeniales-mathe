@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>V2.9.1 Shell Integration Test</title>
+<style>body{font-family:system-ui,sans-serif;max-width:900px;margin:30px auto;padding:0 16px}li{margin:8px 0}.ok{color:#287a4b}.bad{color:#b33}.box{padding:14px;border:1px solid #ddd;border-radius:12px;margin:12px 0}code{word-break:break-word}</style>
+</head>
+<body>
+<h1>V2.9.1 Shell Integration Test</h1>
+<div class="box" id="status">Prüfe…</div>
+<ol id="checks"></ol>
+<script>
+(async()=>{
+  const out=document.getElementById('checks');
+  const status=document.getElementById('status');
+  const checks=[];
+  const add=(name,ok,detail='')=>checks.push({name,ok,detail});
+
+  add('Runtime-Bootstrap vorhanden', typeof window.GHGenialesV291Bootstrap==='function');
+  add('Runtime-Integration ausgeführt', !!window.GHGenialesV291Runtime);
+  add('Alle 8 neuen Stochastik-Skills geladen', window.GHGenialesV291Runtime?.integrated===8, `integrated=${window.GHGenialesV291Runtime?.integrated ?? '—'}`);
+  add('Ergebnisraum geladen', window.GHGenialesV291Runtime?.loaded?.includes('ergebnisraum'));
+  add('Ereignisse geladen', window.GHGenialesV291Runtime?.loaded?.includes('ereignisse'));
+  add('Vierfeldertafel geladen', window.GHGenialesV291Runtime?.loaded?.includes('vierfeldertafel'));
+  add('Bedingte Wahrscheinlichkeit verstehen geladen', window.GHGenialesV291Runtime?.loaded?.includes('bedingteWkVerstehen'));
+  add('Unabhängigkeit verstehen geladen', window.GHGenialesV291Runtime?.loaded?.includes('unabhaengigkeitVerstehen'));
+  add('Statistikinterpretation geladen', window.GHGenialesV291Runtime?.loaded?.includes('statistikInterpretation'));
+  add('Pfad-Kompetenzcheck geladen', window.GHGenialesV291Runtime?.loaded?.includes('pfadKompetenzcheck'));
+  add('Stochastik-Kompetenzcheck geladen', window.GHGenialesV291Runtime?.loaded?.includes('stochKompetenzcheck'));
+
+  const failed=checks.filter(x=>!x.ok).length;
+  status.className=failed?'box bad':'box ok';
+  status.textContent=failed?`${failed} Check(s) fehlgeschlagen.`:'Alle Shell-Integrationschecks bestanden.';
+  out.innerHTML=checks.map(x=>`<li class="${x.ok?'ok':'bad'}"><strong>${x.ok?'✅':'❌'} ${x.name}</strong>${x.detail?` — ${x.detail}`:''}</li>`).join('');
+})();
+</script>
+</body>
+</html>
