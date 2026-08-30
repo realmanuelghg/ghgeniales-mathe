@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ghgeniales-mathe-v2-8-0';
+const CACHE_NAME = 'ghgeniales-mathe-v2-9-1';
 const ASSETS = [
   './',
   './index.html',
@@ -28,17 +28,33 @@ self.addEventListener('activate', event => {
   );
 });
 
-// Cache-first for the app shell, falling back to network (and caching what we fetch).
 self.addEventListener('fetch', event => {
   if(event.request.method !== 'GET') return;
+
+  const request = event.request;
+
+  // Navigations use network-first so a new app shell can replace an older
+  // cached version, while still working fully offline afterwards.
+  if(request.mode === 'navigate'){
+    event.respondWith(
+      fetch(request).then(response => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put('./index.html', clone));
+        return response;
+      }).catch(() => caches.match('./index.html'))
+    );
+    return;
+  }
+
+  // Other GET requests remain cache-first for fast offline access.
   event.respondWith(
-    caches.match(event.request).then(cached => {
+    caches.match(request).then(cached => {
       if(cached) return cached;
-      return fetch(event.request).then(res => {
-        const resClone = res.clone();
-        caches.open(CACHE_NAME).then(cache => cache.put(event.request, resClone));
-        return res;
-      }).catch(() => cached);
+      return fetch(request).then(response => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then(cache => cache.put(request, clone));
+        return response;
+      });
     })
   );
 });
