@@ -3,7 +3,7 @@
   "short_name": "GHGeniales Mathe",
   "description": "FOS-Mathetrainer für die 11. Klasse – Lernpfad, zufällige Aufgaben, Fortschritt und Offline-Nutzung.",
   "start_url": "/",
-  "scope": "./",
+  "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
   "background_color": "#FAF9F5",
