@@ -1,0 +1,12 @@
+<!doctype html><meta charset="utf-8"><title>V2.9.1 Core Contract Test</title><pre id="out">Running…</pre><script src="./v2_9_1_core_contract.js"></script><script>
+(async()=>{const out=[];const core=globalThis.GHGenialesV291Core;function t(name,fn){try{const v=fn();out.push((v?'PASS':'FAIL')+' '+name)}catch(e){out.push('FAIL '+name+': '+e.message)}}
+t('mastery length',()=>core.MASTERIES.length===5);
+t('question mc',()=>core.assertQuestion({skill:'x',type:'mc',prompt:'q',options:['a','b','c','d'],correctIndex:1},'x').ok);
+t('question duplicate MC rejected',()=>!core.assertQuestion({skill:'x',type:'mc',prompt:'q',options:['a','a','c','d'],correctIndex:1},'x').ok);
+t('mastery untouched',()=>core.masteryFromStats({attempts:0,correct:0},null).stage===0);
+t('mastery sicher',()=>core.masteryFromStats({attempts:6,correct:6,recent:Array(6).fill({correct:true})},null).label==='Sicher');
+t('priority due higher',()=>core.priority({attempts:10,correct:8,lastAttemptAt:Date.now()},{resolved:false,nextReviewAt:Date.now()-1,misses:1},core.masteryFromStats({attempts:10,correct:8},{}))>core.priority({attempts:10,correct:8,lastAttemptAt:Date.now()},null,core.masteryFromStats({attempts:10,correct:8},null)));
+t('migration schema 2',()=>core.migrateV28Payload({version:'2.8.0',data:{a:'b'}}).schemaVersion===2);
+t('exam six blocks',()=>core.examBlueprint().length===6 && core.examBlueprint().every(x=>x.points===5));
+document.getElementById('out').textContent=out.join('\n')+'\n\n'+(out.every(x=>x.startsWith('PASS'))?'ALL PASS':'HAS FAILURES');
+})();</script>
