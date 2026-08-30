@@ -1,0 +1,14 @@
+<!doctype html><meta charset="utf-8"><title>V2.9.1 Release Gate Runner</title><body><h1>V2.9.1 Release Gate Runner</h1><p>Entwicklungs-Gate: lädt Registry, Runtime-Bridge und Generatoren und prüft grundlegende Integrationsbedingungen.</p><pre id="out">Lade…</pre><script>
+(async()=>{const out=document.getElementById('out');const checks=[];const ok=(name,val,detail='')=>checks.push({name,ok:!!val,detail});
+function add(src){return new Promise((res,rej)=>{const s=document.createElement('script');s.src='./'+src;s.onload=res;s.onerror=()=>rej(new Error(src));document.head.appendChild(s)})}
+try{
+ await add('v2_9_1_registry.js'); ok('Registry geladen',!!window.GHGenialesV291,'Namespace vorhanden');
+ await add('v2_9_1_runtime.js'); ok('Runtime geladen',!!window.GHGenialesV291Runtime,'Runtime-Namespace vorhanden');
+ await Promise.all(['v2_9_1_stochastik_ergebnisraum.js','v2_9_1_stochastik_ereignisse.js','v2_9_1_stochastik_bedingte_wk.js','v2_9_1_stochastik_unabhaengigkeit.js','v2_9_1_stochastik_statistikinterpretation.js','v2_9_1_stochastik_kompetenzchecks.js'].map(add));
+ const gens=[['ergebnisraum','GHGenialesV291Stochastik','genErgebnisraum'],['ereignisse','GHGenialesV291Ereignisse','genEreignisse'],['bedingteWkVerstehen','GHGenialesV291BedingteWk','genBedingteWkVerstehen'],['unabhaengigkeit','GHGenialesV291Unabhaengigkeit','genUnabhaengigkeit'],['statistikInterpretation','GHGenialesV291StatistikInterpretation','genStatistikInterpretation'],['pfadKompetenzcheck','GHGenialesV291StochastikChecks','genPfadKompetenzcheck'],['stochKompetenzcheck','GHGenialesV291StochastikChecks','genStochKompetenzcheck']];
+ for(const [skill,ns,fn] of gens){const f=window[ns]?.[fn];ok(skill,typeof f==='function','Generator vorhanden');if(typeof f==='function'){for(let i=0;i<100;i++){const q=f();if(!q||!q.skill||!q.type) throw new Error(skill+': ungültige Aufgabe'); if(q.type==='mc' && (!Array.isArray(q.options)||q.options.length!==4||new Set(q.options).size!==4||!Number.isInteger(q.correctIndex)||q.correctIndex<0||q.correctIndex>=4)) throw new Error(skill+': MC-Validierung fehlgeschlagen')}}}
+ ok('7 neue Stochastik-Generatoren Smoke',true,'je 100 Läufe');
+ const summary=checks.map(c=>`${c.ok?'✅':'❌'} ${c.name} — ${c.detail}`).join('\n');out.textContent=summary+'\n\nGate: '+(checks.every(c=>c.ok)?'PASS':'FAIL');
+}catch(e){out.textContent=checks.map(c=>`${c.ok?'✅':'❌'} ${c.name} — ${c.detail}`).join('\n')+'\n\n❌ Gate FAIL: '+e.message}
+})();
+</script>
