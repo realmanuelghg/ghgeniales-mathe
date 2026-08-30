@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GHGeniales Mathe · V2.9.1 Registry Test</title>
+<style>
+  body{font:16px system-ui,sans-serif;max-width:760px;margin:40px auto;padding:0 18px;line-height:1.5}
+  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  .ok{color:#176b3a}.bad{color:#a11}
+  pre{white-space:pre-wrap;background:#f5f5f5;padding:14px;border-radius:10px}
+</style>
+</head>
+<body>
+<h1>V2.9.1 Registry Test</h1>
+<p>Diese Seite ist ein Entwicklungs-/Auditwerkzeug und gehört nicht zur Produktions-App.</p>
+<pre id="result">Lade Registry …</pre>
+<script src="./v2_9_1_registry.js"></script>
+<script>
+(() => {
+  const out = document.getElementById('result');
+  const api = globalThis.GHGenialesV291;
+  if(!api){
+    out.className='bad';
+    out.textContent='FAIL: GHGenialesV291 wurde nicht geladen.';
+    return;
+  }
+  const report = api.validateSkillRegistry();
+  const active = Object.values(api.skills).filter(s => s.trainableIn291);
+  const legacy = Object.values(api.skills).filter(s => s.legacySubtype);
+  const areas = Object.groupBy
+    ? Object.groupBy(Object.values(api.skills), s => s.area)
+    : Object.values(api.skills).reduce((m,s)=>((m[s.area]??=[]).push(s),m),{});
+
+  const lines = [
+    `Registry-Version: ${api.version}`,
+    `Skills: ${report.count}/42`,
+    `Trainable V2.9.1: ${active.length}`,
+    `Legacy-Mappings: ${legacy.length}`,
+    `Algebra/Funktionen: ${(areas.algebra||[]).length}`,
+    `Analysis: ${(areas.analysis||[]).length}`,
+    `Stochastik: ${(areas.stochastik||[]).length}`,
+    ''
+  ];
+
+  if(report.ok){
+    out.className='ok';
+    lines.push('PASS: Registry-Struktur ist formal gültig.');
+  }else{
+    out.className='bad';
+    lines.push('FAIL: Registry-Validierung fehlgeschlagen.');
+    lines.push(...report.errors.map(e => `- ${e}`));
+  }
+  out.textContent = lines.join('\n');
+})();
+</script>
+</body>
+</html>
