@@ -1,5 +1,5 @@
 const CACHE_NAME = 'ghgeniales-mathe-v2-9-1';
-const RUNTIME = './v2_9_1_runtime.js';
+const RUNTIME = './v2_9_1_runtime_integration.js';
 const ASSETS = [
   './', './index.html', './manifest.json', RUNTIME,
   './icon-192-v4.png', './icon-512-v4.png', './icon-512-maskable-v4.png',
@@ -13,11 +13,19 @@ const ASSETS = [
 ];
 
 self.addEventListener('install', event => {
-  event.waitUntil(caches.open(CACHE_NAME).then(cache => Promise.allSettled(ASSETS.map(url => cache.add(url)))).then(() => self.skipWaiting()));
+  event.waitUntil(
+    caches.open(CACHE_NAME)
+      .then(cache => Promise.allSettled(ASSETS.map(url => cache.add(url))))
+      .then(() => self.skipWaiting())
+  );
 });
 
 self.addEventListener('activate', event => {
-  event.waitUntil(caches.keys().then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k)))).then(() => self.clients.claim()));
+  event.waitUntil(
+    caches.keys()
+      .then(keys => Promise.all(keys.filter(k => k !== CACHE_NAME).map(k => caches.delete(k))))
+      .then(() => self.clients.claim())
+  );
 });
 
 async function injectRuntime(response){
@@ -25,8 +33,15 @@ async function injectRuntime(response){
   const type = response.headers.get('content-type') || '';
   if(!type.includes('text/html')) return response;
   const text = await response.text();
-  if(text.includes('v2_9_1_runtime.js')) return new Response(text,{status:response.status,statusText:response.statusText,headers:response.headers});
-  const injected = text.replace('</head>', `<script src="${RUNTIME}" defer></script>\n</head>`);
+  if(text.includes('./v2_9_1_runtime_integration.js')) return new Response(text,{status:response.status,statusText:response.statusText,headers:response.headers});
+
+  const runtimeTag = `<script src="${RUNTIME}"></script>`;
+  let injected = text.replace('</head>', `${runtimeTag}\n</head>`);
+
+  const bootstrapMarker = `updateStatbar();\nrender();\n\n/* ============================================================\n   PWA:`;
+  const bootstrapCode = `updateStatbar();\nrender();\n\n// V2.9.1 integration: pass lexical app references to the external bootstrap.\nif(window.GHGenialesV291Bootstrap) {\n  window.GHGenialesV291Bootstrap({ TOPICS, DIFFICULTY_BY_ID, render });\n}\n\n/* ============================================================\n   PWA:`;
+  if(injected.includes(bootstrapMarker)) injected = injected.replace(bootstrapMarker, bootstrapCode);
+
   const headers = new Headers(response.headers);
   headers.set('content-type','text/html; charset=UTF-8');
   headers.delete('content-length');
@@ -36,23 +51,40 @@ async function injectRuntime(response){
 self.addEventListener('fetch', event => {
   if(event.request.method !== 'GET') return;
   const request = event.request;
+
+  // App navigations are network-first. The response is transformed so the
+  // existing lexical TOPICS/DIFFICULTY_BY_ID registry can safely receive the
+  // V2.9.1 generators without replacing the 142KB legacy index.html file.
   if(request.mode === 'navigate'){
-    event.respondWith(fetch(request).then(async response => {
-      const shell = await injectRuntime(response.clone());
-      const cacheCopy = shell.clone();
-      event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.put('./index.html', cacheCopy)));
-      return shell;
-    }).catch(async () => {
-      const cached = await caches.match('./index.html');
-      return cached || Response.error();
-    }));
+    event.respondWith(
+      fetch(request)
+        .then(async response => {
+          const shell = await injectRuntime(response.clone());
+          const cacheCopy = shell.clone();
+          event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.put('./index.html', cacheCopy)));
+          return shell;
+        })
+        .catch(async () => {
+          const cached = await caches.match('./index.html');
+          if(!cached) return Response.error();
+          return injectRuntime(cached);
+        })
+    );
     return;
   }
-  event.respondWith(caches.match(request).then(cached => {
-    if(cached) return cached;
-    return fetch(request).then(response => {
-      if(response.ok){ const clone=response.clone(); event.waitUntil(caches.open(CACHE_NAME).then(cache=>cache.put(request,clone))); }
-      return response;
-    });
-  }));
+
+  // Other GET requests remain cache-first and are added to the cache after
+  // successful network fetches so newly introduced modules work offline too.
+  event.respondWith(
+    caches.match(request).then(cached => {
+      if(cached) return cached;
+      return fetch(request).then(response => {
+        if(response.ok){
+          const clone = response.clone();
+          event.waitUntil(caches.open(CACHE_NAME).then(cache => cache.put(request,clone)));
+        }
+        return response;
+      });
+    })
+  );
 });
