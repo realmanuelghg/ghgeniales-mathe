@@ -1,0 +1,17 @@
+<!doctype html><html lang="de"><meta charset="utf-8"><title>V2.9.1 Mastery Smoke Test</title><pre id="out">läuft …</pre><script src="./v2_9_1_mastery_core.js"></script><script>
+const out=document.getElementById('out');
+const M=globalThis.GHGenialesV291Mastery;
+const results=[];
+for(let i=0;i<1000;i++){
+  const n=1+Math.floor(Math.random()*12);
+  const rs=Array.from({length:n},(_,j)=>({correct:Math.random()<.75,timestamp:Date.now()-j*86400000,variantId:['a','b','c','d'][j%4],difficulty:['easy','medium','hard'][j%3]}));
+  const m=M.scoreMastery({results:rs,mistakes:[]});
+  if(!Number.isFinite(m.score)||!M.LEVELS.some(x=>x.id===m.level)) results.push(`invalid mastery @ ${i}`);
+}
+const ranked=M.nextRecommendation([
+ {id:'a',results:[{correct:true,timestamp:Date.now()}],mistakes:[],dueAt:new Date(Date.now()-1000).toISOString()},
+ {id:'b',results:[{correct:true,timestamp:Date.now()}],mistakes:[]}
+]);
+if(ranked[0]?.id!=='a') results.push('due recommendation was not prioritized');
+out.textContent=results.length?`FAIL\\n${results.join('\\n')}`:'PASS — 1000 mastery runs + recommendation ordering';
+</script></html>
