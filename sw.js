@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ghgeniales-mathe-v2-7-1';
+const CACHE_NAME = 'ghgeniales-mathe-v2-8-0';
 const ASSETS = [
   './',
   './index.html',

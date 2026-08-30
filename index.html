@@ -82,23 +82,22 @@
   /* ---------- HERO ---------- */
   header.hero{
     position:relative;
-    padding:38px 20px 28px;
+    padding:32px 20px 18px;
     max-width:920px; margin:0 auto;
-    display:flex; align-items:center; gap:24px; flex-wrap:wrap;
   }
-  .hero-text{flex:1 1 280px; min-width:240px;}
-  .brandrow{display:flex; align-items:center; gap:14px; margin-bottom:2px;}
+  .hero-text{min-width:0;}
+  .brandrow{display:flex; align-items:center; gap:14px; margin-bottom:2px; min-width:0;}
+  .brandcopy{min-width:0;}
   .logo-badge{width:64px; height:64px; border-radius:16px; box-shadow:var(--shadow); flex-shrink:0; display:block;}
-  .eyebrow{
+  .hero-meta{
+    display:flex; align-items:center; gap:7px; flex-wrap:wrap;
     font-family:'IBM Plex Mono', monospace; font-size:12.5px; letter-spacing:0.08em;
-    text-transform:uppercase; color:var(--blue); font-weight:600; margin-bottom:8px;
+    text-transform:uppercase; color:var(--blue); font-weight:600; margin-bottom:8px; min-width:0;
   }
+  .hero-context{min-width:0; overflow-wrap:anywhere;}
+  .version-badge{display:inline-flex; flex:0 0 auto; padding:2px 6px; border:1px solid var(--blue); border-radius:999px; font-size:10px; letter-spacing:.04em; line-height:1.2;}
   header.hero h1{font-size:clamp(32px,6vw,46px); font-weight:700; color:var(--ink);}
   header.hero p{color:var(--ink-soft); font-size:15.5px; max-width:46ch; margin-top:10px;}
-  #heroCanvas{
-    flex:0 0 auto; width:190px; height:145px; background:var(--card);
-    border-radius:var(--radius); box-shadow:var(--shadow); border:1px solid var(--grid);
-  }
 
   /* ---------- TOP STATS BAR ---------- */
   .statbar{
@@ -297,27 +296,17 @@
     body{background-size:28px 28px;}
 
     header.hero{
-      padding:18px 16px 10px;
-      flex-direction:column;
-      align-items:stretch;
-      gap:10px;
+      padding:16px 16px 8px;
     }
     .brandrow{gap:10px; align-items:center; margin-bottom:0;}
+    .brandcopy{min-width:0;}
     .logo-badge{width:56px; height:56px; border-radius:14px;}
-    .eyebrow{font-size:10.5px; letter-spacing:.065em; margin-bottom:2px; white-space:nowrap;}
+    .hero-meta{font-size:10.5px; letter-spacing:.04em; margin-bottom:2px; gap:5px;}
+    .hero-context{overflow-wrap:anywhere;}
+    .version-badge{font-size:9.5px; padding:2px 5px;}
     header.hero h1{font-size:30px; line-height:1.08;}
     header.hero p{font-size:14px; line-height:1.48; margin:7px 0 0; max-width:none;}
     .offline-note{font-size:11.5px; line-height:1.35; margin-top:6px;}
-
-    /* Decorative graph: still visible, but no longer consumes a huge
-       vertical block on phones. */
-    #heroCanvas{
-      width:100%;
-      height:96px;
-      max-height:96px;
-      border-radius:11px;
-      display:block;
-    }
 
     /* Compact status area: let pills form natural rows instead of
        pushing the content far down the page. */
@@ -387,10 +376,9 @@
 
   @media (max-width:380px){
     header.hero h1{font-size:27px;}
-    .eyebrow{font-size:9.5px;}
+    .hero-meta{font-size:9.5px;}
     header.hero p{font-size:13px;}
     .offline-note{font-size:11px;}
-    #heroCanvas{height:84px; max-height:84px;}
     .pill{font-size:10.8px; padding:5px 8px;}
     nav.tabs .tab{font-size:12px; min-height:38px;}
     .chip{font-size:12px; padding:6px 9px;}
@@ -692,7 +680,7 @@ html[data-theme="dark"] .v2-exam-review{
 </style>
 
 <style>
-/* ---------- V2.7.1 learning system ---------- */
+/* ---------- V2.8.0 learning system ---------- */
 .v26-daily{max-width:920px;margin:14px auto 0;padding:0 20px}
 .v26-daily-card{background:var(--card);border:1px solid var(--grid);border-radius:16px;box-shadow:var(--shadow);padding:18px 20px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}
 .v26-kicker{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);font-weight:700;margin-bottom:5px}
@@ -733,7 +721,7 @@ html[data-theme="dark"] .v2-exam-review{
 
 
 <style>
-/* ---------- GHGeniales V2.7.1 – core quality pass ---------- */
+/* ---------- GHGeniales V2.8.0 – core quality pass ---------- */
 .v27-next-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .v27-next-actions button{min-width:0}
 .v27-similar{border:1px solid var(--grid);background:var(--card);color:var(--ink);border-radius:11px;padding:10px 14px;font:inherit;font-weight:650;cursor:pointer}
@@ -840,16 +828,17 @@ function v2ShowClassChoice(){
   <div class="hero-text">
     <div class="brandrow">
       <img src="./icon-192-v4.png" class="logo-badge" alt="GHG² Logo">
-      <div>
-        <div class="eyebrow">FOS Hof · Sozialwesen · Mathematik 11 · V2.7.1</div>
+      <div class="brandcopy">
+        <div class="hero-meta"><span class="hero-context">FOS Hof &middot; Sozialwesen &middot; Mathe 11</span><span class="version-badge">V2.8.0</span></div>
         <h1>GHGeniales Mathe</h1>
       </div>
     </div>
-    <p>Ein Lernpfad für die FOS: Grundlagen sichern, gezielt üben und Schritt für Schritt sicherer werden — vom 11.-Klasse-Fundament bis zum Fachabitur.</p>
+    <p>Dein Mathe-Lernpfad für die FOS: Grundlagen festigen, gezielt üben und Schritt für Schritt sicherer werden.</p>
     <div class="offline-note">⚡ Offline nutzbar · Fortschritt bleibt auf diesem Gerät gespeichert</div>
   </div>
-  <canvas id="heroCanvas" width="440" height="340"></canvas>
 </header>
+
+<section class="v26-daily" id="dailyPanel" aria-label="Heute lernen"></section>
 
 <div class="statbar">
   <div class="pill">🔥 Richtig in Folge: <b id="streakVal">0</b></div>
@@ -860,8 +849,6 @@ function v2ShowClassChoice(){
   <button class="pill" id="installPill" style="display:none; cursor:pointer; border-color:var(--green); color:var(--green);">📲 <b id="installLabel" style="color:var(--green);">Zum Startbildschirm hinzufügen</b></button>
   <button class="pill" id="themeToggle" style="cursor:pointer;">🌙 <b id="themeLabel">Dark Mode</b></button>
 </div>
-
-<section class="v26-daily" id="dailyPanel" aria-label="Heute lernen"></section>
 
 <nav class="tabs" id="tabs"></nav>
 
@@ -874,7 +861,7 @@ function v2ShowClassChoice(){
   <div id="roadmapArea" style="display:none;"></div>
 </main>
 
-<footer>V2.7.1 · Aufgaben werden zufällig generiert. Fortschritt, XP und Lernstatistik werden lokal gespeichert — ein Backup kannst du im Fortschritt exportieren.</footer>
+<footer>V2.8.0 · Aufgaben werden zufällig generiert. Fortschritt, XP und Lernstatistik werden lokal gespeichert — ein Backup kannst du im Fortschritt exportieren.</footer>
 
 <div class="modal-backdrop" id="modalBackdrop">
   <div class="modal">
@@ -931,7 +918,6 @@ function typesetMath(el){
 /* ============================================================
    DARK MODE (applied early, before any canvas is drawn)
    ============================================================ */
-let heroRedraw = null;
 const LS_THEME = 'kk_theme_v1';
 
 function applyTheme(theme){
@@ -1334,7 +1320,7 @@ function genBedingteWk(){
 
 
 /* ============================================================
-   V2.7.1 FOS FOUNDATION GENERATORS
+   V2.8.0 FOS FOUNDATION GENERATORS
    ============================================================ */
 function genLineareEigenschaften(){
   const a = nonZero(-6,6), x0 = randInt(-5,5), b = -a*x0;
@@ -1557,7 +1543,7 @@ const LS_ACHIEVEMENTS = 'kk_achievements_v1';
 const LS_EXAMS = 'kk_exams_v1';
 
 const LS_APP_VERSION = 'ghgeniales_mathe_app_version';
-const APP_VERSION = '2.7.1';
+const APP_VERSION = '2.8.0';
 localStorage.setItem(LS_APP_VERSION, APP_VERSION);
 
 const ROADMAP_11 = [
@@ -2423,7 +2409,7 @@ modalBackdrop.addEventListener('click', e=>{ if(e.target===modalBackdrop) modalB
 
 
 /* ============================================================
-   V2.7.1 DAILY RECOMMENDATION + CURRICULUM ROADMAP
+   V2.8.0 DAILY RECOMMENDATION + CURRICULUM ROADMAP
    ============================================================ */
 function learningStatsFor(id){
   const s=stats[id]||{attempts:0,correct:0};
@@ -2468,7 +2454,7 @@ function renderDailyPanel(){
   if(!dailyPanel) return;
   const rec=getRecommendation(); if(!rec){dailyPanel.innerHTML='';return;}
   const days=getLearningDayCount();
-  dailyPanel.innerHTML=`<div class="v26-daily-card">\n    <div>\n      <div class="v26-kicker">Heute · ${days} Lerntage</div>\n      <h2>🎯 ${escapeHTML(rec.name)}</h2>\n      <p>${rec.attempts?`Deine Trefferquote liegt hier bei ${Math.round(rec.acc)} %.`:'Dieses Thema wurde bisher noch kaum geübt.'} ${escapeHTML(rec.reason)}.</p>\n      <div class="v26-daily-meta"><span class="v26-mini-pill">10 Aufgaben</span><span class="v26-mini-pill">${rec.attempts?`${rec.attempts} Versuche`:'Neu'}</span><span class="v26-recommend-badge">Empfohlen</span></div>\n    </div>\n    <button class="primary" id="dailyStartBtn">Jetzt üben →</button>\n  </div>`;
+  dailyPanel.innerHTML=`<div class="v26-daily-card">\n    <div>\n      <div class="v26-kicker">Heute · ${days} Lerntage</div>\n      <h2>🎯 ${escapeHTML(rec.name)}</h2>\n      <p>${rec.attempts?`Deine Trefferquote liegt hier bei ${Math.round(rec.acc)} %. ${escapeHTML(rec.reason)}.`:'Dieses Thema wurde bisher noch nicht geübt.'}</p>\n      <div class="v26-daily-meta"><span class="v26-mini-pill">10 Aufgaben</span><span class="v26-mini-pill">${rec.attempts?`${rec.attempts} Versuche`:'Neu'}</span><span class="v26-recommend-badge">Empfohlen</span></div>\n    </div>\n    <button class="primary" id="dailyStartBtn">Jetzt üben →</button>\n  </div>`;
   document.getElementById('dailyStartBtn').onclick=()=>startFocusSession(rec.catKey,rec.id,10);
 }
 function competencyStatus(id){
@@ -2563,69 +2549,6 @@ updateStatbar();
 render();
 
 /* ============================================================
-   HERO CANVAS ANIMATION
-   ============================================================ */
-(function heroAnim(){
-  const canvas = document.getElementById('heroCanvas');
-  const ctx = canvas.getContext('2d');
-  const W=canvas.width, H=canvas.height;
-  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const xmin=-3.2, xmax=3.2;
-  function f(x){ return 0.35*x*x*x - 0.9*x; }
-  let ymin=Infinity, ymax=-Infinity;
-  const N=160, pts=[];
-  for(let i=0;i<=N;i++){
-    const x = xmin+(xmax-xmin)*i/N;
-    const y = f(x);
-    pts.push([x,y]);
-    ymin=Math.min(ymin,y); ymax=Math.max(ymax,y);
-  }
-  const pad=(ymax-ymin)*0.2; ymin-=pad; ymax+=pad;
-  const mLeft=20, mRight=20, mTop=20, mBottom=20;
-  const pw=W-mLeft-mRight, ph=H-mTop-mBottom;
-  const sx = x => mLeft+(x-xmin)/(xmax-xmin)*pw;
-  const sy = y => mTop+(1-(y-ymin)/(ymax-ymin))*ph;
-
-  const wendeX = 0;
-  function draw(progress){
-    ctx.clearRect(0,0,W,H);
-    ctx.strokeStyle=cssVar('--grid'); ctx.lineWidth=1;
-    for(let gx=-3; gx<=3; gx++){ ctx.beginPath(); ctx.moveTo(sx(gx),mTop); ctx.lineTo(sx(gx),H-mBottom); ctx.stroke(); }
-    ctx.strokeStyle=cssVar('--ink'); ctx.lineWidth=1.2;
-    ctx.beginPath(); ctx.moveTo(mLeft, sy(0)); ctx.lineTo(W-mRight, sy(0)); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(sx(0), mTop); ctx.lineTo(sx(0), H-mBottom); ctx.stroke();
-
-    const count = Math.floor(pts.length*progress);
-    ctx.strokeStyle=cssVar('--blue'); ctx.lineWidth=2.6; ctx.beginPath();
-    for(let i=0;i<count;i++){
-      const [x,y]=pts[i];
-      const px=sx(x), py=sy(y);
-      if(i===0) ctx.moveTo(px,py); else ctx.lineTo(px,py);
-    }
-    ctx.stroke();
-
-    if(progress>0.5){
-      ctx.beginPath();
-      ctx.fillStyle=cssVar('--amber');
-      ctx.arc(sx(wendeX), sy(f(wendeX)), 4, 0, Math.PI*2);
-      ctx.fill();
-    }
-  }
-
-  heroRedraw = () => draw(1);
-
-  if(reduced){ draw(1); return; }
-  let start=null;
-  function step(ts){
-    if(!start) start=ts;
-    const progress = Math.min(1, (ts-start)/1400);
-    draw(progress);
-    if(progress<1) requestAnimationFrame(step);
-  }
-  requestAnimationFrame(step);
-})();
-
-/* ============================================================
    PWA: SERVICE WORKER + INSTALL PROMPT
    ============================================================ */
 if('serviceWorker' in navigator){
@@ -2697,7 +2620,6 @@ window.addEventListener('appinstalled', () => {
 
 /* Theme toggle click — the initial theme is already applied above; this only handles switching + redrawing canvases */
 function redrawAllCanvases(){
-  if(heroRedraw) heroRedraw();
   if(activeCategory==='stats') renderStats();
   if(lastPlotCanvasId){
     const el = document.getElementById(lastPlotCanvasId);
