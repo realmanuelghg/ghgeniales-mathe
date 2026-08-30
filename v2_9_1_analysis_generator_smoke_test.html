@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="de"><meta charset="utf-8"><title>V2.9.1 Analysis Generator Smoke Test</title><body><pre id="out">Lade…</pre><script src="./v2_9_1_analysis_generators.js"></script><script>
+(async function(){
+ const out=document.getElementById('out');
+ const api=globalThis.GHGenialesV291Analysis;
+ if(!api){out.textContent='FAIL: Analysis-API fehlt';return;}
+ const names=['genGlobalverlauf','genVorzeichenverlauf','genPolynomUngleichung','genWertemenge','genDarstellungswechsel','genFunktionstermAusInformationen','genParameterEigenschaft','genSchnittBeruehrpunkt','genAbleitungsgraph','genKruemmung','genKurvendiskussionVerknuepft'];
+ const errors=[]; let total=0;
+ for(const name of names){
+   if(typeof api[name]!=='function'){errors.push(name+': generator fehlt');continue;}
+   for(let i=0;i<1000;i++){
+     total++;
+     try{
+       const q=api[name]();
+       if(!q||q.skill===undefined) throw new Error('skill fehlt');
+       if(q.type==='mc'){
+         if(!Array.isArray(q.options)||q.options.length!==q.numOptions&&q.options.length!==3&&q.options.length!==4) throw new Error('MC options');
+         if(new Set(q.options.map(String)).size!==q.options.length) throw new Error('duplicate options');
+         if(!Number.isInteger(q.correctIndex)||q.correctIndex<0||q.correctIndex>=q.options.length) throw new Error('correctIndex');
+         if(String(q.options[q.correctIndex])!==String(q.options[q.correctIndex])) throw new Error('unreachable');
+       }
+     }catch(e){errors.push(name+': '+e.message);break;}
+   }
+ }
+ out.textContent=errors.length?`FAIL\\n${[...new Set(errors)].join('\\n')}`:`PASS\\n${names.length} Generatoren × 1000 = ${total} Läufe ohne Strukturfehler.`;
+})();
+</script></body></html>
