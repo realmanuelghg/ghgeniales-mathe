@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GHGeniales Mathe · V2.9.1 Live Generator Audit</title>
+<style>
+  body{font:15px/1.5 system-ui,sans-serif;max-width:900px;margin:32px auto;padding:0 16px;color:#172033}
+  pre{white-space:pre-wrap;background:#f4f6f8;padding:16px;border-radius:10px;overflow:auto}
+  .ok{color:#176b3a}.bad{color:#a11}.warn{color:#8a5a00}
+</style>
+</head>
+<body>
+<h1>V2.9.1 Live Generator Audit</h1>
+<p>Nur Entwicklungs-/Auditwerkzeug. Es verändert die Produktions-App nicht.</p>
+<pre id="out">Prüfe GitHub-Branch …</pre>
+<script src="./v2_9_1_registry.js"></script>
+<script src="./v2_9_1_generator_audit.js"></script>
+<script>
+(async () => {
+  const out = document.getElementById('out');
+  const branch = 'v2.9.1-development';
+  const base = 'https://raw.githubusercontent.com/realmanuelghg/ghgeniales-mathe/' + branch + '/';
+  try {
+    const [indexRes, registryApi] = await Promise.all([
+      fetch(base + 'index.html', {cache:'no-store'}),
+      Promise.resolve(globalThis.GHGenialesV291)
+    ]);
+    if(!indexRes.ok) throw new Error('index.html konnte nicht geladen werden: HTTP ' + indexRes.status);
+    const source = await indexRes.text();
+    const legacyIds = [
+      'binomExpand','binomFactor','linGleichung','quadGleichung','bruchKuerzen',
+      'lineareEigenschaften','scheitelpunkt','lineareTerm','schnittpunktGeraden',
+      'ableiten','nullstellen','extrempunkte','wendepunkt','symmetrie','monotonie',
+      'differenzenquotient','tangentensteigung','kombinatorik','pfadregel',
+      'bedingteWk','zufallsexperiment','laplace','unabhaengigkeit','kombiTyp'
+    ];
+    const checks = legacyIds.map(id => ({id, present: source.includes(`id:'${id}'`) || source.includes(`id: \"${id}\"`) || source.includes(`id: '${id}'`) || source.includes(`id=\"${id}\"`)}));
+    const missing = checks.filter(x => !x.present).map(x => x.id);
+    const duplicateMatches = legacyIds.filter((id, i) => source.split(id).length - 1 < 1 && i >= 0);
+    const registryReport = registryApi ? registryApi.validateSkillRegistry() : {ok:false,errors:['Registry nicht geladen.']};
+
+    const lines = [
+      `Branch: ${branch}`,
+      `index.html: ${source.length.toLocaleString('de-DE')} Zeichen geladen`,
+      `Registry: ${registryReport.count}/42 Skills`,
+      `Legacy-Skills vorhanden: ${checks.filter(x=>x.present).length}/${legacyIds.length}`,
+      ''
+    ];
+
+    if(registryReport.ok) lines.push('PASS: 42-Skill-Registry formal gültig.');
+    else lines.push('FAIL: Registry formal ungültig:\n' + registryReport.errors.map(e=>'  - '+e).join('\n'));
+
+    if(missing.length === 0) lines.push('PASS: Alle 24 V2.8-Legacy-IDs sind im echten index.html auffindbar.');
+    else lines.push('FAIL: Fehlende Legacy-IDs im index.html:\n' + missing.map(id=>'  - '+id).join('\n'));
+
+    lines.push('', 'Hinweis: Dieser Audit prüft die tatsächliche GitHub-Datei als Text. Er beweist noch nicht, dass jede Generatorfunktion mathematisch korrekt läuft; dafür folgen gezielte Laufzeittests pro Generator.');
+    out.className = (registryReport.ok && missing.length === 0) ? 'ok' : 'bad';
+    out.textContent = lines.join('\n');
+  } catch(err) {
+    out.className='bad';
+    out.textContent='FAIL: '+(err && err.message ? err.message : String(err));
+  }
+})();
+</script>
+</body>
+</html>
