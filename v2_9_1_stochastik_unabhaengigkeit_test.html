@@ -1,0 +1,7 @@
+<!doctype html>
+<html lang="de"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>V2.9.1 Unabhängigkeit Smoke Test</title><style>body{font-family:system-ui,sans-serif;max-width:900px;margin:40px auto;padding:0 16px}pre{white-space:pre-wrap;background:#f4f4f4;padding:16px;border-radius:10px}.ok{color:green}.bad{color:#b00}</style></head><body><h1>V2.9.1 · Unabhängigkeit Smoke Test</h1><pre id="out">Starte Test…</pre><script src="v2_9_1_stochastik_unabhaengigkeit.js"></script><script>
+const out=document.getElementById('out'); const lines=[]; let failed=0;
+function check(name,fn){try{const q=fn();if(!q||typeof q!=='object')throw Error('kein Objekt');if(!Array.isArray(q.options)||q.options.length!==4)throw Error('nicht 4 Optionen');if(new Set(q.options).size!==4)throw Error('doppelte Optionen');if(!Number.isInteger(q.correctIndex)||q.correctIndex<0||q.correctIndex>=q.options.length)throw Error('correctIndex ungültig');lines.push('✅ '+name)}catch(e){failed++;lines.push('❌ '+name+': '+e.message)}}
+for(let i=0;i<1000;i++){check('intersection '+i,GHGenialesV291Unabhaengigkeit.genUnabhaengigkeit);check('conditional '+i,GHGenialesV291Unabhaengigkeit.genUnabhaengigkeitBedingt)}
+lines.push('',failed?'FEHLER: '+failed:'ALLE 2000 GENERATOR-LÄUFE OK'); out.className=failed?'bad':'ok'; out.textContent=lines.slice(-20).join('\n');
+</script></body></html>
