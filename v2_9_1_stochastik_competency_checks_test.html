@@ -1,0 +1,9 @@
+<!doctype html><html lang="de"><meta charset="utf-8"><title>V2.9.1 Stochastik Kompetenzchecks Test</title><pre id="out">Läuft…</pre><script src="./v2_9_1_stochastik_kompetenzchecks.js"></script><script>
+(async()=>{const out=document.getElementById('out');const api=globalThis.GHGenialesV291StochastikChecks;const errors=[];const counts={pfad:0,stoch:0};
+if(!api)errors.push('API missing');
+for(let i=0;i<2000;i++){
+ try{const q=api.genPfadKompetenzcheck();const v=api.validate(q);counts.pfad++;if(!v.ok)errors.push('pfad '+i+': '+v.errors.join(','));}catch(e){errors.push('pfad '+i+': '+e.message)}
+ try{const q=api.genStochKompetenzcheck();const v=api.validate(q);counts.stoch++;if(!v.ok)errors.push('stoch '+i+': '+v.errors.join(','));}catch(e){errors.push('stoch '+i+': '+e.message)}
+}
+out.textContent=(errors.length?'FAIL\n'+errors.slice(0,30).join('\n'):'PASS')+'\nPfad: '+counts.pfad+'\nStoch: '+counts.stoch;})();
+</script>
