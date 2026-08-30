@@ -692,7 +692,7 @@ html[data-theme="dark"] .v2-exam-review{
 </style>
 
 <style>
-/* ---------- V2.7.1 learning system ---------- */
+/* ---------- V2.7.2 learning system ---------- */
 .v26-daily{max-width:920px;margin:14px auto 0;padding:0 20px}
 .v26-daily-card{background:var(--card);border:1px solid var(--grid);border-radius:16px;box-shadow:var(--shadow);padding:18px 20px;display:grid;grid-template-columns:1fr auto;gap:16px;align-items:center}
 .v26-kicker{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--blue);font-weight:700;margin-bottom:5px}
@@ -733,7 +733,7 @@ html[data-theme="dark"] .v2-exam-review{
 
 
 <style>
-/* ---------- GHGeniales V2.7.1 – core quality pass ---------- */
+/* ---------- GHGeniales V2.7.2 – core quality pass ---------- */
 .v27-next-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
 .v27-next-actions button{min-width:0}
 .v27-similar{border:1px solid var(--grid);background:var(--card);color:var(--ink);border-radius:11px;padding:10px 14px;font:inherit;font-weight:650;cursor:pointer}
@@ -841,7 +841,7 @@ function v2ShowClassChoice(){
     <div class="brandrow">
       <img src="./icon-192-v4.png" class="logo-badge" alt="GHG² Logo">
       <div>
-        <div class="eyebrow">FOS Hof · Sozialwesen · Mathematik 11 · V2.7.1</div>
+        <div class="eyebrow">FOS Hof · Sozialwesen · Mathematik 11 · V2.7.2</div>
         <h1>GHGeniales Mathe</h1>
       </div>
     </div>
@@ -874,7 +874,7 @@ function v2ShowClassChoice(){
   <div id="roadmapArea" style="display:none;"></div>
 </main>
 
-<footer>V2.7.1 · Aufgaben werden zufällig generiert. Fortschritt, XP und Lernstatistik werden lokal gespeichert — ein Backup kannst du im Fortschritt exportieren.</footer>
+<footer>V2.7.2 · Aufgaben werden zufällig generiert. Fortschritt, XP und Lernstatistik werden lokal gespeichert — ein Backup kannst du im Fortschritt exportieren.</footer>
 
 <div class="modal-backdrop" id="modalBackdrop">
   <div class="modal">
@@ -1334,7 +1334,7 @@ function genBedingteWk(){
 
 
 /* ============================================================
-   V2.7.1 FOS FOUNDATION GENERATORS
+   V2.7.2 FOS FOUNDATION GENERATORS
    ============================================================ */
 function genLineareEigenschaften(){
   const a = nonZero(-6,6), x0 = randInt(-5,5), b = -a*x0;
@@ -1557,7 +1557,7 @@ const LS_ACHIEVEMENTS = 'kk_achievements_v1';
 const LS_EXAMS = 'kk_exams_v1';
 
 const LS_APP_VERSION = 'ghgeniales_mathe_app_version';
-const APP_VERSION = '2.7.1';
+const APP_VERSION = '2.7.2';
 localStorage.setItem(LS_APP_VERSION, APP_VERSION);
 
 const ROADMAP_11 = [
@@ -2423,7 +2423,7 @@ modalBackdrop.addEventListener('click', e=>{ if(e.target===modalBackdrop) modalB
 
 
 /* ============================================================
-   V2.7.1 DAILY RECOMMENDATION + CURRICULUM ROADMAP
+   V2.7.2 DAILY RECOMMENDATION + CURRICULUM ROADMAP
    ============================================================ */
 function learningStatsFor(id){
   const s=stats[id]||{attempts:0,correct:0};
@@ -2468,7 +2468,7 @@ function renderDailyPanel(){
   if(!dailyPanel) return;
   const rec=getRecommendation(); if(!rec){dailyPanel.innerHTML='';return;}
   const days=getLearningDayCount();
-  dailyPanel.innerHTML=`<div class="v26-daily-card">\n    <div>\n      <div class="v26-kicker">Heute · ${days} Lerntage</div>\n      <h2>🎯 ${escapeHTML(rec.name)}</h2>\n      <p>${rec.attempts?`Deine Trefferquote liegt hier bei ${Math.round(rec.acc)} %.`:'Dieses Thema wurde bisher noch kaum geübt.'} ${escapeHTML(rec.reason)}.</p>\n      <div class="v26-daily-meta"><span class="v26-mini-pill">10 Aufgaben</span><span class="v26-mini-pill">${rec.attempts?`${rec.attempts} Versuche`:'Neu'}</span><span class="v26-recommend-badge">Empfohlen</span></div>\n    </div>\n    <button class="primary" id="dailyStartBtn">Jetzt üben →</button>\n  </div>`;
+  dailyPanel.innerHTML=`<div class="v26-daily-card">\n    <div>\n      <div class="v26-kicker">Heute · ${days} Lerntage</div>\n      <h2>🎯 ${escapeHTML(rec.name)}</h2>\n      <p>${rec.attempts?`Deine Trefferquote liegt hier bei ${Math.round(rec.acc)} %. ${escapeHTML(rec.reason)}.`:'Dieses Thema wurde bisher noch nicht geübt.'}</p>\n      <div class="v26-daily-meta"><span class="v26-mini-pill">10 Aufgaben</span><span class="v26-mini-pill">${rec.attempts?`${rec.attempts} Versuche`:'Neu'}</span><span class="v26-recommend-badge">Empfohlen</span></div>\n    </div>\n    <button class="primary" id="dailyStartBtn">Jetzt üben →</button>\n  </div>`;
   document.getElementById('dailyStartBtn').onclick=()=>startFocusSession(rec.catKey,rec.id,10);
 }
 function competencyStatus(id){
