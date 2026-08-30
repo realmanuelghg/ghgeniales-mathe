@@ -1,0 +1,35 @@
+<!doctype html><meta charset="utf-8"><title>GHGeniales V2.9.1 Stochastik Package Test</title><pre id="out">Läuft…</pre>
+<script src="./v2_9_1_stochastik_ergebnisraum.js"></script>
+<script src="./v2_9_1_stochastik_ereignisse.js"></script>
+<script src="./v2_9_1_stochastik_vierfeldertafel.js"></script>
+<script src="./v2_9_1_stochastik_unabhaengigkeit.js"></script>
+<script src="./v2_9_1_stochastik_bedingte_wk.js"></script>
+<script src="./v2_9_1_stochastik_statistikinterpretation.js"></script>
+<script>
+const suites=[
+ ['ergebnisraum',GHGenialesV291Ergebnisraum],
+ ['ereignisse',GHGenialesV291Ereignisse],
+ ['vierfeldertafel',GHGenialesV291Vierfeldertafel],
+ ['unabhaengigkeit',GHGenialesV291Unabhaengigkeit],
+ ['bedingteWkVerstehen',GHGenialesV291BedingteWkVerstehen],
+ ['statistikInterpretation',GHGenialesV291StatistikInterpretation]
+];
+let total=0,passed=0,failed=[];
+for(const [name,api] of suites){
+ for(let i=0;i<1000;i++){
+  total++;
+  try{
+   const q=api[Object.keys(api).find(k=>k.startsWith('gen'))]();
+   const v=api.validateVierfeldertafel?api.validateVierfeldertafel(q):api.validate(q);
+   if(!v.ok)throw Error(v.errors.join(', '));
+   if(q.type==='mc'){
+    if(!Array.isArray(q.options)||q.options.length!==4)throw Error('MC option count');
+    if(new Set(q.options).size!==4)throw Error('duplicate MC option');
+    if(!Number.isInteger(q.correctIndex)||q.correctIndex<0||q.correctIndex>=q.options.length)throw Error('correctIndex');
+   }
+   passed++;
+  }catch(e){ if(failed.length<30)failed.push(name+': '+(e.message||e)); }
+ }
+}
+document.getElementById('out').textContent=`V2.9.1 Stochastik-Paket\nDurchläufe: ${total}\nOK: ${passed}\nFehler: ${total-passed}\n`+(failed.length?'\nBeispiele:\n- '+failed.join('\n- '):'\nKeine Fehler gefunden.');
+</script>
