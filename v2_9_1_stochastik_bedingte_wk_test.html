@@ -1,0 +1,13 @@
+<!doctype html><meta charset="utf-8"><title>V2.9.1 · Bedingte Wahrscheinlichkeit Smoke-Test</title>
+<script src="./v2_9_1_stochastik_bedingte_wk.js"></script>
+<pre id="out">Teste …</pre>
+<script>
+const out=document.getElementById('out'); const g=window.GHGenialesV291BedingteWk; let ok=0,fail=0,errors=[];
+if(!g){out.textContent='FAIL: Generator export fehlt';throw new Error('missing export');}
+for(let i=0;i<1000;i++){
+  try{const q=g.genBedingteWkVerstehen(); const v=g.validateBedingteWkVerstehen(q); if(!v.ok){fail++;errors.push(v.errors.join(', '));} else ok++;}
+  catch(e){fail++;errors.push(e.message);}
+}
+out.textContent=`Bedingte Wahrscheinlichkeit: ${ok}/1000 gültig, ${fail} Fehler\n${errors.slice(0,10).join('\n')}`;
+if(fail) throw new Error(`${fail} failures`);
+</script>
