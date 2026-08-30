@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="de"><meta charset="utf-8"><title>V2.9.1 Analysis Generator Smoke Tests</title>
+<body><pre id="out">Läuft …</pre><script src="./v2_9_1_analysis_funktionen.js"></script><script>
+(() => {
+  const out=document.getElementById('out');
+  const api=globalThis.GHGenialesV291Analysis;
+  const cases=[
+    ['globalverlauf',api.genGlobalverlauf],['vorzeichenverlauf',api.genVorzeichenverlauf],
+    ['polynomUngleichung',api.genPolynomUngleichung],['wertemenge',api.genWertemenge],
+    ['darstellungswechsel',api.genDarstellungswechsel],['funktionstermAusInformationen',api.genFunktionstermAusInformationen],
+    ['parameterEigenschaft',api.genParameterEigenschaft],['schnittBeruehrpunkt',api.genSchnittBeruehrpunkt],
+    ['ableitungsgraph',api.genAbleitungsgraph],['kruemmung',api.genKruemmung],
+    ['kurvendiskussionVerknuepft',api.genKurvendiskussionVerknuepft]
+  ];
+  const errors=[]; let count=0;
+  for(const [name,gen] of cases){
+    for(let i=0;i<500;i++){
+      count++;
+      try{
+        const q=gen();
+        if(!q || q.skill!==name) errors.push(`${name}: falscher skill`);
+        if(q.type==='mc'){
+          if(!Array.isArray(q.options)||q.options.length!==4) errors.push(`${name}: nicht 4 Optionen`);
+          else if(new Set(q.options.map(String)).size!==q.options.length) errors.push(`${name}: doppelte Optionen`);
+          if(!Number.isInteger(q.correctIndex)||q.correctIndex<0||q.correctIndex>=q.options.length) errors.push(`${name}: invalid correctIndex`);
+          if(q.options[q.correctIndex]===undefined) errors.push(`${name}: correct option missing`);
+        }
+        if(!q.prompt) errors.push(`${name}: missing prompt`);
+        if(!q.explain) errors.push(`${name}: missing explain`);
+      }catch(e){errors.push(`${name}: throw ${e.message}`)}
+    }
+  }
+  out.textContent=`${errors.length?'❌ FEHLER':'✅ PASS'}\n${count} Generatorläufe geprüft.\n`+(errors.length?errors.slice(0,50).join('\n'):'Alle Strukturprüfungen bestanden.');
+})();
+</script></body></html>
