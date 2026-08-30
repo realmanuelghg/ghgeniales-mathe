@@ -186,3 +186,66 @@ Ein neuer Generator wird nur akzeptiert, wenn:
 4. eine Folgeaufgabe nach einem Fehler pädagogisch sinnvoll ist,
 5. ungültige Zufallskonstellationen ausgeschlossen sind,
 6. mathematische Lösung und Erklärung konsistent sind.
+
+## V2.9.1 Auditbefunde – Algebra/Funktionen aus V2.8
+
+Die bestehenden V2.8-Generatoren sind grundsätzlich brauchbar, aber für den V2.9-Ausbau sind folgende Punkte verbindlich:
+
+### `genBinomExpand`
+- Mathematische Grundfälle sind korrekt aufgebaut.
+- Antwortmöglichkeiten werden über `buildMC` gegen Duplikate abgesichert.
+- V2.9 soll die Varianten nicht unnötig vergrößern; die bestehende Generatorfamilie bleibt Basis.
+
+### `genBinomFactor`
+- Grundidee korrekt.
+- Für die V2.9-Qualität reicht „rückwärts binomische Formel erkennen“ allein nicht als breites Faktorisierungstraining.
+- Spätere Varianten sollten echtes Faktorisieren und unterschiedliche Strukturen abdecken.
+
+### `genLinGleichung`
+- Konstruktion garantiert eine eindeutige Lösung, da die x-Koeffizienten bewusst verschieden gewählt werden.
+- Mathematische Lösung ist konsistent.
+- Didaktisch noch stark prozedural; V2.9 soll nicht nur mehr Gleichungen erzeugen, sondern gezielte Varianten/Fehlerbilder ermöglichen.
+
+### `genQuadGleichung`
+- Rechnerisch konsistent für die erzeugten Fälle.
+- Aktuell werden ausschließlich quadratische Gleichungen mit zwei verschiedenen ganzzahligen reellen Lösungen erzeugt.
+- Dadurch fehlen wichtige Randfälle: doppelte Nullstelle, keine reelle Lösung und bewusst gemischte Aufgabentypen.
+- V2.9 soll den Generator nicht nur vervielfachen, sondern die Fallunterscheidung fachlich erweitern.
+
+### `genBruchKuerzen`
+- Enthält bereits einen fachlich guten Hinweis auf die ursprüngliche Definitionsausschlussbedingung `x ≠ a`.
+- Die Distraktoren sind jedoch relativ leicht zu entlarven; die Aufgabe misst damit eher Erkennen der dritten binomischen Formel als robustes Bruchtermverständnis.
+- V2.9 soll mindestens alternative Strukturen und echte Definitions-/Kürzungsentscheidungen ergänzen.
+
+### `genLineareEigenschaften`
+- Grundsätzlich korrekt.
+- Randfall `x0 = 0` kann einen identischen Distraktor erzeugen; `buildMC` verhindert die finale Dublette, aber das zeigt, dass Distraktorlogik noch robuster gestaltet werden sollte.
+- Für V2.9 keine große Architekturänderung nötig, aber Variantencoverage erhöhen.
+
+### `genScheitelpunkt`
+- Mathematisch korrekt.
+- Bei bestimmten Randwerten können Distraktoren mit der richtigen Antwort kollidieren; `buildMC` fängt dies ab.
+- Didaktisch sollte später auch die Verbindung Scheitelpunkt ↔ Öffnungsrichtung ↔ Wertemenge trainiert werden.
+
+### `genLinearTermAufstellen`
+- Konstruktion mit zwei Punkten ist mathematisch konsistent.
+- Die Aufgabe bleibt Multiple Choice und prüft dadurch vor allem Auswahl statt eigenständiges Aufstellen.
+- V2.9 soll mindestens einen echten numerischen Eingabepfad als Variante ergänzen.
+
+### `genSchnittpunktGeraden`
+- Mathematisch konsistente Konstruktion.
+- Einzelne Distraktoren können bei Randwerten degenerieren; `buildMC` füllt nötigenfalls Ersatzoptionen.
+- V2.9 soll Schnittpunktkompetenz stärker mit Gleichsetzen, Interpretation und später Berührbedingungen verbinden.
+
+## Konsequenz für die Implementierung
+
+V2.9 soll die bestehenden Algebra-Generatoren nicht einfach durch viele weitere ähnliche Items aufblasen.
+
+Stattdessen:
+
+- bestehende Generatoren als belastbare Basis erhalten,
+- typische Randfälle bewusst ergänzen,
+- MC und numerische Aufgaben besser mischen,
+- Darstellungswechsel einführen,
+- Fehlermuster explizit annotieren,
+- Kompetenzvarianten statt Generator-Sprawl verwenden.
