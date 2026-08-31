@@ -30,13 +30,13 @@
     const pool=odd
       ?(lead>0?['links oben, rechts unten','beide Enden oben','beide Enden unten']:['links unten, rechts oben','beide Enden oben','beide Enden unten'])
       :(lead>0?['beide Enden unten','links unten, rechts oben','links oben, rechts unten']:['beide Enden oben','links unten, rechts oben','links oben, rechts unten']);
-    return {skill:'globalverlauf',variant:'degree_lead',difficulty:deg===5?'hard':'medium',type:'mc',prompt:'Wie verhält sich der Graph für x → ±∞?',formula:tex(`f(x)=${f}`),...mc(correct,pool,3),explain:`Für das Verhalten im Unendlichen sind Grad ${deg} und Leitkoeffizient ${lead} entscheidend.`,mistakeTags:['wrong_end_behavior']};
+    return {skill:'globalverlauf',variant:'degree_lead',difficulty:deg===5?'hard':'medium',type:'mc',prompt:'Wie verhält sich der Graph für x → ±∞?',formula:tex(`f(x)=${f}`),...mc(correct,pool,4),explain:`Für das Verhalten im Unendlichen sind Grad ${deg} und Leitkoeffizient ${lead} entscheidend.`,mistakeTags:['wrong_end_behavior']};
   }
 
   function genVorzeichenverlauf(){
     const a=c([-1,1]);
-    const r1=r(-4,-1), r2=r(1,4), r3=c([r(-4,-1),r(1,4)]);
-    const roots=[r1,r2,r3].sort((x,y)=>x-y);
+    const candidates=[-5,-4,-3,-2,-1,1,2,3,4,5];
+    const roots=s(candidates).slice(0,3).sort((x,y)=>x-y);
     const terms=[[a,3],[-a*(roots[0]+roots[1]+roots[2]),2],[a*(roots[0]*roots[1]+roots[0]*roots[2]+roots[1]*roots[2]),1],[-a*roots[0]*roots[1]*roots[2],0]];
     const intervals=[`${roots[0]-2}, ${roots[0]}`,`${roots[0]}, ${roots[1]}`,`${roots[1]}, ${roots[2]}`,`${roots[2]}, ${roots[2]+2}`];
     const labels=intervals.map((_,i)=>{
@@ -54,7 +54,7 @@
     let core;
     if(positive) core=a>0?`x < ${p} oder x > ${q}`:`${p} < x < ${q}`;
     else core=a>0?`${p} < x < ${q}`:`x < ${p} oder x > ${q}`;
-    const correct=core+(inclusive?' (Randpunkte eingeschlossen)':'');
+    const correct=core+(inclusive?' (Randpunkte eingeschlossen)':' (Randpunkte ausgeschlossen)');
     const distractors=[
       a>0?`${p} < x < ${q}`:`x < ${p} oder x > ${q}`,
       `${p} < x und x < ${q}`,
@@ -69,7 +69,7 @@
     if(!bounded){
       const correct=a>0?`[${k}, ∞)`:`(-∞, ${k}]`;
       const distractors=a>0?[`(-∞, ${k}]`,`[${k+2}, ∞)`,`R`]:[`[${k}, ∞)`,`(-∞, ${k-2}]`,`R`];
-      return {skill:'wertemenge',variant:'unbounded_domain',difficulty:'medium',type:'mc',prompt:'Bestimme die Wertemenge von f für D=ℝ.',formula:tex(`f(x)=${a}(x-${h})^2+${k}`),...mc(correct,distractors),explain:`Der Scheitelwert ${k} ist wegen des offenen Definitionsbereichs Extremwert der gesamten Parabel.` ,mistakeTags:['range_confused']};
+      return {skill:'wertemenge',variant:'unbounded_domain',difficulty:'medium',type:'mc',prompt:'Bestimme die Wertemenge von f für D=ℝ.',formula:tex(`f(x)=${a}(x-${h})^2+${k}`),...mc(correct,distractors),explain:`Der Scheitelwert ${k} ist bei D=ℝ der Extremwert der gesamten Parabel.` ,mistakeTags:['range_confused']};
     }
     const left=-4,right=5;
     const samples=[[left,f(left)],[right,f(right)]];
@@ -107,17 +107,29 @@
   }
 
   function genSchnittBeruehrpunkt(){
-    const h=r(-3,3), k=r(-3,4), a=c([-2,-1,1,2]);
+    const h=r(-3,3), k=r(-3,4);
     const mode=c(['none','touch','two']);
-    let g,f,correct,explain;
+    let f,g,correct,explain,variant;
     if(mode==='none'){
-      g=tex(`g(x)=${a}(x-${h})^2+${k}`); f=tex(`f(x)=${a}(x-${h})^2+${k+2}`); correct='kein gemeinsamer Punkt'; explain='Gleiche Form, aber unterschiedliche Höhen → keine Schnittstelle.';
+      f=`f(x)=(x-${h})^2+${k+2}`;
+      g=`g(x)=(x-${h})^2+${k}`;
+      correct='kein gemeinsamer Punkt';
+      variant='no_intersection';
+      explain='Nach Gleichsetzen entsteht 2 = 0. Das ist unmöglich, also gibt es keinen gemeinsamen Punkt.';
     } else if(mode==='touch'){
-      g=tex(`g(x)=(x-${h})^2+${k}`); f=tex(`f(x)=(x-${h})^2+${k}`); correct='unendlich viele gemeinsame Punkte'; explain='Die beiden Terme sind identisch; damit stimmen die Graphen überall überein.';
+      f=`f(x)=(x-${h})^2+${k}`;
+      g=`g(x)=${k}`;
+      correct='ein gemeinsamer Punkt';
+      variant='tangent_contact';
+      explain=`Die Gerade g ist die waagrechte Tangente an f im Scheitelpunkt (${h}|${k}). Beim Gleichsetzen bleibt (x-${h})²=0, also genau eine doppelte Lösung.`;
     } else {
-      g=tex(`g(x)=x^2+${k}`); f=tex(`f(x)=-x^2+${2*h+1}`); correct='zwei gemeinsame Punkte'; explain='Eine nach oben und eine nach unten geöffnete Parabel können hier in zwei Punkten schneiden.';
+      f=`f(x)=x^2+${k}`;
+      g=`g(x)=${k+4}`;
+      correct='zwei gemeinsame Punkte';
+      variant='two_intersections';
+      explain='Nach Gleichsetzen entsteht x²=4 mit den zwei Lösungen x=-2 und x=2.';
     }
-    return {skill:'schnittBeruehrpunkt',variant:'intersection_count',difficulty:'hard',type:'mc',prompt:'Wie viele gemeinsame Punkte besitzen die beiden Graphen?',formula:tex(`${f}\\qquad ${g}`),...mc(correct,['kein gemeinsamer Punkt','ein gemeinsamer Punkt','zwei gemeinsame Punkte','unendlich viele gemeinsame Punkte'].filter(x=>x!==correct),4),explain,mistakeTags:['intersection_count_error']};
+    return {skill:'schnittBeruehrpunkt',variant,difficulty:'hard',type:'mc',prompt:'Wie viele gemeinsame Punkte besitzen die beiden Graphen?',formula:tex(`${f}\\qquad ${g}`),...mc(correct,['kein gemeinsamer Punkt','ein gemeinsamer Punkt','zwei gemeinsame Punkte','unendlich viele gemeinsame Punkte'].filter(x=>x!==correct),4),explain,mistakeTags:['intersection_count_error']};
   }
 
   function genAbleitungsgraph(){
@@ -131,7 +143,7 @@
     const a=c([-3,-2,2,3]), second=2*a;
     const correct=second>0?'f′′(x)>0: nach oben gekrümmt.':'f′′(x)<0: nach unten gekrümmt.';
     const other=second>0?'f′′(x)<0: nach unten gekrümmt.':'f′′(x)>0: nach oben gekrümmt.';
-    return {skill:'kruemmung',variant:'second_derivative_sign',difficulty:'medium',type:'mc',prompt:`Welche Aussage passt zu ${tex(`f(x)=${a}x^2`)}?`,formula:tex(`f''(x)=${second}`),...mc(correct,[other,'f′′(x)=0 bedeutet automatisch Wendepunkt']),explain:`Das Vorzeichen der zweiten Ableitung bestimmt hier das Krümmungsverhalten.`,mistakeTags:['curvature_sign_error']};
+    return {skill:'kruemmung',variant:'second_derivative_sign',difficulty:'medium',type:'mc',prompt:`Welche Aussage passt zu ${tex(`f(x)=${a}x^2`)}?`,formula:tex(`f''(x)=${second}`),...mc(correct,[other,'f′′(x)=0 bedeutet automatisch Wendepunkt','f′′(x) beschreibt hier nur die Nullstellen.'],4),explain:`Das Vorzeichen der zweiten Ableitung bestimmt hier das Krümmungsverhalten.`,mistakeTags:['curvature_sign_error']};
   }
 
   function genKurvendiskussionVerknuepft(){

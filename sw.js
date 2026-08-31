@@ -1,8 +1,8 @@
 const CACHE_NAME = 'ghgeniales-mathe-v2-9-1';
-const RUNTIME = './v2_9_1_runtime_integration.js';
 const ASSETS = [
-  './', './index.html', './manifest.json', RUNTIME,
+  './', './index.html', './manifest.json',
   './icon-192-v4.png', './icon-512-v4.png', './icon-512-maskable-v4.png',
+  './v2_9_1_core_contract.js', './v2_9_1_mastery_core.js', './v2_9_1_registry.js', './v2_9_1_analysis_funktionen.js',
   './v2_9_1_stochastik_ergebnisraum.js', './v2_9_1_stochastik_ereignisse.js', './v2_9_1_stochastik_vierfeldertafel.js',
   './v2_9_1_stochastik_bedingte_wk.js', './v2_9_1_stochastik_unabhaengigkeit.js', './v2_9_1_stochastik_statistikinterpretation.js',
   './v2_9_1_stochastik_kompetenzchecks.js',
@@ -29,23 +29,8 @@ self.addEventListener('activate', event => {
 });
 
 async function injectRuntime(response){
-  if(!response || !response.ok) return response;
-  const type = response.headers.get('content-type') || '';
-  if(!type.includes('text/html')) return response;
-  const text = await response.text();
-  if(text.includes('./v2_9_1_runtime_integration.js')) return new Response(text,{status:response.status,statusText:response.statusText,headers:response.headers});
-
-  const runtimeTag = `<script src="${RUNTIME}"></script>`;
-  let injected = text.replace('</head>', `${runtimeTag}\n</head>`);
-
-  const bootstrapMarker = `updateStatbar();\nrender();\n\n/* ============================================================\n   PWA:`;
-  const bootstrapCode = `updateStatbar();\nrender();\n\n// V2.9.1 integration: pass lexical app references to the external bootstrap.\nif(window.GHGenialesV291Bootstrap) {\n  window.GHGenialesV291Bootstrap({ TOPICS, DIFFICULTY_BY_ID, render });\n}\n\n/* ============================================================\n   PWA:`;
-  if(injected.includes(bootstrapMarker)) injected = injected.replace(bootstrapMarker, bootstrapCode);
-
-  const headers = new Headers(response.headers);
-  headers.set('content-type','text/html; charset=UTF-8');
-  headers.delete('content-length');
-  return new Response(injected,{status:response.status,statusText:response.statusText,headers});
+  // V2.9.1 is now loaded directly by index.html; keep the service worker as a cache only.
+  return response;
 }
 
 self.addEventListener('fetch', event => {

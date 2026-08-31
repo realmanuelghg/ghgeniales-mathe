@@ -131,6 +131,7 @@
 
   /* ---------- SUBTYPE CHIPS ---------- */
   .chiprow{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:18px;}
+  .chip-group-label{flex-basis:100%;font-size:.78rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:8px 4px 0;}
   .chip{
     padding:7px 13px; border-radius:8px; border:1px solid var(--grid); background:var(--card);
     font-size:13px; font-weight:500; color:var(--ink-soft); cursor:pointer; transition:all .12s ease;
@@ -887,6 +888,18 @@ function v2ShowClassChoice(){
   </div>
 </div>
 
+<script src="./v2_9_1_core_contract.js"></script>
+<script src="./v2_9_1_mastery_core.js"></script>
+<script src="./v2_9_1_registry.js"></script>
+<script src="./v2_9_1_analysis_funktionen.js"></script>
+<script src="./v2_9_1_stochastik_ergebnisraum.js"></script>
+<script src="./v2_9_1_stochastik_ereignisse.js"></script>
+<script src="./v2_9_1_stochastik_vierfeldertafel.js"></script>
+<script src="./v2_9_1_stochastik_bedingte_wk.js"></script>
+<script src="./v2_9_1_stochastik_unabhaengigkeit.js"></script>
+<script src="./v2_9_1_stochastik_statistikinterpretation.js"></script>
+<script src="./v2_9_1_stochastik_kompetenzchecks.js"></script>
+
 <script>
 /* ============================================================
    UTILITIES
@@ -1458,8 +1471,8 @@ function genUnabhaengigkeit(){
     }
   }
   const correct=independent?'Ja, die Ereignisse sind stochastisch unabhängig.':'Nein, die Ereignisse sind stochastisch abhängig.';
-  const distractors=[independent?'Nein, weil P(A∩B) immer kleiner sein muss.':'Ja, weil beide Einzelwahrscheinlichkeiten bekannt sind.','Nur wenn P(A)=P(B) gilt.'];
-  const {options,correctIndex}=buildMC(correct,distractors,3);
+  const distractors=[independent?'Nein, weil P(A∩B) immer kleiner sein muss.':'Ja, weil beide Einzelwahrscheinlichkeiten bekannt sind.','Nur wenn P(A)=P(B) gilt.','Das kann man aus P(A), P(B) und P(A∩B) nicht entscheiden.'];
+  const {options,correctIndex}=buildMC(correct,distractors,4);
   return {prompt:`Sind A und B unabhängig? Gegeben sind ${tex(`P(A)=${pA}`)}, ${tex(`P(B)=${pB}`)} und ${tex(`P(A\\cap B)=${pAB}`)}.`,type:'mc',options,correctIndex,
     explain:independent?`Prüfe ${tex(`P(A\\cap B)=P(A)\\cdot P(B)`)}. Hier gilt ${tex(`${pAB}=${pA}\\cdot${pB}`)}.`:`Bei Unabhängigkeit müsste ${tex(`P(A\\cap B)=P(A)\\cdot P(B)`)} gelten; hier ist ${tex(`${pAB}\\neq ${round2(pA*pB)}`)}.`};
 }
@@ -1481,6 +1494,43 @@ function genKombiTyp(){
 /* ============================================================
    TOPIC CONFIG
    ============================================================ */
+function ensureAppQuestion(q, subtypeId){
+  if(!q || typeof q !== 'object') throw new Error(`Ungültige Aufgabe für ${subtypeId}`);
+  if(q.type==='mc'){
+    if(!Array.isArray(q.options)) throw new Error(`MC-Aufgabe ${subtypeId} braucht Optionen`);
+    const correctText = q.options[q.correctIndex];
+    const normalized=[];
+    [correctText, ...q.options].forEach(opt=>{ if(opt!==undefined && opt!==null && !normalized.map(String).includes(String(opt))) normalized.push(opt); });
+    const fallbackOptions=['Die Angaben reichen für diese Schlussfolgerung nicht aus.','Die Aussage verwechselt Ereignis und Bedingung.','Nur die richtige Rechenregel liefert die passende Entscheidung.'];
+    fallbackOptions.forEach(opt=>{ if(normalized.length<4 && !normalized.map(String).includes(String(opt))) normalized.push(opt); });
+    q.options = shuffle(normalized).slice(0,4);
+    q.correctIndex = q.options.findIndex(opt=>String(opt)===String(correctText));
+    if(q.options.length!==4) throw new Error(`MC-Aufgabe ${subtypeId} braucht genau 4 Optionen`);
+    if(new Set(q.options.map(String)).size!==4) throw new Error(`MC-Aufgabe ${subtypeId} hat doppelte Optionen`);
+    if(!Number.isInteger(q.correctIndex) || q.correctIndex<0 || q.correctIndex>=q.options.length) throw new Error(`MC-Aufgabe ${subtypeId} hat ungültigen correctIndex`);
+  }
+  if(q.type==='numeric' && (!Number.isFinite(q.correct) || !Number.isFinite(q.tol))) throw new Error(`Numeric-Aufgabe ${subtypeId} ist nicht app-kompatibel`);
+  if(q.type==='set'){
+    if(!Array.isArray(q.correct) || !Number.isFinite(q.tol)) throw new Error(`Set-Aufgabe ${subtypeId} ist nicht app-kompatibel`);
+  }
+  q.explain = q.explain || 'Keine Erklärung hinterlegt.';
+  q.mistakeTags = Array.isArray(q.mistakeTags) ? q.mistakeTags.filter(Boolean) : [];
+  q.skill = q.skill || subtypeId;
+  if(globalThis.GHGenialesV291Core?.assertQuestion){
+    const v=globalThis.GHGenialesV291Core.assertQuestion(q, q.skill);
+    if(!v.ok) throw new Error(`V2.9.1-Aufgabenvertrag verletzt (${subtypeId}): ${v.errors.join(', ')}`);
+  }
+  return q;
+}
+function v291Generator(namespaceName, generatorName){
+  return function(){
+    const api=globalThis[namespaceName];
+    const gen=api && api[generatorName];
+    if(typeof gen !== 'function') throw new Error(`V2.9.1-Generator fehlt: ${namespaceName}.${generatorName}`);
+    return ensureAppQuestion(gen(), generatorName);
+  };
+}
+
 const TOPICS = {
   algebra: {
     name:'Algebra-Basics', color:'var(--blue)',
@@ -1507,6 +1557,17 @@ const TOPICS = {
       {id:'monotonie', name:'Monotonie', gen:genMonotonie},
       {id:'differenzenquotient', name:'Differenzenquotient', gen:genDifferenzenquotient},
       {id:'tangentensteigung', name:'Tangentensteigung', gen:genTangentensteigung},
+      {id:'darstellungswechsel', name:'Darstellungswechsel', group:'Funktionen & Darstellungen', gen:v291Generator('GHGenialesV291Analysis','genDarstellungswechsel')},
+      {id:'funktionstermAusInformationen', name:'Funktionsterm aus Informationen', group:'Funktionen & Darstellungen', gen:v291Generator('GHGenialesV291Analysis','genFunktionstermAusInformationen')},
+      {id:'globalverhalten', name:'Globalverhalten', group:'Kurvenverhalten', gen:v291Generator('GHGenialesV291Analysis','genGlobalverlauf')},
+      {id:'vorzeichenverlauf', name:'Vorzeichenverlauf', group:'Kurvenverhalten', gen:v291Generator('GHGenialesV291Analysis','genVorzeichenverlauf')},
+      {id:'polynomUngleichung', name:'Polynom-Ungleichung', group:'Kurvenverhalten', gen:v291Generator('GHGenialesV291Analysis','genPolynomUngleichung')},
+      {id:'wertemenge', name:'Wertemenge', group:'Kurvenverhalten', gen:v291Generator('GHGenialesV291Analysis','genWertemenge')},
+      {id:'ableitungsgraph', name:'Ableitungsgraph verstehen', group:'Ableitung & Krümmung', gen:v291Generator('GHGenialesV291Analysis','genAbleitungsgraph')},
+      {id:'kruemmung', name:'Krümmung', group:'Ableitung & Krümmung', gen:v291Generator('GHGenialesV291Analysis','genKruemmung')},
+      {id:'parameterEigenschaft', name:'Parameter & Eigenschaften', group:'Parameter / Schnitt / Berührung', gen:v291Generator('GHGenialesV291Analysis','genParameterEigenschaft')},
+      {id:'schnittBeruehrpunkt', name:'Schnitt- und Berührpunkte', group:'Parameter / Schnitt / Berührung', gen:v291Generator('GHGenialesV291Analysis','genSchnittBeruehrpunkt')},
+      {id:'kurvendiskussionVerknuepft', name:'Kurvendiskussion verknüpft', group:'Parameter / Schnitt / Berührung', gen:v291Generator('GHGenialesV291Analysis','genKurvendiskussionVerknuepft')},
     ]
   },
   stochastik: {
@@ -1519,6 +1580,14 @@ const TOPICS = {
       {id:'laplace', name:'Laplace-Wahrscheinlichkeit', gen:genLaplace},
       {id:'unabhaengigkeit', name:'Unabhängigkeit', gen:genUnabhaengigkeit},
       {id:'kombiTyp', name:'Kombinatorische Problemtypen', gen:genKombiTyp},
+      {id:'ergebnisraum', name:'Ergebnisraum', group:'Grundlagen/Ereignisse', gen:v291Generator('GHGenialesV291Stochastik','genErgebnisraum')},
+      {id:'ereignisse', name:'Ereignisse & Mengen', group:'Grundlagen/Ereignisse', gen:v291Generator('GHGenialesV291Ereignisse','genEreignisse')},
+      {id:'vierfeldertafel', name:'Vierfeldertafel', group:'Wahrscheinlichkeiten/Vierfeldertafel', gen:v291Generator('GHGenialesV291Vierfeldertafel','genVierfeldertafel')},
+      {id:'bedingteWkVerstehen', name:'Bedingte Wk. verstehen', group:'Wahrscheinlichkeiten/Vierfeldertafel', gen:v291Generator('GHGenialesV291BedingteWk','genBedingteWkVerstehen')},
+      {id:'unabhaengigkeitVerstehen', name:'Unabhängigkeit verstehen', group:'Abhängigkeit/Unabhängigkeit', gen:v291Generator('GHGenialesV291Unabhaengigkeit','genUnabhaengigkeitBedingt')},
+      {id:'statistikInterpretation', name:'Statistik interpretieren', group:'Kompetenzchecks/Interpretation', gen:v291Generator('GHGenialesV291StatistikInterpretation','genStatistikInterpretation')},
+      {id:'pfadKompetenzcheck', name:'Pfad-Kompetenzcheck', group:'Kompetenzchecks/Interpretation', gen:v291Generator('GHGenialesV291StochastikChecks','genPfadKompetenzcheck')},
+      {id:'stochKompetenzcheck', name:'Stochastik-Kompetenzcheck', group:'Kompetenzchecks/Interpretation', gen:v291Generator('GHGenialesV291StochastikChecks','genStochKompetenzcheck')},
     ]
   }
 };
@@ -1528,7 +1597,9 @@ const DIFFICULTY_BY_ID={
   lineareEigenschaften:'easy', scheitelpunkt:'easy', lineareTerm:'medium', schnittpunktGeraden:'medium',
   ableiten:'easy', nullstellen:'hard', extrempunkte:'hard', wendepunkt:'medium', symmetrie:'medium',
   monotonie:'medium', differenzenquotient:'medium', tangentensteigung:'medium',
-  kombinatorik:'easy', pfadregel:'medium', bedingteWk:'medium', zufallsexperiment:'easy', laplace:'easy', unabhaengigkeit:'medium', kombiTyp:'medium'
+  darstellungswechsel:'medium', funktionstermAusInformationen:'hard', globalverhalten:'medium', vorzeichenverlauf:'hard', polynomUngleichung:'hard', wertemenge:'medium', ableitungsgraph:'hard', kruemmung:'medium', parameterEigenschaft:'hard', schnittBeruehrpunkt:'hard', kurvendiskussionVerknuepft:'hard',
+  kombinatorik:'easy', pfadregel:'medium', bedingteWk:'medium', zufallsexperiment:'easy', laplace:'easy', unabhaengigkeit:'medium', kombiTyp:'medium',
+  ergebnisraum:'easy', ereignisse:'medium', vierfeldertafel:'medium', bedingteWkVerstehen:'medium', unabhaengigkeitVerstehen:'medium', statistikInterpretation:'hard', pfadKompetenzcheck:'hard', stochKompetenzcheck:'hard'
 };
 Object.values(TOPICS).forEach(cat=>cat.subtypes.forEach(st=>st.difficulty=DIFFICULTY_BY_ID[st.id]||'medium'));
 
@@ -1554,8 +1625,8 @@ const ROADMAP_11 = [
     ['Funktionsterm aus Informationen aufstellen','Eine Gerade aus Punkten bzw. Steigung und Punkt bestimmen.', 'lineareTerm'],
     ['Lineare / quadratische Gleichungen lösen','Äquivalenzumformungen, Faktorisieren und Lösungsformeln.', 'linGleichung'],
     ['Schnittpunkte berechnen','Gemeinsame Punkte von Geraden bzw. Graphen bestimmen.', 'schnittpunktGeraden'],
-    ['Parameteraufgaben','Parameter so bestimmen, dass eine Eigenschaft oder Lagebeziehung entsteht.', null],
-    ['Ungleichungen','Lösungsmengen graphisch und über Vorzeichen bestimmen.', null],
+    ['Parameteraufgaben','Parameter so bestimmen, dass eine Eigenschaft oder Lagebeziehung entsteht.', 'parameterEigenschaft'],
+    ['Ungleichungen','Lösungsmengen graphisch und über Vorzeichen bestimmen.', 'polynomUngleichung'],
     ['Sachkontexte modellieren','Lineare und quadratische Situationen mathematisch beschreiben.', null]
   ]},
   {area:'2. Ganzrationale Funktionen',desc:'Polynome, Nullstellen, Symmetrie und Globalverlauf.',items:[
@@ -1563,9 +1634,9 @@ const ROADMAP_11 = [
     ['Faktorisieren und Darstellungsformen','Zwischen allgemeiner und faktorisierter Form wechseln.', 'binomFactor'],
     ['Polynomdivision / Substitution','Geeignete Verfahren für höhere Polynomgleichungen erkennen.', null],
     ['Symmetrie','Achsen- und Punktsymmetrie rechnerisch begründen.', 'symmetrie'],
-    ['Globalverlauf verstehen','Grad und Leitkoeffizient mit dem Verhalten im Unendlichen verbinden.', null],
-    ['Polynom-Ungleichungen','Vorzeichenverlauf und Lösungsmenge verbinden.', null],
-    ['Schnitt- und Berührpunkte','Gemeinsame Punkte zweier ganzrationaler Funktionen bestimmen.', null]
+    ['Globalverlauf verstehen','Grad und Leitkoeffizient mit dem Verhalten im Unendlichen verbinden.', 'globalverhalten'],
+    ['Polynom-Ungleichungen','Vorzeichenverlauf und Lösungsmenge verbinden.', 'polynomUngleichung'],
+    ['Schnitt- und Berührpunkte','Gemeinsame Punkte zweier ganzrationaler Funktionen bestimmen.', 'schnittBeruehrpunkt']
   ]},
   {area:'3. Differentialrechnung',desc:'Vom Differenzenquotienten bis zu vollständigen Funktionsuntersuchungen.',items:[
     ['Differenzenquotient','Sekantensteigung und mittlere Änderungsrate berechnen und deuten.', 'differenzenquotient'],
@@ -1574,21 +1645,21 @@ const ROADMAP_11 = [
     ['Monotonieverhalten','Aus der ersten Ableitung auf fallend/steigend schließen.', 'monotonie'],
     ['Extrempunkte','Art und Koordinaten über Ableitungen bestimmen.', 'extrempunkte'],
     ['Wendepunkte und Krümmung','Wendestellen begründen und koordinatenmäßig bestimmen.', 'wendepunkt'],
-    ['Vorzeichentabelle / Skizze','Eigenschaften der Funktion in einer verständlichen Skizze zusammenführen.', null],
+    ['Vorzeichentabelle / Skizze','Eigenschaften der Funktion in einer verständlichen Skizze zusammenführen.', 'vorzeichenverlauf'],
     ['Anwendungsaufgaben','Änderungsraten und Funktionsuntersuchungen im Sachkontext interpretieren.', null]
   ]},
   {area:'4. Grundlagen der Wahrscheinlichkeitsrechnung',desc:'Zufallsexperimente, Ereignisse, Häufigkeiten und Baumdiagramme.',items:[
-    ['Zufallsexperiment und Ergebnisraum','Zufällige Abläufe erkennen und mathematisch beschreiben.', 'zufallsexperiment'],
+    ['Zufallsexperiment und Ergebnisraum','Zufällige Abläufe erkennen und mathematisch beschreiben.', 'ergebnisraum'],
     ['Absolute und relative Häufigkeiten','Daten als Grundlage für Wahrscheinlichkeiten interpretieren.', null],
     ['Laplace-Experimente','Gleich wahrscheinliche Ergebnisse erkennen und berechnen.', 'laplace'],
-    ['Ereignisse und Gegenereignisse','Schnitt, Vereinigung, Gegenereignis und Venn-Diagramme verstehen.', null],
+    ['Ereignisse und Gegenereignisse','Schnitt, Vereinigung, Gegenereignis und Venn-Diagramme verstehen.', 'ereignisse'],
     ['Baumdiagramme und Pfadregeln','Mehrstufige Experimente modellieren und Wahrscheinlichkeiten berechnen.', 'pfadregel'],
-    ['Vierfeldertafel','Häufigkeiten und Wahrscheinlichkeiten zweier Ereignisse verknüpfen.', null]
+    ['Vierfeldertafel','Häufigkeiten und Wahrscheinlichkeiten zweier Ereignisse verknüpfen.', 'vierfeldertafel']
   ]},
   {area:'5. Bedingte Wahrscheinlichkeit & Unabhängigkeit',desc:'Ereignisse richtig interpretieren und Abhängigkeiten begründen.',items:[
-    ['Bedingte Wahrscheinlichkeit','P(A|B) korrekt lesen, berechnen und interpretieren.', 'bedingteWk'],
-    ['Stochastische Unabhängigkeit','Unabhängigkeit rechnerisch prüfen und begründen.', 'unabhaengigkeit'],
-    ['Statistische Fehlinterpretationen','Ereignis und Bedingung nicht verwechseln; Ergebnisse kritisch beurteilen.', null]
+    ['Bedingte Wahrscheinlichkeit','P(A|B) korrekt lesen, berechnen und interpretieren.', 'bedingteWkVerstehen'],
+    ['Stochastische Unabhängigkeit','Unabhängigkeit rechnerisch prüfen und begründen.', 'unabhaengigkeitVerstehen'],
+    ['Statistische Fehlinterpretationen','Ereignis und Bedingung nicht verwechseln; Ergebnisse kritisch beurteilen.', 'statistikInterpretation']
   ]},
   {area:'6. Kombinatorik',desc:'Kombinatorische Problemtypen erkennen und passend einsetzen.',items:[
     ['Problemtyp erkennen','Permutation, Variation, Kombination und Zählprinzip unterscheiden.', 'kombiTyp'],
@@ -1666,7 +1737,7 @@ function unlockAchievements(){
     streak10:{label:'Aufwärmphase',desc:'10 richtige hintereinander',icon:'🔥',ok:streakData.best>=10},
     perfect20:{label:'Perfekt',desc:'20 richtige hintereinander',icon:'💯',ok:streakData.best>=20},
     examReady:{label:'Prüfungsbereit',desc:'Mindestens 90 % in einer Prüfung',icon:'💀',ok:examHistory.some(e=>e.percent>=90)},
-    stoch100:{label:'Stochastiker',desc:'100 Stochastik-Aufgaben',icon:'🧠',ok:['kombinatorik','kombiTyp','pfadregel','bedingteWk','zufallsexperiment','laplace','unabhaengigkeit'].some(id=>stats[id]?.attempts>=100) || ['kombinatorik','kombiTyp','pfadregel','bedingteWk','zufallsexperiment','laplace','unabhaengigkeit'].reduce((n,id)=>n+(stats[id]?.attempts||0),0)>=100},
+    stoch100:{label:'Stochastiker',desc:'100 Stochastik-Aufgaben',icon:'🧠',ok:TOPICS.stochastik.subtypes.map(st=>st.id).some(id=>stats[id]?.attempts>=100) || TOPICS.stochastik.subtypes.map(st=>st.id).reduce((n,id)=>n+(stats[id]?.attempts||0),0)>=100},
     diligent7:{label:'Fleißig',desc:'7 Lerntage mit mindestens einer Aufgabe',icon:'📚',ok:getLearningDayCount()>=7}
   };
   Object.entries(candidates).forEach(([id,a])=>{ if(a.ok) achievements[id]=true; });
@@ -1812,7 +1883,15 @@ function renderChips(){
   mixChip.textContent = '🔀 Zufallsmix';
   mixChip.onclick = () => { activeSubtypeId=null; newQuestion(); renderChips(); };
   chiprowEl.appendChild(mixChip);
+  let lastGroup=null;
   cat.subtypes.filter(st=>activeDifficulty==='all'||st.difficulty===activeDifficulty).forEach(st=>{
+    if(st.group && st.group!==lastGroup){
+      lastGroup=st.group;
+      const groupLabel=document.createElement('div');
+      groupLabel.className='chip-group-label';
+      groupLabel.textContent=st.group;
+      chiprowEl.appendChild(groupLabel);
+    }
     const chip = document.createElement('button');
     chip.className = 'chip' + (activeSubtypeId===st.id ? ' active' : '');
     chip.style.setProperty('--catcolor', cat.color);
@@ -1867,7 +1946,7 @@ function renderExam(){
   html+=`<div class="card" style="--catcolor:${TOPICS[q._catKey].color}"><div class="qlabel">${q._catName} · ${q._subtypeName} · ${q._points} Punkte</div><div class="qprompt">${q.prompt}</div>`;
   if(q.formula) html+=`<div class="qformula">${q.formula}</div>`;
   if(q.tree) html+=`<div class="qtree">${q.tree}</div>`;
-  if(q.table){ const t=q.table; html+=`<table class="qtable"><tr><th></th><th>B</th><th>\\(\overline{B}\\)</th><th>\\(\Sigma\\)</th></tr><tr><th>A</th><td>${t.a}</td><td>${t.b}</td><td>${t.rowA}</td></tr><tr><th>\\(\overline{A}\\)</th><td>${t.c}</td><td>${t.d}</td><td>${t.rowNotA}</td></tr><tr><th>\\(\Sigma\\)</th><td>${t.a+t.c}</td><td>${t.b+t.d}</td><td>100</td></tr></table>`; }
+  if(q.table){ const t=q.table; html+=`<table class="qtable"><tr><th></th><th>B</th><th>\\(\overline{B}\\)</th><th>\\(\Sigma\\)</th></tr><tr><th>A</th><td>${t.a}</td><td>${t.b}</td><td>${t.rowA}</td></tr><tr><th>\\(\overline{A}\\)</th><td>${t.c}</td><td>${t.d}</td><td>${t.rowNotA}</td></tr><tr><th>\\(\Sigma\\)</th><td>${t.a+t.c}</td><td>${t.b+t.d}</td><td>${t.total}</td></tr></table>`; }
   html+=`<div class="answer-zone">`;
   if(q.type==='mc'){ html+=`<div class="options" id="examOpts">`; q.options.forEach((o,i)=>html+=`<button class="opt" data-i="${i}">${o}</button>`); html+=`</div>`; }
   else html+=`<div class="numrow"><input type="text" inputmode="decimal" id="examInput" placeholder="Antwort eingeben…" autocomplete="off"><button class="primary" id="examSubmit">Weiter</button></div>`;
@@ -1987,8 +2066,11 @@ function newQuestion(){
   lastPlotCfg = null;
   const st = pickSubtype();
   currentSubtypeId = st.id;
-  currentQuestion = st.gen();
+  currentQuestion = ensureAppQuestion(st.gen(), st.id);
   currentQuestion._subtypeName = st.name;
+  currentQuestion._subtypeId = st.id;
+  currentQuestion._catKey = activeCategory;
+  currentQuestion._catName = TOPICS[activeCategory].name;
   renderQuestion();
 }
 
@@ -2038,7 +2120,7 @@ function renderQuestion(){
     html += `<table class="qtable"><tr><th></th><th>B</th><th>\\(\\overline{B}\\)</th><th>\\(\\Sigma\\)</th></tr>
       <tr><th>A</th><td>${t.a}</td><td>${t.b}</td><td>${t.rowA}</td></tr>
       <tr><th>\\(\\overline{A}\\)</th><td>${t.c}</td><td>${t.d}</td><td>${t.rowNotA}</td></tr>
-      <tr><th>\\(\\Sigma\\)</th><td>${t.a+t.c}</td><td>${t.b+t.d}</td><td>100</td></tr></table>`;
+      <tr><th>\\(\\Sigma\\)</th><td>${t.a+t.c}</td><td>${t.b+t.d}</td><td>${t.total}</td></tr></table>`;
   }
   html += `<div class="answer-zone">`;
   if(q.type==='mc'){
@@ -2128,6 +2210,8 @@ function showFeedback(correct, explain, userAnswer){
   const detail = correct ? null : {
     prompt: currentQuestion.prompt + (currentQuestion.formula ? ' ' + currentQuestion.formula : ''),
     explain,
+    mistakeTags: currentQuestion.mistakeTags || [],
+    variant: currentQuestion.variant || '',
     ts: Date.now()
   };
   recordAttempt(currentSubtypeId, correct, detail);
@@ -2460,11 +2544,17 @@ function renderDailyPanel(){
 function competencyStatus(id){
   if(!id) return {icon:'⚪',label:'Noch nicht angelegt',detail:'Kommt als nächster Ausbau.',pct:0};
   const s=learningStatsFor(id); const mb=mistakeBank[id];
+  if(globalThis.GHGenialesV291Core?.masteryFromStats){
+    const mastery=globalThis.GHGenialesV291Core.masteryFromStats(stats[id], mb);
+    const icons=['⚪','🔴','🟡','🟦','✅'];
+    return {icon:icons[mastery.stage]||'⚪',label:mastery.label,detail:s.attempts?`${Math.round(s.acc)} % · ${s.attempts} Aufgaben`:'Starte mit ein paar Aufgaben.',pct:Math.round((mastery.score||0)*100)};
+  }
   if(s.attempts===0) return {icon:'⚪',label:'Noch nicht geübt',detail:'Starte mit ein paar Aufgaben.',pct:0};
   const due=mb && !mb.resolved && mb.nextReviewAt && mb.nextReviewAt<=Date.now();
-  if(mb && !mb.resolved && mb.misses>0) return {icon:'🔴',label:due?'Wiederholen':'Unsicher',detail:`${Math.round(s.acc)} % · ${s.attempts} Aufgaben${due?' · fällig':''}`,pct:Math.round(s.acc)};
+  if(mb && !mb.resolved && mb.misses>0) return {icon:'🔴',label:'Üben',detail:`${Math.round(s.acc)} % · ${s.attempts} Aufgaben${due?' · fällig':''}`,pct:Math.round(s.acc)};
   if(s.attempts>=5 && s.acc>=85) return {icon:'✅',label:'Sicher',detail:`${Math.round(s.acc)} % · ${s.attempts} Aufgaben`,pct:Math.round(s.acc)};
-  if(s.acc>=70) return {icon:'🟡',label:'Festigen',detail:`${Math.round(s.acc)} % · ${s.attempts} Aufgaben`,pct:Math.round(s.acc)};
+  if(s.acc>=80) return {icon:'🟦',label:'Stabilisieren',detail:`${Math.round(s.acc)} % · ${s.attempts} Aufgaben`,pct:Math.round(s.acc)};
+  if(s.acc>=65) return {icon:'🟡',label:'Festigen',detail:`${Math.round(s.acc)} % · ${s.attempts} Aufgaben`,pct:Math.round(s.acc)};
   return {icon:'🔴',label:'Üben',detail:`${Math.round(s.acc)} % · ${s.attempts} Aufgaben`,pct:Math.round(s.acc)};
 }
 function renderRoadmap(){
@@ -2472,7 +2562,7 @@ function renderRoadmap(){
   const items=ROADMAP_11.flatMap(sec=>sec.items);
   const trainable=items.filter(x=>x[2]).length;
   const mastered=items.filter(x=>x[2] && competencyStatus(x[2]).label==='Sicher').length;
-  const practice=items.filter(x=>x[2] && ['Festigen','Üben','Unsicher','Wiederholen'].includes(competencyStatus(x[2]).label)).length;
+  const practice=items.filter(x=>x[2] && ['Festigen','Üben','Stabilisieren'].includes(competencyStatus(x[2]).label)).length;
   let html=`<div class="v26-roadmap">\n    <div class="statcard v26-roadmap-head"><h2>🧭 Dein FOS-Mathe-Lernplan</h2><p class="sub">Dein Lernplan zeigt konkrete Kompetenzen. Grün = sicher, Gelb = festigen, Rot = üben, Weiß = noch nicht geübt oder noch nicht umgesetzt.</p><div class="v26-roadmap-summary"><div class="metric"><b>${mastered}</b><span>sicher</span></div><div class="metric"><b>${practice}</b><span>festigen / üben</span></div><div class="metric"><b>${trainable}/${items.length}</b><span>bereits trainierbar</span></div><div class="metric"><b>12</b><span>Klasse: vorbereitet</span></div></div></div>`;
   ROADMAP_11.forEach(sec=>{
     html+=`<section class="v26-roadmap-section"><h3>${escapeHTML(sec.area)}</h3><p>${escapeHTML(sec.desc)}</p><div class="v26-competency-list">`;
@@ -2727,7 +2817,7 @@ window.v2CalcEvaluate=()=>{try{const v=ev(d().value);r().textContent='= '+String
     if(q.tree) html += `<div class="qtree">${escapeHtml(q.tree)}</div>`;
     if(q.table){
       const t=q.table;
-      html += `<table class="qtable"><tr><th></th><th>\\(B\\)</th><th>\\(\\overline{B}\\)</th><th>\\(\\Sigma\\)</th></tr><tr><th>A</th><td>${t.a}</td><td>${t.b}</td><td>${t.rowA}</td></tr><tr><th>\\(\\overline{A}\\)</th><td>${t.c}</td><td>${t.d}</td><td>${t.rowNotA}</td></tr><tr><th>\\(\\Sigma\\)</th><td>${t.a+t.c}</td><td>${t.b+t.d}</td><td>100</td></tr></table>`;
+      html += `<table class="qtable"><tr><th></th><th>\\(B\\)</th><th>\\(\\overline{B}\\)</th><th>\\(\\Sigma\\)</th></tr><tr><th>A</th><td>${t.a}</td><td>${t.b}</td><td>${t.rowA}</td></tr><tr><th>\\(\\overline{A}\\)</th><td>${t.c}</td><td>${t.d}</td><td>${t.rowNotA}</td></tr><tr><th>\\(\\Sigma\\)</th><td>${t.a+t.c}</td><td>${t.b+t.d}</td><td>${t.total}</td></tr></table>`;
     }
     if(q.type==='mc' && Array.isArray(q.options)){
       html += `<div class="v2-review-options"><strong>Antwortmöglichkeiten</strong><ol>${q.options.map(o=>`<li>${escapeHtml(o)}</li>`).join('')}</ol></div>`;
