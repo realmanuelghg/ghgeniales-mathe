@@ -52,35 +52,35 @@
   }
 
   function genStochKompetenzcheck(){
-    const a=r(15,45), b=r(10,35), c=r(10,35), d=r(15,45), total=a+b+c+d;
+    const a=r(15,45), b=r(10,35), cCell=r(10,35), d=r(15,45), total=a+b+cCell+d;
     const pBgivenA=round(a/(a+b),3);
-    const pAgivenB=round(a/(a+c),3);
+    const pAgivenB=round(a/(a+cCell),3);
     const pA=round((a+b)/total,3);
-    const independent=Math.abs(round(a/total,3)-round(pA*((a+c)/total),3))<0.001;
+    const independent=Math.abs(round(a/total,3)-round(pA*((a+cCell)/total),3))<0.001;
     const asked=c(['conditionalA','conditionalB','independence']);
 
     if(asked==='conditionalA'){
       const correct=`${Math.round(pAgivenB*1000)/10} %`;
       const x=mc(correct,[`${Math.round(pBgivenA*1000)/10} %`,`${Math.round(pA*1000)/10} %`,`${Math.round((a/total)*1000)/10} %`]);
       return {skill:'stochKompetenzcheck',variant:'P_A_given_B',difficulty:'hard',type:'mc',
-        prompt:`In einer Vierfeldertafel stehen A∩B=${a} und ¬A∩B=${c}. Bestimme P(A|B).`,table:{a,b,c,d,rowA:a+b,rowNotA:c+d,total},...x,
-        explain:`Die Bezugsmenge ist B: P(A|B)=${a}/(${a}+${c})=${correct}.`,
+        prompt:`In einer Vierfeldertafel stehen A∩B=${a} und ¬A∩B=${cCell}. Bestimme P(A|B).`,table:{a,b,c:cCell,d,rowA:a+b,rowNotA:cCell+d,total},...x,
+        explain:`Die Bezugsmenge ist B: P(A|B)=${a}/(${a}+${cCell})=${correct}.`,
         mistakeTags:['wrong_denominator']};
     }
     if(asked==='conditionalB'){
       const correct=`${Math.round(pBgivenA*1000)/10} %`;
-      const x=mc(correct,[`${Math.round(pAgivenB*1000)/10} %`,`${Math.round(((a+c)/total)*1000)/10} %`,`${Math.round((b/total)*1000)/10} %`]);
+      const x=mc(correct,[`${Math.round(pAgivenB*1000)/10} %`,`${Math.round(((a+cCell)/total)*1000)/10} %`,`${Math.round((b/total)*1000)/10} %`]);
       return {skill:'stochKompetenzcheck',variant:'P_B_given_A',difficulty:'hard',type:'mc',
-        prompt:`In einer Vierfeldertafel stehen A∩B=${a} und A∩¬B=${b}. Bestimme P(B|A).`,table:{a,b,c,d,rowA:a+b,rowNotA:c+d,total},...x,
+        prompt:`In einer Vierfeldertafel stehen A∩B=${a} und A∩¬B=${b}. Bestimme P(B|A).`,table:{a,b,c:cCell,d,rowA:a+b,rowNotA:cCell+d,total},...x,
         explain:`Die Bezugsmenge ist A: P(B|A)=${a}/(${a}+${b})=${correct}.`,
         mistakeTags:['wrong_denominator','condition_swapped']};
     }
-    const pAraw=(a+b)/total, pB=(a+c)/total, pAB=a/total, product=pAraw*pB;
+    const pAraw=(a+b)/total, pB=(a+cCell)/total, pAB=a/total, product=pAraw*pB;
     const exactIndependent=Math.abs(pAB-product)<0.01;
     const correct=exactIndependent?'Ja, A und B sind unabhängig.':'Nein, A und B sind abhängig.';
     const x=mc(correct,[exactIndependent?'Nein, weil P(A∩B) kleiner ist.':'Ja, weil P(A) und P(B) bekannt sind.','Nur bei gleichen Randhäufigkeiten.']);
     return {skill:'stochKompetenzcheck',variant:'independence',difficulty:'hard',type:'mc',
-      prompt:`Prüfe die Unabhängigkeit anhand der Vierfeldertafel.`,table:{a,b,c,d,rowA:a+b,rowNotA:c+d,total},...x,
+      prompt:`Prüfe die Unabhängigkeit anhand der Vierfeldertafel.`,table:{a,b,c:cCell,d,rowA:a+b,rowNotA:cCell+d,total},...x,
       explain:`Vergleiche P(A∩B)=${round(pAB,3)} mit P(A)·P(B)=${round(product,3)}.`,
       mistakeTags:['independence_wrong_rule']};
   }
